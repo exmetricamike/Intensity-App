@@ -1,0 +1,238 @@
+Initialized native services in: /Users/mike/.gradle/native
+Initialized jansi services in: /Users/mike/.gradle/native
+Found daemon DaemonInfo{pid=5761, address=[89b08397-4595-447c-9e07-20dd17648517 port:50156, addresses:[/127.0.0.1]], state=Idle, lastBusy=1769796039481, context=DefaultDaemonContext[uid=63e8de2c-106e-4437-9cde-1d34e0c00060,javaHome=/Applications/Android Studio.app/Contents/jbr/Contents/Home,javaVersion=21,javaVendor=JetBrains s.r.o.,daemonRegistryDir=/Users/mike/.gradle/daemon,pid=5761,idleTimeout=10800000,priority=NORMAL,applyInstrumentationAgent=true,nativeServicesMode=ENABLED,daemonOpts=-Xmx2048M,-Dfile.encoding=UTF-8,-Duser.country=US,-Duser.language=en,-Duser.variant]} however its context does not match the desired criteria.
+JVM is incompatible.
+Wanted: DaemonRequestContext{jvmCriteria=/opt/homebrew/Cellar/openjdk@21/21.0.10/libexec/openjdk.jdk/Contents/Home (no JDK specified, using current Java home), daemonOpts=[-Xmx2048M, -Dfile.encoding=UTF-8, -Duser.country=US, -Duser.language=en, -Duser.variant], applyInstrumentationAgent=true, nativeServicesMode=ENABLED, priority=NORMAL}
+Actual: DefaultDaemonContext[uid=63e8de2c-106e-4437-9cde-1d34e0c00060,javaHome=/Applications/Android Studio.app/Contents/jbr/Contents/Home,javaVersion=21,javaVendor=JetBrains s.r.o.,daemonRegistryDir=/Users/mike/.gradle/daemon,pid=5761,idleTimeout=10800000,priority=NORMAL,applyInstrumentationAgent=true,nativeServicesMode=ENABLED,daemonOpts=-Xmx2048M,-Dfile.encoding=UTF-8,-Duser.country=US,-Duser.language=en,-Duser.variant]
+
+  Looking for a different daemon...
+Found daemon DaemonInfo{pid=6385, address=[b44e189d-4382-4f52-acd5-4c0404ed6e66 port:50531, addresses:[/127.0.0.1]], state=Idle, lastBusy=1769796665823, context=DefaultDaemonContext[uid=fc8071f8-4d22-44bc-ad36-ad71dd8718c5,javaHome=/Users/mike/.antigravity/extensions/redhat.java-1.52.0-darwin-arm64/jre/21.0.9-macosx-aarch64,javaVersion=21,javaVendor=Eclipse Adoptium,daemonRegistryDir=/Users/mike/.gradle/daemon,pid=6385,idleTimeout=10800000,priority=NORMAL,applyInstrumentationAgent=true,nativeServicesMode=ENABLED,daemonOpts=-Xmx2048M,-Dfile.encoding=UTF-8,-Duser.country=US,-Duser.language=en,-Duser.variant]} however its context does not match the desired criteria.
+JVM is incompatible.
+Wanted: DaemonRequestContext{jvmCriteria=/opt/homebrew/Cellar/openjdk@21/21.0.10/libexec/openjdk.jdk/Contents/Home (no JDK specified, using current Java home), daemonOpts=[-Xmx2048M, -Dfile.encoding=UTF-8, -Duser.country=US, -Duser.language=en, -Duser.variant], applyInstrumentationAgent=true, nativeServicesMode=ENABLED, priority=NORMAL}
+Actual: DefaultDaemonContext[uid=fc8071f8-4d22-44bc-ad36-ad71dd8718c5,javaHome=/Users/mike/.antigravity/extensions/redhat.java-1.52.0-darwin-arm64/jre/21.0.9-macosx-aarch64,javaVersion=21,javaVendor=Eclipse Adoptium,daemonRegistryDir=/Users/mike/.gradle/daemon,pid=6385,idleTimeout=10800000,priority=NORMAL,applyInstrumentationAgent=true,nativeServicesMode=ENABLED,daemonOpts=-Xmx2048M,-Dfile.encoding=UTF-8,-Duser.country=US,-Duser.language=en,-Duser.variant]
+
+  Looking for a different daemon...
+The client will now receive all logging from the daemon (pid: 6387). The daemon log file: /Users/mike/.gradle/daemon/8.13/daemon-6387.out.log
+Starting 15th build in daemon [uptime: 8 mins 7.358 secs, performance: 99%, GC rate: 0.00/s, heap usage: 1% of 2 GiB]
+Using 10 worker leases.
+Now considering [/Users/mike/Root/Development/Zensi-KMP-App] as hierarchies to watch
+Watching the file system is configured to be enabled if available
+File system watching is active
+Starting Build
+Settings evaluated using settings file '/Users/mike/Root/Development/Zensi-KMP-App/settings.gradle.kts'.
+Type-safe project accessors is an incubating feature.
+Projects loaded. Root project using build file '/Users/mike/Root/Development/Zensi-KMP-App/build.gradle.kts'.
+Included projects: [root project 'Zensi-Kmp-App', project ':composeApp']
+
+> Configure project :
+Evaluating root project 'Zensi-Kmp-App' using build file '/Users/mike/Root/Development/Zensi-KMP-App/build.gradle.kts'.
+Resolved plugin [id: 'com.android.application', version: '8.13.2', apply: false]
+Resolved plugin [id: 'com.android.library', version: '8.13.2', apply: false]
+Resolved plugin [id: 'org.jetbrains.kotlin.plugin.compose', version: '2.0.21', apply: false]
+Resolved plugin [id: 'org.jetbrains.compose', version: '1.7.0', apply: false]
+Resolved plugin [id: 'org.jetbrains.kotlin.multiplatform', version: '2.0.21', apply: false]
+Resolved plugin [id: 'com.google.devtools.ksp', version: '2.0.21-1.0.25', apply: false]
+Resolved plugin [id: 'androidx.room', version: '2.7.0-alpha11', apply: false]
+
+> Configure project :composeApp
+Evaluating project ':composeApp' using build file '/Users/mike/Root/Development/Zensi-KMP-App/composeApp/build.gradle.kts'.
+Resolved plugin [id: 'org.jetbrains.kotlin.multiplatform', version: '2.0.21']
+Resolved plugin [id: 'com.android.application', version: '8.13.2']
+Resolved plugin [id: 'org.jetbrains.compose', version: '1.7.0']
+Resolved plugin [id: 'org.jetbrains.kotlin.plugin.compose', version: '2.0.21']
+Resolved plugin [id: 'org.jetbrains.kotlin.plugin.serialization', version: '2.0.21']
+Resolved plugin [id: 'com.google.devtools.ksp', version: '2.0.21-1.0.25']
+Resolved plugin [id: 'androidx.room', version: '2.7.0-alpha11']
+Using Kotlin Gradle Plugin gradle85 variant
+Using default execution profile
+Configure multi-module compose resources
+Configure compose resources generation
+Configure Res class generation for commonMain
+Configure resource accessors generation for commonMain
+Configure resource accessors generation for commonTest
+Configure expect resource collectors generation for commonMain
+Configure resource accessors generation for androidInstrumentedTest
+Configure resource accessors generation for androidMain
+Configure resource accessors generation for androidUnitTest
+Configure actual resource collectors generation for androidMain
+Configure resource accessors generation for iosX64Main
+Configure resource accessors generation for iosX64Test
+Configure actual resource collectors generation for iosX64Main
+Configure main resources for 'iosX64' target
+Configure KMP component publication for 'iosX64'
+Collect resolved main resources for 'iosX64'
+Configure test resources for 'iosX64' target
+Configure resource accessors generation for iosArm64Main
+Configure resource accessors generation for iosArm64Test
+Configure actual resource collectors generation for iosArm64Main
+Configure main resources for 'iosArm64' target
+Configure KMP component publication for 'iosArm64'
+Collect resolved main resources for 'iosArm64'
+Configure test resources for 'iosArm64' target
+Configure resource accessors generation for iosSimulatorArm64Main
+Configure resource accessors generation for iosSimulatorArm64Test
+Configure actual resource collectors generation for iosSimulatorArm64Main
+Configure main resources for 'iosSimulatorArm64' target
+Configure KMP component publication for 'iosSimulatorArm64'
+Collect resolved main resources for 'iosSimulatorArm64'
+Configure test resources for 'iosSimulatorArm64' target
+Configure resource accessors generation for desktopMain
+kotlin scripting plugin: created the scripting discovery configuration: kotlinScriptDef
+Configure resource accessors generation for desktopTest
+kotlin scripting plugin: created the scripting discovery configuration: testKotlinScriptDef
+Configure actual resource collectors generation for desktopMain
+Configure main resources for 'desktop' target
+Configure test resources for 'desktop' target
+Configure resource accessors generation for nativeMain
+The 'ksp' configuration is deprecated in Kotlin Multiplatform projects. Please use target-specific configurations like 'kspJvm' instead.
+Configure debug resources for 'android' target
+Configure debugAndroidTest resources for 'android' target
+Configure release resources for 'android' target
+Configure resource accessors generation for androidInstrumentedTestDebug
+Configure resource accessors generation for androidUnitTestDebug
+Configure resource accessors generation for androidDebug
+Configure resource accessors generation for androidUnitTestRelease
+Configure resource accessors generation for androidRelease
+Detected Android Gradle Plugin compose compiler configuration
+Detected Android Gradle Plugin compose compiler configuration
+Detected Android Gradle Plugin compose compiler configuration
+Detected Android Gradle Plugin compose compiler configuration
+Detected Android Gradle Plugin compose compiler configuration
+Detected Android Gradle Plugin compose compiler configuration
+Detected Android Gradle Plugin compose compiler configuration
+Detected Android Gradle Plugin compose compiler configuration
+Detected Android Gradle Plugin compose compiler configuration
+Check that new 'org.jetbrains.kotlin.plugin.compose' was applied
+Detected Android Gradle Plugin compose compiler configuration
+Detected Android Gradle Plugin compose compiler configuration
+Detected Android Gradle Plugin compose compiler configuration
+Detected Android Gradle Plugin compose compiler configuration
+Detected Android Gradle Plugin compose compiler configuration
+Configure resource accessors generation for appleMain
+Configure resource accessors generation for iosMain
+Configure resource accessors generation for nativeTest
+Configure resource accessors generation for appleTest
+Configure resource accessors generation for iosTest
+Detected Android Gradle Plugin compose compiler configuration
+Detected Android Gradle Plugin compose compiler configuration
+Detected Android Gradle Plugin compose compiler configuration
+Detected Android Gradle Plugin compose compiler configuration
+w: Kotlin Multiplatform <-> Android Gradle Plugin compatibility issue:
+The applied Android Gradle Plugin version (8.13.2) is higher 
+than the maximum known to the Kotlin Gradle Plugin.
+Tooling stability in such configuration isn't tested, please report encountered issues to https://kotl.in/issue
+
+Minimum supported Android Gradle Plugin version: 7.1
+Maximum tested Android Gradle Plugin version: 8.5
+
+To suppress this message add 'kotlin.mpp.androidGradlePluginCompatibility.nowarn=true' to your gradle.properties
+
+All projects evaluated.
+Task path ':composeApp:kspCommonMainKotlinMetadata' matched project ':composeApp'
+Task name matched 'kspCommonMainKotlinMetadata'
+Selected primary task 'kspCommonMainKotlinMetadata' from project :composeApp
+Tasks to be executed: [task ':composeApp:checkKotlinGradlePluginConfigurationErrors', task ':composeApp:generateComposeResClass', task ':composeApp:generateExpectResourceCollectorsForCommonMain', task ':composeApp:convertXmlValueResourcesForCommonMain', task ':composeApp:copyNonXmlValueResourcesForCommonMain', task ':composeApp:prepareComposeResourcesTaskForCommonMain', task ':composeApp:generateResourceAccessorsForCommonMain', task ':composeApp:transformCommonMainDependenciesMetadata', task ':composeApp:kspCommonMainKotlinMetadata', task ':composeApp:copyRoomSchemas']
+Tasks that were excluded: []
+Resolve mutations for :composeApp:checkKotlinGradlePluginConfigurationErrors (Thread[#916,Execution worker,5,main]) started.
+:composeApp:checkKotlinGradlePluginConfigurationErrors (Thread[#916,Execution worker,5,main]) started.
+
+> Task :composeApp:checkKotlinGradlePluginConfigurationErrors SKIPPED
+Skipping task ':composeApp:checkKotlinGradlePluginConfigurationErrors' as task onlyIf 'errorDiagnostics are present' is false.
+Resolve mutations for :composeApp:generateComposeResClass (Thread[#916,Execution worker,5,main]) started.
+:composeApp:generateComposeResClass (Thread[#916,Execution worker,5,main]) started.
+
+> Task :composeApp:generateComposeResClass UP-TO-DATE
+Caching disabled for task ':composeApp:generateComposeResClass' because:
+  Build cache is disabled
+  Caching has not been enabled for the task
+Skipping task ':composeApp:generateComposeResClass' as it is up-to-date.
+Resolve mutations for :composeApp:generateExpectResourceCollectorsForCommonMain (Thread[#916,Execution worker,5,main]) started.
+:composeApp:generateExpectResourceCollectorsForCommonMain (Thread[#916,Execution worker,5,main]) started.
+
+> Task :composeApp:generateExpectResourceCollectorsForCommonMain UP-TO-DATE
+Caching disabled for task ':composeApp:generateExpectResourceCollectorsForCommonMain' because:
+  Build cache is disabled
+  Caching has not been enabled for the task
+Skipping task ':composeApp:generateExpectResourceCollectorsForCommonMain' as it is up-to-date.
+Resolve mutations for :composeApp:convertXmlValueResourcesForCommonMain (Thread[#916,Execution worker,5,main]) started.
+:composeApp:convertXmlValueResourcesForCommonMain (Thread[#916,Execution worker,5,main]) started.
+
+> Task :composeApp:convertXmlValueResourcesForCommonMain UP-TO-DATE
+Caching disabled for task ':composeApp:convertXmlValueResourcesForCommonMain' because:
+  Build cache is disabled
+  Caching has not been enabled for the task
+Skipping task ':composeApp:convertXmlValueResourcesForCommonMain' as it is up-to-date.
+Resolve mutations for :composeApp:copyNonXmlValueResourcesForCommonMain (Thread[#916,Execution worker,5,main]) started.
+:composeApp:copyNonXmlValueResourcesForCommonMain (Thread[#916,Execution worker,5,main]) started.
+
+> Task :composeApp:copyNonXmlValueResourcesForCommonMain UP-TO-DATE
+Caching disabled for task ':composeApp:copyNonXmlValueResourcesForCommonMain' because:
+  Build cache is disabled
+  Caching has not been enabled for the task
+Skipping task ':composeApp:copyNonXmlValueResourcesForCommonMain' as it is up-to-date.
+Resolve mutations for :composeApp:prepareComposeResourcesTaskForCommonMain (Thread[#916,Execution worker,5,main]) started.
+:composeApp:prepareComposeResourcesTaskForCommonMain (Thread[#916,Execution worker,5,main]) started.
+
+> Task :composeApp:prepareComposeResourcesTaskForCommonMain UP-TO-DATE
+Caching disabled for task ':composeApp:prepareComposeResourcesTaskForCommonMain' because:
+  Build cache is disabled
+  Caching has not been enabled for the task
+Skipping task ':composeApp:prepareComposeResourcesTaskForCommonMain' as it is up-to-date.
+Resolve mutations for :composeApp:generateResourceAccessorsForCommonMain (Thread[#916,Execution worker,5,main]) started.
+:composeApp:generateResourceAccessorsForCommonMain (Thread[#916,Execution worker,5,main]) started.
+
+> Task :composeApp:generateResourceAccessorsForCommonMain UP-TO-DATE
+Caching disabled for task ':composeApp:generateResourceAccessorsForCommonMain' because:
+  Build cache is disabled
+  Caching has not been enabled for the task
+Skipping task ':composeApp:generateResourceAccessorsForCommonMain' as it is up-to-date.
+Resolve mutations for :composeApp:transformCommonMainDependenciesMetadata (Thread[#916,Execution worker,5,main]) started.
+:composeApp:transformCommonMainDependenciesMetadata (Thread[#916,Execution worker,5,main]) started.
+
+> Task :composeApp:transformCommonMainDependenciesMetadata UP-TO-DATE
+Caching disabled for task ':composeApp:transformCommonMainDependenciesMetadata' because:
+  Build cache is disabled
+  Metadata Dependency Transformation Task doesn't benefit from caching as it doesn't have heavy load
+Skipping task ':composeApp:transformCommonMainDependenciesMetadata' as it is up-to-date.
+Resolve mutations for :composeApp:kspCommonMainKotlinMetadata (Thread[#916,Execution worker,5,main]) started.
+:composeApp:kspCommonMainKotlinMetadata (Thread[#916,Execution worker,5,main]) started.
+
+> Task :composeApp:kspCommonMainKotlinMetadata FAILED
+Caching disabled for task ':composeApp:kspCommonMainKotlinMetadata' because:
+  Build cache is disabled
+Task ':composeApp:kspCommonMainKotlinMetadata' is not up-to-date because:
+  Task has failed previously.
+The input changes require a full rebuild for incremental task ':composeApp:kspCommonMainKotlinMetadata'.
+w: KLIB resolver: Skipping '/Users/mike/Root/Development/Zensi-KMP-App/composeApp/build/kotlinTransformedMetadataLibraries/commonMain/org.jetbrains.kotlin-kotlin-stdlib-2.1.0-commonMain-ITmP6A.klib'. Incompatible ABI version. The current default is '1.8.0', found '1.201.0'. The library was produced by '2.1.0-dev-7621' compiler.
+e: KLIB resolver: Could not find "/Users/mike/Root/Development/Zensi-KMP-App/composeApp/build/kotlinTransformedMetadataLibraries/commonMain/org.jetbrains.kotlin-kotlin-stdlib-2.1.0-commonMain-ITmP6A.klib" in [/Users/mike/Library/Application Support/kotlin/daemon]
+Finished executing kotlin compiler using DAEMON strategy
+Resolve mutations for :composeApp:copyRoomSchemas (Thread[#919,Execution worker Thread 4,5,main]) started.
+:composeApp:copyRoomSchemas (Thread[#919,Execution worker Thread 4,5,main]) started.
+
+> Task :composeApp:copyRoomSchemas NO-SOURCE
+Skipping task ':composeApp:copyRoomSchemas' as it has no source files and no previous output files.
+
+[Incubating] Problems report is available at: file:///Users/mike/Root/Development/Zensi-KMP-App/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':composeApp:kspCommonMainKotlinMetadata'.
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+   > Compilation error. See log for more details
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.13/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 669ms
+8 actionable tasks: 1 executed, 7 up-to-date
+Watched directory hierarchies: [/Users/mike/Root/Development/Zensi-KMP-App]

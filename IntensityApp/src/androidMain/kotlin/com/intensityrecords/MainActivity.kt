@@ -1,0 +1,24 @@
+package com.intensityrecord
+
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import com.intensityrecord.app.App
+
+
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        setContent {
+            //App( engine = remember { OkHttp.create()})
+            App()
+        }
+    }
+}
+
+//@Preview
+//@Composable
+//fun AppAndroidPreview() {
+//    App( engine = remember {OkHttp.create()})})
+//}

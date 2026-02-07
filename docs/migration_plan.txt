@@ -1,0 +1,462 @@
+│ Zensi Android App -> KMP Migration Plan                                                                        │
+│                                                                                                                │
+│ Overview                                                                                                       │
+│                                                                                                                │
+│ Migrate the Zensi IoT bed-sensor monitoring Android app (Java, Volley, XML layouts) to Kotlin Multiplatform    │
+│ (Compose Multiplatform, Ktor, Koin) targeting Android + iOS. Follow the MVI architecture established in the    │
+│ existing KMP project's book feature.                                                                           │
+│                                                                                                                │
+│ The book feature will be kept as architectural reference.                                                      │
+│                                                                                                                │
+│ Platform-specific features (Firebase, background services, wake locks) are deferred to a later phase.          │
+│                                                                                                                │
+│ ---                                                                                                            │
+│ Phase 1: Domain Models (Kotlin data classes)                                                                   │
+│                                                                                                                │
+│ Convert all Java models from com.intensityrecord.models to Kotlin @Serializable data classes in commonMain. Use       │
+│ @SerialName for JSON field mapping (replaces Gson's @SerializedName).                                          │
+│                                                                                                                │
+│ Files to create under composeApp/src/commonMain/kotlin/be/zensi/app/sensor/domain/:                            │
+│ New File: SensorData.kt                                                                                        │
+│ Source Java File: models/SensorData.java                                                                       │
+│ Key Fields: displayName, padId, padIdLabel, latest, status, alertTriggered, monitorOn, timeSlots 1-5,          │
+│   alertTimeIdx, alertTimeLabels, repeatAlarmUntilSeen                                                          │
+│ ────────────────────────────────────────                                                                       │
+│ New File: Status.kt                                                                                            │
+│ Source Java File: models/Status.java                                                                           │
+│ Key Fields: result, plugins, user, numSensors, alertTimeColors, buttonStatusColors, data (nested HashMap)      │
+│ ────────────────────────────────────────                                                                       │
+│ New File: AppParameters.kt                                                                                     │
+│ Source Java File: models/AppParameters.java                                                                    │
+│ Key Fields: pollingSecs, servicePollingSecs, disconnectServiceSecs, snoozeSecs, telemetrySecs                  │
+│ ────────────────────────────────────────                                                                       │
+│ New File: SensorSettings.kt                                                                                    │
+│ Source Java File: models/SensorSettings.java                                                                   │
+│ Key Fields: padId, displayName, isMonitoringActive, timeSlots, alertTimeIdx, repeatAlarmUntilSeen, deviceId    │
+│ Files to create under composeApp/src/commonMain/kotlin/be/zensi/app/sensor/data/dto/:                          │
+│ ┌────────────────────────────────────┬──────────────────────────────────────────────────────────┐              │
+│ │              New File              │                     Source Java File                     │              │
+│ ├────────────────────────────────────┼──────────────────────────────────────────────────────────┤              │
+│ │ AuthRequestDto.kt                  │ models/AuthRequest.java                                  │              │
+│ ├────────────────────────────────────┼──────────────────────────────────────────────────────────┤              │
+│ │ AuthResponseDto.kt                 │ models/AuthResponse.java                                 │              │
+│ ├────────────────────────────────────┼──────────────────────────────────────────────────────────┤              │
+│ │ StatusResponseDto.kt               │ models/StatusResponse.java + models/Status.java (merged) │              │
+│ ├────────────────────────────────────┼──────────────────────────────────────────────────────────┤              │
+│ │ SensorSettingsChangeResponseDto.kt │ models/SensorSettingsChangeResponse.java                 │              │
+│ ├────────────────────────────────────┼──────────────────────────────────────────────────────────┤              │
+│ │ UserActionDto.kt                   │ models/UserAction.java                                   │              │
+│ ├────────────────────────────────────┼──────────────────────────────────────────────────────────┤              │
+│ │ UserActionResponseDto.kt           │ models/UserActionResponse.java                           │              │
+│ ├────────────────────────────────────┼──────────────────────────────────────────────────────────┤              │
+│ │ TelemetryDto.kt                    │ models/Telemetry.java                                    │              │
+│ ├────────────────────────────────────┼──────────────────────────────────────────────────────────┤              │
+│ │ TelemetryResponseDto.kt            │ models/TelemetryResponse.java                            │              │
+│ ├────────────────────────────────────┼──────────────────────────────────────────────────────────┤              │
+│ │ LogoResponseDto.kt                 │ models/LogoResponse.java                                 │              │
+│ ├────────────────────────────────────┼──────────────────────────────────────────────────────────┤              │
+│ │ TimeSlotsResponseDto.kt            │ models/TimeSlotsResponse.java                            │              │
+│ ├────────────────────────────────────┼──────────────────────────────────────────────────────────┤              │
+│ │ PinResponseDto.kt                  │ models/PinResponse.java                                  │              │
+│ ├────────────────────────────────────┼──────────────────────────────────────────────────────────┤              │
+│ │ FirebaseDeviceTokenDto.kt          │ models/FirebaseDeviceToken.java                          │              │
+│ └────────────────────────────────────┴──────────────────────────────────────────────────────────┘              │
+│ Files to create under composeApp/src/commonMain/kotlin/be/zensi/app/sensor/domain/:                            │
+│ New File: SensorRepository.kt                                                                                  │
+│ Purpose: Interface - getStatus, changeSensorSettings, calibrate, getChart, getTimeslots, getLogo               │
+│ Files to create under composeApp/src/commonMain/kotlin/be/zensi/app/core/domain/:                              │
+│ ┌─────────────────┬─────────────────────────────────────────────────────────────────────────────────────────┐  │
+│ │    New File     │                                         Purpose                                         │  │
+│ ├─────────────────┼─────────────────────────────────────────────────────────────────────────────────────────┤  │
+│ │ SensorStatus.kt │ Enum: Occupied, Standby, Undetected, BeforeFirst, BeforeSecond, BeforeThird, AfterThird │  │
+│ └─────────────────┴─────────────────────────────────────────────────────────────────────────────────────────┘  │
+│ ---                                                                                                            │
+│ Phase 2: Network Layer (Ktor replaces Volley)                                                                  │
+│                                                                                                                │
+│ Replace Volley + Gson with Ktor + Kotlinx Serialization.                                                       │
+│                                                                                                                │
+│ Files to create under composeApp/src/commonMain/kotlin/be/zensi/app/sensor/data/network/:                      │
+│ New File: ZensiApi.kt                                                                                          │
+│ Replaces: api/NetworkCalls.java                                                                                │
+│ Purpose: Interface defining all API calls as suspend functions                                                 │
+│ ────────────────────────────────────────                                                                       │
+│ New File: KtorZensiApi.kt                                                                                      │
+│ Replaces: api/NetworkCalls.java + api/APIManager.java                                                          │
+│ Purpose: Ktor implementation of ZensiApi                                                                       │
+│ API Endpoints to implement:                                                                                    │
+│                                                                                                                │
+│ POST api-token-auth/            -> login(username, password): AuthResponseDto                                  │
+│ GET  api/v2/status/             -> getStatus(deviceId): StatusResponseDto                                      │
+│ POST api/v3/sc/                 -> changeSensorSettings(settings): SensorSettingsChangeResponseDto             │
+│ POST api/v3/ui/                 -> sendUserAction(action): UserActionResponseDto                               │
+│ POST api/v2/retare/             -> calibrateSensor(padId): UserActionResponseDto                               │
+│ GET  api/v2/logo/               -> getLogo(): LogoResponseDto                                                  │
+│ GET  api/v2/timeslots/          -> getTimeslots(): TimeSlotsResponseDto                                        │
+│ GET  api/v2/appchart/{sensorId} -> getChart(sensorId): String (raw HTML)                                       │
+│ GET  api/v3/pincode/            -> getUserPin(): PinResponseDto                                                │
+│                                                                                                                │
+│ Files to create under composeApp/src/commonMain/kotlin/be/zensi/app/sensor/data/repository/:                   │
+│ ┌────────────────────────────┬────────────────────────────────────────────────┐                                │
+│ │          New File          │                    Purpose                     │                                │
+│ ├────────────────────────────┼────────────────────────────────────────────────┤                                │
+│ │ DefaultSensorRepository.kt │ Implements SensorRepository, uses KtorZensiApi │                                │
+│ └────────────────────────────┴────────────────────────────────────────────────┘                                │
+│ Endpoint resolution logic (from AppConfig.java):                                                               │
+│ - Create composeApp/src/commonMain/kotlin/be/zensi/app/core/data/ApiEndpointResolver.kt                        │
+│ - Route Anima clients to https://anima.zensi.be/, others to https://app.zensi.be/                              │
+│                                                                                                                │
+│ Modify existing:                                                                                               │
+│ - HttpClientFactory.kt - Ensure Auth plugin injects Token {token} header (not Bearer)                          │
+│                                                                                                                │
+│ ---                                                                                                            │
+│ Phase 3: Preferences / Local Storage                                                                           │
+│                                                                                                                │
+│ Replace Android SharedPreferences with multiplatform-settings (already in the project).                        │
+│                                                                                                                │
+│ Files to create under composeApp/src/commonMain/kotlin/be/zensi/app/core/data/:                                │
+│ New File: ZensiPreferences.kt                                                                                  │
+│ Replaces: PreferencesManager.java                                                                              │
+│ Purpose: Token, credentials, logo URL, time slots, columns, sound/vibrate, pin, snooze state                   │
+│ Uses com.russhwolf.settings.Settings (already a dependency).                                                   │
+│                                                                                                                │
+│ ---                                                                                                            │
+│ Phase 4: Views -> Compose Screens (Priority: migrate in this order)                                            │
+│                                                                                                                │
+│ 4.1 Login Screen (adapt existing)                                                                              │
+│                                                                                                                │
+│ The KMP project already has a LoginView. Adapt it for Zensi:                                                   │
+│                                                                                                                │
+│ Modify:                                                                                                        │
+│ - auth/presentation/LoginView.kt - Add Zensi branding (large "Zensi" title, gradient background), "Try a demo" │
+│  link, version label                                                                                           │
+│ - auth/presentation/LoginViewModel.kt - Wire up actual API login via ZensiApi, store token via                 │
+│ ZensiPreferences, handle demo mode detection                                                                   │
+│ - auth/presentation/LoginState.kt - Add showDemoLink: Boolean, versionName: String                             │
+│ - auth/presentation/LoginAction.kt - Add DemoLinkClicked                                                       │
+│                                                                                                                │
+│ 4.2 Dashboard / Main Screen (NEW - replaces MainActivity)                                                      │
+│                                                                                                                │
+│ The core screen: a grid of sensor status cards with polling.                                                   │
+│                                                                                                                │
+│ Files to create under composeApp/src/commonMain/kotlin/be/zensi/app/sensor/presentation/dashboard/:            │
+│ New File: DashboardViewModel.kt                                                                                │
+│ Purpose: MVI ViewModel - polls status, manages sensor list, handles alarm triggers                             │
+│ ────────────────────────────────────────                                                                       │
+│ New File: DashboardState.kt                                                                                    │
+│ Purpose: Data class: sensorList, lastUpdateTime, userName, logoUrl, isLoading, connectionLost, isDemoMode,     │
+│   columns                                                                                                      │
+│ ────────────────────────────────────────                                                                       │
+│ New File: DashboardAction.kt                                                                                   │
+│ Purpose: Sealed interface: OnSensorClick, OnSensorLongClick, OnSettingsClick, OnRefresh                        │
+│ ────────────────────────────────────────                                                                       │
+│ New File: DashboardScreenRoot.kt                                                                               │
+│ Purpose: Collects state from ViewModel                                                                         │
+│ ────────────────────────────────────────                                                                       │
+│ New File: DashboardScreen.kt                                                                                   │
+│ Purpose: Stateless composable: top bar (user, logo, settings button), LazyVerticalGrid of SensorCards, bottom  │
+│   status bar                                                                                                   │
+│ Reusable components under composeApp/src/commonMain/kotlin/be/zensi/app/sensor/presentation/components/:       │
+│ New File: SensorCard.kt                                                                                        │
+│ Replaces: RecyclerViewStatusAdapter + cardview_sensor.xml                                                      │
+│ Purpose: Single sensor tile: colored background, display name, elapsed time, alert indicator dot, blinking     │
+│   animation for alerts                                                                                         │
+│ ────────────────────────────────────────                                                                       │
+│ New File: StatusBottomBar.kt                                                                                   │
+│ Replaces: Bottom textViewLastUpdate area                                                                       │
+│ Purpose: Shows last update timestamp or "Connection lost"                                                      │
+│ ────────────────────────────────────────                                                                       │
+│ New File: TopBar.kt                                                                                            │
+│ Replaces: Top area of activity_main.xml                                                                        │
+│ Purpose: User label, logo image, settings button                                                               │
+│ ────────────────────────────────────────                                                                       │
+│ New File: AlarmDialog.kt                                                                                       │
+│ Replaces: AlarmDialog.java                                                                                     │
+│ Purpose: Compose dialog for sensor alarm alerts                                                                │
+│ ────────────────────────────────────────                                                                       │
+│ New File: DisconnectedDialog.kt                                                                                │
+│ Replaces: DisconnectedDialog.java                                                                              │
+│ Purpose: Compose dialog for connection loss                                                                    │
+│ ────────────────────────────────────────                                                                       │
+│ New File: PinDialog.kt                                                                                         │
+│ Replaces: PinDialog.java                                                                                       │
+│ Purpose: PIN entry dialog for protected settings                                                               │
+│ 4.3 Sensor Preferences Screen (NEW - replaces SensorPreferencesActivity)                                       │
+│                                                                                                                │
+│ Files to create under composeApp/src/commonMain/kotlin/be/zensi/app/sensor/presentation/sensor_settings/:      │
+│ New File: SensorSettingsViewModel.kt                                                                           │
+│ Purpose: MVI ViewModel - loads/saves sensor settings via API                                                   │
+│ ────────────────────────────────────────                                                                       │
+│ New File: SensorSettingsState.kt                                                                               │
+│ Purpose: displayName, monitorOn, timeSlots, alertTimeIdx, alertTimeLabels, repeatAlarm, chartEnabled,          │
+│   calibrateEnabled, isLoading, pinRequired                                                                     │
+│ ────────────────────────────────────────                                                                       │
+│ New File: SensorSettingsAction.kt                                                                              │
+│ Purpose: Sealed interface: ToggleMonitor, ToggleTimeSlot, ChangeAlertTime, ToggleRepeatAlarm, RenameDisplay,   │
+│   OpenChart, OpenCalibrate, Save                                                                               │
+│ ────────────────────────────────────────                                                                       │
+│ New File: SensorSettingsScreenRoot.kt                                                                          │
+│ Purpose: State collection                                                                                      │
+│ ────────────────────────────────────────                                                                       │
+│ New File: SensorSettingsScreen.kt                                                                              │
+│ Purpose: Compose settings form: switches, dropdowns, threshold selector, action buttons                        │
+│ 4.4 Calibration Screen (NEW - replaces CalibrateActivity + RecalibrateFragment)                                │
+│                                                                                                                │
+│ Files to create under composeApp/src/commonMain/kotlin/be/zensi/app/sensor/presentation/calibrate/:            │
+│ ┌────────────────────────┬──────────────────────────────────────────────────────────────────────────────┐      │
+│ │        New File        │                                   Purpose                                    │      │
+│ ├────────────────────────┼──────────────────────────────────────────────────────────────────────────────┤      │
+│ │ CalibrateViewModel.kt  │ MVI ViewModel - manages step progression, calls calibrate API                │      │
+│ ├────────────────────────┼──────────────────────────────────────────────────────────────────────────────┤      │
+│ │ CalibrateState.kt      │ currentStep (0-5), isCalibrating, isError, isSuccess, sensorPadId            │      │
+│ ├────────────────────────┼──────────────────────────────────────────────────────────────────────────────┤      │
+│ │ CalibrateAction.kt     │ Next, Previous, Cancel, DoCalibrate, Finish                                  │      │
+│ ├────────────────────────┼──────────────────────────────────────────────────────────────────────────────┤      │
+│ │ CalibrateScreenRoot.kt │ State collection                                                             │      │
+│ ├────────────────────────┼──────────────────────────────────────────────────────────────────────────────┤      │
+│ │ CalibrateScreen.kt     │ Multi-step wizard with step indicator dots, step content, navigation buttons │      │
+│ └────────────────────────┴──────────────────────────────────────────────────────────────────────────────┘      │
+│ 4.5 Chart Screen (NEW - replaces ChartActivity)                                                                │
+│                                                                                                                │
+│ Files to create under composeApp/src/commonMain/kotlin/be/zensi/app/sensor/presentation/chart/:                │
+│ New File: ChartViewModel.kt                                                                                    │
+│ Purpose: Loads chart HTML from API                                                                             │
+│ ────────────────────────────────────────                                                                       │
+│ New File: ChartState.kt                                                                                        │
+│ Purpose: htmlContent, isLoading, error, sensorName                                                             │
+│ ────────────────────────────────────────                                                                       │
+│ New File: ChartAction.kt                                                                                       │
+│ Purpose: OnBackClick                                                                                           │
+│ ────────────────────────────────────────                                                                       │
+│ New File: ChartScreenRoot.kt                                                                                   │
+│ Purpose: State collection                                                                                      │
+│ ────────────────────────────────────────                                                                       │
+│ New File: ChartScreen.kt                                                                                       │
+│ Purpose: Platform-specific WebView rendering (expect/actual for Android WebView vs iOS WKWebView)              │
+│ 4.6 App Preferences Screen (NEW - replaces AppPreferencesActivity)                                             │
+│                                                                                                                │
+│ Files to create under composeApp/src/commonMain/kotlin/be/zensi/app/sensor/presentation/app_settings/:         │
+│ ┌──────────────────────────┬───────────────────────────────────────────────────────────────┐                   │
+│ │         New File         │                            Purpose                            │                   │
+│ ├──────────────────────────┼───────────────────────────────────────────────────────────────┤                   │
+│ │ AppSettingsViewModel.kt  │ Reads/writes preferences                                      │                   │
+│ ├──────────────────────────┼───────────────────────────────────────────────────────────────┤                   │
+│ │ AppSettingsState.kt      │ numColumns, soundEnabled, vibrateEnabled                      │                   │
+│ ├──────────────────────────┼───────────────────────────────────────────────────────────────┤                   │
+│ │ AppSettingsAction.kt     │ ChangeColumns, ToggleSound, ToggleVibrate, Logout, OpenManual │                   │
+│ ├──────────────────────────┼───────────────────────────────────────────────────────────────┤                   │
+│ │ AppSettingsScreenRoot.kt │ State collection                                              │                   │
+│ ├──────────────────────────┼───────────────────────────────────────────────────────────────┤                   │
+│ │ AppSettingsScreen.kt     │ Settings list with controls, logout button                    │                   │
+│ └──────────────────────────┴───────────────────────────────────────────────────────────────┘                   │
+│ 4.7 Demo Explanation Screen (NEW - replaces DemoExplanationActivity)                                           │
+│                                                                                                                │
+│ Files to create under composeApp/src/commonMain/kotlin/be/zensi/app/sensor/presentation/demo/:                 │
+│ ┌───────────────────┬───────────────────────────────────────┐                                                  │
+│ │     New File      │                Purpose                │                                                  │
+│ ├───────────────────┼───────────────────────────────────────┤                                                  │
+│ │ DemoViewModel.kt  │ Manages demo step progression         │                                                  │
+│ ├───────────────────┼───────────────────────────────────────┤                                                  │
+│ │ DemoState.kt      │ currentStep, steps content            │                                                  │
+│ ├───────────────────┼───────────────────────────────────────┤                                                  │
+│ │ DemoAction.kt     │ Next, Previous, RequestDemo           │                                                  │
+│ ├───────────────────┼───────────────────────────────────────┤                                                  │
+│ │ DemoScreenRoot.kt │ State collection                      │                                                  │
+│ ├───────────────────┼───────────────────────────────────────┤                                                  │
+│ │ DemoScreen.kt     │ Paged walkthrough with dots indicator │                                                  │
+│ └───────────────────┴───────────────────────────────────────┘                                                  │
+│ ---                                                                                                            │
+│ Phase 5: Navigation                                                                                            │
+│                                                                                                                │
+│ Modify composeApp/src/commonMain/kotlin/be/zensi/app/app/Route.kt:                                             │
+│                                                                                                                │
+│ sealed interface Route {                                                                                       │
+│     @Serializable data object ZensiGraph : Route                                                               │
+│     @Serializable data object Login : Route                                                                    │
+│     @Serializable data object Dashboard : Route                                                                │
+│     @Serializable data class SensorSettings(val padId: String) : Route                                         │
+│     @Serializable data class Calibrate(val padId: String) : Route                                              │
+│     @Serializable data class Chart(val sensorName: String) : Route                                             │
+│     @Serializable data object AppSettings : Route                                                              │
+│     @Serializable data object Demo : Route                                                                     │
+│     // Keep existing book routes                                                                               │
+│     @Serializable data object BookGraph : Route                                                                │
+│     @Serializable data object BookList : Route                                                                 │
+│     @Serializable data class BookDetail(val id: String) : Route                                                │
+│ }                                                                                                              │
+│                                                                                                                │
+│ Modify composeApp/src/commonMain/kotlin/be/zensi/app/app/App.kt:                                               │
+│ - Add navigation graph for ZensiGraph with all new screens                                                     │
+│ - Set ZensiGraph as startDestination (Login -> Dashboard flow)                                                 │
+│ - Keep BookGraph as a secondary navigation graph                                                               │
+│                                                                                                                │
+│ ---                                                                                                            │
+│ Phase 6: Dependency Injection                                                                                  │
+│                                                                                                                │
+│ Modify composeApp/src/commonMain/kotlin/be/zensi/app/di/Modules.kt:                                            │
+│                                                                                                                │
+│ Add to sharedModule:                                                                                           │
+│ // Zensi core                                                                                                  │
+│ single { ZensiPreferences(get()) }                                                                             │
+│ single { ApiEndpointResolver(get()) }                                                                          │
+│                                                                                                                │
+│ // Zensi network                                                                                               │
+│ singleOf(::KtorZensiApi).bind<ZensiApi>()                                                                      │
+│ singleOf(::DefaultSensorRepository).bind<SensorRepository>()                                                   │
+│                                                                                                                │
+│ // Zensi ViewModels                                                                                            │
+│ viewModelOf(::DashboardViewModel)                                                                              │
+│ viewModelOf(::SensorSettingsViewModel)                                                                         │
+│ viewModelOf(::CalibrateViewModel)                                                                              │
+│ viewModelOf(::ChartViewModel)                                                                                  │
+│ viewModelOf(::AppSettingsViewModel)                                                                            │
+│ viewModelOf(::DemoViewModel)                                                                                   │
+│                                                                                                                │
+│ ---                                                                                                            │
+│ Phase 7: Theming & Assets                                                                                      │
+│                                                                                                                │
+│ Files to modify:                                                                                               │
+│ - core/presentation/Colors.kt - Add Zensi brand colors from colors.xml: colorPrimary (#00b0f0), sensor status  │
+│ colors (occupied green, standby gray, triggered red/orange/blue), alert level colors                           │
+│ - Copy drawable SVGs/vector assets to commonMain/composeResources/ for sensor icons (bed, sensor states,       │
+│ check/error marks)                                                                                             │
+│                                                                                                                │
+│ ---                                                                                                            │
+│ Implementation Order                                                                                           │
+│                                                                                                                │
+│ The work will be done in this sequence:                                                                        │
+│                                                                                                                │
+│ 1. Domain models (Phase 1) - All @Serializable data classes                                                    │
+│ 2. Network layer (Phase 2) - ZensiApi + KtorZensiApi + Repository                                              │
+│ 3. Preferences (Phase 3) - ZensiPreferences                                                                    │
+│ 4. Login screen (Phase 4.1) - Adapt existing login for Zensi                                                   │
+│ 5. Dashboard screen (Phase 4.2) - The core screen with sensor grid                                             │
+│ 6. Navigation (Phase 5) - Wire up Login -> Dashboard flow                                                      │
+│ 7. DI (Phase 6) - Register all new components                                                                  │
+│ 8. Sensor settings (Phase 4.3) - Per-sensor configuration                                                      │
+│ 9. Calibration (Phase 4.4) - Multi-step wizard                                                                 │
+│ 10. Chart (Phase 4.5) - WebView with expect/actual                                                             │
+│ 11. App settings (Phase 4.6) - Global preferences                                                              │
+│ 12. Demo (Phase 4.7) - Onboarding walkthrough                                                                  │
+│ 13. Theming (Phase 7) - Brand colors and assets                                                                │
+│                                                                                                                │
+│ ---                                                                                                            │
+│ Files Modified (existing)                                                                                      │
+│ File: app/Route.kt                                                                                             │
+│ Changes: Add ZensiGraph, Dashboard, SensorSettings, Calibrate, Chart, AppSettings, Demo routes                 │
+│ ────────────────────────────────────────                                                                       │
+│ File: app/App.kt                                                                                               │
+│ Changes: Add ZensiGraph navigation with all screens, change startDestination                                   │
+│ ────────────────────────────────────────                                                                       │
+│ File: auth/presentation/LoginView.kt                                                                           │
+│ Changes: Zensi branding, demo link, version label                                                              │
+│ ────────────────────────────────────────                                                                       │
+│ File: auth/presentation/LoginViewModel.kt                                                                      │
+│ Changes: Wire real API login, token storage, demo mode                                                         │
+│ ────────────────────────────────────────                                                                       │
+│ File: auth/presentation/LoginState.kt                                                                          │
+│ Changes: Add showDemoLink, versionName fields                                                                  │
+│ ────────────────────────────────────────                                                                       │
+│ File: auth/presentation/LoginAction.kt                                                                         │
+│ Changes: Add DemoLinkClicked action                                                                            │
+│ ────────────────────────────────────────                                                                       │
+│ File: di/Modules.kt                                                                                            │
+│ Changes: Register all Zensi components                                                                         │
+│ ────────────────────────────────────────                                                                       │
+│ File: core/presentation/Colors.kt                                                                              │
+│ Changes: Add Zensi brand color palette                                                                         │
+│ ────────────────────────────────────────                                                                       │
+│ File: core/data/HttpClientFactory.kt                                                                           │
+│ Changes: Ensure Token-based auth header (not Bearer)                                                           │
+│ Files Created (new) - ~35 files                                                                                │
+│                                                                                                                │
+│ All under composeApp/src/commonMain/kotlin/be/zensi/app/:                                                      │
+│ - sensor/domain/ - 3 files (SensorData, SensorRepository, SensorStatus enum)                                   │
+│ - sensor/data/dto/ - ~12 DTO files                                                                             │
+│ - sensor/data/network/ - 2 files (ZensiApi interface, KtorZensiApi)                                            │
+│ - sensor/data/repository/ - 1 file (DefaultSensorRepository)                                                   │
+│ - sensor/presentation/dashboard/ - 5 files                                                                     │
+│ - sensor/presentation/components/ - 6 files                                                                    │
+│ - sensor/presentation/sensor_settings/ - 5 files                                                               │
+│ - sensor/presentation/calibrate/ - 5 files                                                                     │
+│ - sensor/presentation/chart/ - 5 files                                                                         │
+│ - sensor/presentation/app_settings/ - 5 files                                                                  │
+│ - sensor/presentation/demo/ - 5 files                                                                          │
+│ - core/data/ - 2 files (ZensiPreferences, ApiEndpointResolver)                                                 │
+│                                                                                                                │
+│ Verification                                                                                                   │
+│                                                                                                                │
+│ After each phase:                                                                                              │
+│ 1. Phase 1-3: Build compiles on all targets (./gradlew composeApp:compileKotlinAndroid)                        │
+│ 2. Phase 4.1 + 5 + 6: Login screen renders, can type credentials, login button triggers network call           │
+│ 3. Phase 4.2: Dashboard renders with mock/real sensor data, grid updates on status polling                     │
+│ 4. Phase 4.3-4.7: Each screen navigable and functional                                                         │
+│                                                                                                                │
+│ End-to-end test:                                                                                               │
+│ - Launch app -> Login screen appears with Zensi branding                                                       │
+│ - Enter valid credentials -> Navigate to Dashboard                                                             │
+│ - Dashboard shows sensor grid with color-coded status, updates periodically                                    │
+│ - Tap sensor -> Shows elapsed time toggle                                                                      │
+│ - Long-press sensor -> Navigate to Sensor Settings                                                             │
+│ - Settings button -> Navigate to App Settings                                                                  │
+│ - All screens have back navigation working                                                                     │
+╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+● I'll start by exploring the existing codebase to understand the current structure, then implement the plan phase   by phase. Let me begin with understanding what we have.                                                        
+                                                                                                                  
+● Explore(Explore existing codebase structure)                                                                    
+  ⎿  Waiting…d "C:\Users\micpa\Root\Development\Zensi\CODEBASE\Zensi-KMP-App" -type f -name "*.kt" | head -30)    
+
+ ---                                                                                                             
+  Migration Complete                                                                                                 
+  Here's a summary of everything implemented across all 7 phases:                                                 
+                                                                                                                  
+  Phase 1 - Domain Models (16 files)                                                                              
+
+  - sensor/domain/SensorData.kt - Main sensor data model with elapsed time formatting
+  - sensor/domain/AppParameters.kt - Polling/timeout configuration from server
+  - sensor/domain/SensorSettings.kt - Per-sensor settings for API submission
+  - sensor/domain/SensorRepository.kt - Repository interface
+  - sensor/data/dto/ - 12 DTO files (AuthRequest/Response, StatusResponse, SensorSettingsChangeResponse,
+  UserAction/Response, Telemetry/Response, Logo/TimeSlots/Pin Response, FirebaseDeviceToken)
+  - core/domain/SensorStatus.kt - Status enum
+
+  Phase 2 - Network Layer (4 files + 1 modified)
+
+  - sensor/data/network/ZensiApi.kt - API interface with all endpoints
+  - sensor/data/network/KtorZensiApi.kt - Ktor implementation
+  - sensor/data/repository/DefaultSensorRepository.kt - Repository implementation
+  - core/data/ApiEndpointResolver.kt - Routes Anima clients to anima.zensi.be
+  - Modified core/data/HttpClientFactory.kt - Token auth injection via request pipeline
+  - Modified core/data/AuthPlugin.kt - Changed Bearer to Token
+
+  Phase 3 - Preferences (1 file)
+
+  - core/data/ZensiPreferences.kt - Full multiplatform preferences (token, credentials, logo, timeslots, columns, 
+  sound/vibrate, pin, snooze, alarm state)
+
+  Phase 4 - Screens (35+ files)
+
+  - 4.1 Login - Rewrote LoginView.kt, LoginViewModel.kt, LoginViewState.kt, LoginAction.kt with Zensi branding    
+  (gradient background, demo link, real API login)
+  - 4.2 Dashboard - 5 files (ViewModel/State/Action/Screen/ScreenRoot) + 6 components (SensorCard,
+  StatusBottomBar, TopBar, AlarmDialog, DisconnectedDialog, PinDialog) + 3 platform TimeUtils
+  - 4.3 Sensor Settings - 5 files (ViewModel/State/Action/Screen/ScreenRoot)
+  - 4.4 Calibration - 5 files (multi-step wizard with calibrate API call)
+  - 4.5 Chart - 5 files + 3 platform WebView implementations (Android WebView, iOS WKWebView, Desktop fallback)   
+  - 4.6 App Settings - 5 files (columns slider, sound/vibrate toggles, logout)
+  - 4.7 Demo - 5 files (paged walkthrough with step dots)
+
+  Phase 5 - Navigation
+
+  - Updated Route.kt with ZensiGraph, Dashboard, SensorSettings, Calibrate, Chart, AppSettings, Demo routes       
+  - Updated App.kt with full ZensiGraph navigation (Login -> Dashboard flow with slide animations), kept BookGraph
+
+  Phase 6 - DI
+
+  - Updated Modules.kt with all Zensi components (ZensiPreferences, ZensiApi, SensorRepository, all ViewModels)   
+
+  Phase 7 - Theming
+
+  - Added Zensi brand colors to Colors.kt (ZensiPrimary, sensor status colors, alert level colors)
+
+                                                  
