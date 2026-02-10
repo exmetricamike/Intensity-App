@@ -1,7 +1,7 @@
 package com.intensityrecord
 
 import androidx.compose.ui.window.ComposeUIViewController
-import com.intensityrecord.app.App
+import com.intensityrecords.app.app.App
 
 //fun MainViewController() = ComposeUIViewController { App(engine = remember { Darwin.create() }) }
 

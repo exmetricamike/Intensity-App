@@ -39,3 +39,13 @@ sealed interface Route {
     @Serializable
     data class BookDetail(val id: String) : Route
 }
+
+sealed class Screen(val route: String) {
+    data object Home : Screen("home")
+    data object Live : Screen("live")
+    data object WorkOuts : Screen("workouts")
+    data object Mobility : Screen("mobility")
+
+    data object VideoDetail : Screen("video_detail")
+    data object WorkoutsDetail : Screen("workouts_detail")
+}

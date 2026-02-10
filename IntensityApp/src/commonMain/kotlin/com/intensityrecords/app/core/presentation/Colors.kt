@@ -1,5 +1,10 @@
 package com.intensityrecord.core.presentation
 
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
 // Book feature colors (kept for reference)
@@ -27,3 +32,40 @@ val AlertBeforeFirst = Color(0xFF4CAF50)     // green - within first threshold
 val AlertBeforeSecond = Color(0xFFFF9800)    // orange - approaching threshold
 val AlertBeforeThird = Color(0xFFE53935)     // red - near limit
 val AlertAfterThird = Color(0xFFB71C1C)      // dark red - past limit
+
+
+// --- Colors ---
+val PrimaryAccent = Color(0xFFC1FF72) // Lime Green
+val DeepBlack = Color(0xFF0A0A0A)     // Deep black for TV
+val CardBackground = Color(0xFF141414) // Slightly lighter than black
+val TextWhite = Color(0xFFFFFFFF)
+
+// --- Gradients & Brushes ---
+val DarkGradient = Brush.verticalGradient(
+    colors = listOf(Color.Black, Color(0xFF121212))
+)
+
+// The "Glow" Border Brush
+val GlowBorderBrush = Brush.linearGradient(
+    colors = listOf(PrimaryAccent.copy(alpha = 0.8f), Color.Transparent),
+    start = Offset(0f, 0f),
+    end = Offset(500f, 500f) // Diagonal direction
+)
+
+// --- Theme Wrapper ---
+@Composable
+fun FitnessAppTheme(
+    content: @Composable () -> Unit
+) {
+    MaterialTheme(
+        colorScheme = darkColorScheme(
+            primary = PrimaryAccent,
+            background = DeepBlack,
+            surface = CardBackground,
+            onPrimary = Color.Black,
+            onBackground = TextWhite,
+            onSurface = TextWhite
+        ),
+        content = content
+    )
+}

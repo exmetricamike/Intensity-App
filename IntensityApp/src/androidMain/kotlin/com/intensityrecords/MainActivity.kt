@@ -3,7 +3,7 @@ package com.intensityrecord
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import com.intensityrecord.app.App
+import com.intensityrecords.app.app.App
 
 
 class MainActivity : ComponentActivity() {
