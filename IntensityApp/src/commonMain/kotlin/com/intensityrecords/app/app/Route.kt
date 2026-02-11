@@ -6,15 +6,6 @@ sealed interface Route {
 
     // --- Zensi sensor monitoring ---
     @Serializable
-    data object ZensiGraph : Route
-
-    @Serializable
-    data object Login : Route
-
-    @Serializable
-    data object Dashboard : Route
-
-    @Serializable
     data class SensorSettings(val padId: String) : Route
 
     @Serializable
@@ -24,28 +15,23 @@ sealed interface Route {
     data class Chart(val sensorName: String) : Route
 
     @Serializable
-    data object AppSettings : Route
-
-    @Serializable
-    data object Demo : Route
-
-    // --- Book feature (reference) ---
-    @Serializable
-    data object BookGraph : Route
-
-    @Serializable
-    data object BookList : Route
-
-    @Serializable
     data class BookDetail(val id: String) : Route
-}
 
-sealed class Screen(val route: String) {
-    data object Home : Screen("home")
-    data object Live : Screen("live")
-    data object WorkOuts : Screen("workouts")
-    data object Mobility : Screen("mobility")
+    @Serializable
+    data object Home : Route
 
-    data object VideoDetail : Screen("video_detail")
-    data object WorkoutsDetail : Screen("workouts_detail")
+    @Serializable
+    data object Live : Route
+
+    @Serializable
+    data object WorkOuts : Route
+
+    @Serializable
+    data object Mobility : Route
+
+    @Serializable
+    data object VideoDetail : Route
+
+    @Serializable
+    data class WorkOutsDetailsScreen(val id: String) : Route
 }

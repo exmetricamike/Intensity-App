@@ -24,249 +24,31 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
+import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.intensityrecord.app.Screen
+import androidx.navigation.toRoute
+import com.intensityrecord.app.Route
 import com.intensityrecord.core.presentation.DarkGradient
 import com.intensityrecord.core.presentation.FitnessAppTheme
 import com.intensityrecords.app.core.presentation.components.AppHeader
 import com.intensityrecords.app.core.presentation.components.CustomBottomBar
-import com.intensityrecords.app.home.presentation.home_screen.HomeScreen
-import com.intensityrecords.app.home.presentation.home_screen.VideoDetailScreen
-import com.intensityrecords.app.live.presentation.live_screen.LiveScreen
-import com.intensityrecords.app.mobility.presentation.mobility_screen.MobilityScreen
+import com.intensityrecords.app.core.presentation.utils.currentDeviceConfiguration
+import com.intensityrecords.app.home.presentation.home_screen.HomeScreenRoot
+import com.intensityrecords.app.home.presentation.video_detail_screen.VideoDetailScreen
+import com.intensityrecords.app.live.presentation.live_screen.LiveScreenRoot
+import com.intensityrecords.app.mobility.presentation.mobility_screen.MobilityScreenRoot
 import com.intensityrecords.app.workouts.domain.workoutCategories
-import com.intensityrecords.app.workouts.presentation.workouts_screen.WorkoutDetailScreen
-import com.intensityrecords.app.workouts.presentation.workouts_screen.WorkoutScreen
+import com.intensityrecords.app.workouts.presentation.workouts_details_screen.WorkoutDetailScreenRoot
+import com.intensityrecords.app.workouts.presentation.workouts_screen.WorkoutScreenRoot
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 @Preview
 fun App() {
-//    MaterialTheme {
-//        val navController = rememberNavController()
-//
-//        NavHost(
-//            navController = navController,
-//            startDestination = Route.BookGraph
-//        )
-//        {
-//            // ================================================================
-//            // App Navigation Graph
-//            // ================================================================
-//            navigation<Route.ZensiGraph>(
-//                startDestination = Route.Login
-//            ) {
-//                // --- Login ---
-//                composable<Route.Login> {
-//                    val viewModel = koinViewModel<LoginViewModel>()
-//                    LoginViewRoot(
-//                        viewModel = viewModel,
-//                        onLoginSuccess = {
-//                            navController.navigate(Route.Dashboard) {
-//                                popUpTo(Route.Login) { inclusive = true }
-//                            }
-//                        },
-//                        onDemoClick = {
-//                            navController.navigate(Route.Demo)
-//                        }
-//                    )
-//                }
-//
-//                // --- Dashboard ---
-//                composable<Route.Dashboard> {
-//                    val viewModel = koinViewModel<DashboardViewModel>()
-//                    DashboardScreenRoot(
-//                        viewModel = viewModel,
-//                        onNavigateToSensorSettings = { padId ->
-//                            navController.navigate(Route.SensorSettings(padId))
-//                        },
-//                        onNavigateToAppSettings = {
-//                            navController.navigate(Route.AppSettings)
-//                        }
-//                    )
-//                }
-//
-//                // --- Sensor Settings ---
-//                composable<Route.SensorSettings>(
-//                    enterTransition = {
-//                        slideInHorizontally(
-//                            initialOffsetX = { it },
-//                            animationSpec = tween(300, easing = FastOutSlowInEasing)
-//                        )
-//                    },
-//                    exitTransition = {
-//                        slideOutHorizontally(
-//                            targetOffsetX = { it },
-//                            animationSpec = tween(300, easing = FastOutSlowInEasing)
-//                        )
-//                    }
-//                ) { entry ->
-//                    val args = entry.toRoute<Route.SensorSettings>()
-//                    val viewModel = koinViewModel<SensorSettingsViewModel> {
-//                        parametersOf(args.padId)
-//                    }
-//                    SensorSettingsScreenRoot(
-//                        viewModel = viewModel,
-//                        onBackClick = { navController.navigateUp() },
-//                        onCalibrateClick = { padId ->
-//                            navController.navigate(Route.Calibrate(padId))
-//                        },
-//                        onChartClick = { sensorName ->
-//                            navController.navigate(Route.Chart(sensorName))
-//                        }
-//                    )
-//                }
-//
-//                // --- Calibrate ---
-//                composable<Route.Calibrate>(
-//                    enterTransition = {
-//                        slideInHorizontally(
-//                            initialOffsetX = { it },
-//                            animationSpec = tween(300, easing = FastOutSlowInEasing)
-//                        )
-//                    },
-//                    exitTransition = {
-//                        slideOutHorizontally(
-//                            targetOffsetX = { it },
-//                            animationSpec = tween(300, easing = FastOutSlowInEasing)
-//                        )
-//                    }
-//                ) { entry ->
-//                    val args = entry.toRoute<Route.Calibrate>()
-//                    val viewModel = koinViewModel<CalibrateViewModel> {
-//                        parametersOf(args.padId)
-//                    }
-//                    CalibrateScreenRoot(
-//                        viewModel = viewModel,
-//                        onFinish = { navController.navigateUp() }
-//                    )
-//                }
-//
-//                // --- Chart ---
-//                composable<Route.Chart>(
-//                    enterTransition = {
-//                        slideInHorizontally(
-//                            initialOffsetX = { it },
-//                            animationSpec = tween(300, easing = FastOutSlowInEasing)
-//                        )
-//                    },
-//                    exitTransition = {
-//                        slideOutHorizontally(
-//                            targetOffsetX = { it },
-//                            animationSpec = tween(300, easing = FastOutSlowInEasing)
-//                        )
-//                    }
-//                ) { entry ->
-//                    val args = entry.toRoute<Route.Chart>()
-//                    val viewModel = koinViewModel<ChartViewModel> {
-//                        parametersOf(args.sensorName)
-//                    }
-//                    ChartScreenRoot(
-//                        viewModel = viewModel,
-//                        onBackClick = { navController.navigateUp() }
-//                    )
-//                }
-//
-//                // --- App Settings ---
-//                composable<Route.AppSettings>(
-//                    enterTransition = {
-//                        slideInHorizontally(
-//                            initialOffsetX = { it },
-//                            animationSpec = tween(300, easing = FastOutSlowInEasing)
-//                        )
-//                    },
-//                    exitTransition = {
-//                        slideOutHorizontally(
-//                            targetOffsetX = { it },
-//                            animationSpec = tween(300, easing = FastOutSlowInEasing)
-//                        )
-//                    }
-//                ) {
-//                    val viewModel = koinViewModel<AppSettingsViewModel>()
-//                    AppSettingsScreenRoot(
-//                        viewModel = viewModel,
-//                        onBackClick = { navController.navigateUp() },
-//                        onLogout = {
-//                            navController.navigate(Route.Login) {
-//                                popUpTo(Route.ZensiGraph) { inclusive = true }
-//                            }
-//                        }
-//                    )
-//                }
-//
-//                // --- Demo ---
-//                composable<Route.Demo> {
-//                    val viewModel = koinViewModel<DemoViewModel>()
-//                    DemoScreenRoot(
-//                        viewModel = viewModel,
-//                        onBackClick = { navController.navigateUp() }
-//                    )
-//                }
-//            }
-//
-//            // ================================================================
-//            // Book Navigation Graph (reference architecture)
-//            // ================================================================
-//            navigation<Route.BookGraph>(
-//                startDestination = Route.BookList
-//            ) {
-//                composable<Route.BookList>(
-//                    exitTransition = {
-//                        slideOutHorizontally(
-//                            targetOffsetX = { -it },
-//                            animationSpec = tween(300, easing = FastOutSlowInEasing)
-//                        )
-//                    },
-//                    popEnterTransition = {
-//                        slideInHorizontally(
-//                            initialOffsetX = { -it },
-//                            animationSpec = tween(300, easing = FastOutSlowInEasing)
-//                        )
-//                    }
-//                ) {
-//                    val viewModel = koinViewModel<BookListViewModel>()
-//                    val selectedBookViewModel = it.sharedKoinViewModel<SelectedBookViewModel>(navController)
-//
-//                    LaunchedEffect(true) {
-//                        selectedBookViewModel.onSelectBook(null)
-//                    }
-//
-//                    BookListScreenRoot(
-//                        viewModel = viewModel,
-//                        onBookClick = { book ->
-//                            selectedBookViewModel.onSelectBook(book)
-//                            navController.navigate(Route.BookDetail(book.id))
-//                        }
-//                    )
-//                }
-//
-//                composable<Route.BookDetail>(
-//                    enterTransition = { slideInHorizontally { it } },
-//                    exitTransition = { slideOutHorizontally { it } }
-//                ) {
-//                    val selectedBookViewModel = it.sharedKoinViewModel<SelectedBookViewModel>(navController)
-//                    val viewModel = koinViewModel<BookDetailViewModel>()
-//                    val selectedBook by selectedBookViewModel.selectedBook.collectAsStateWithLifecycle()
-//
-//                    LaunchedEffect(selectedBook) {
-//                        selectedBook?.let { book ->
-//                            viewModel.onAction(BookDetailAction.OnSelectedBookChange(book))
-//                        }
-//                    }
-//
-//                    BookDetailScreenRoot(
-//                        viewModel = viewModel,
-//                        onBackClick = { navController.navigateUp() }
-//                    )
-//                }
-//            }
-//        }
-//    }
-
     FitnessAppTheme {
         BoxWithConstraints(
             modifier = Modifier
@@ -274,20 +56,20 @@ fun App() {
                 .background(DarkGradient)
         )
         {
-            val screenWidth = maxWidth
-            val isWideScreen = screenWidth > 600.dp
+            val isWideScreen = currentDeviceConfiguration().isWideScreen
             val animationDuration = if (isWideScreen) 500 else 300
 
             val navController = rememberNavController()
             val currentBackStackEntry by navController.currentBackStackEntryAsState()
-            val currentRoute = currentBackStackEntry?.destination?.route
+            val currentDestination = currentBackStackEntry?.destination
 
             val currentTab = when {
-                currentRoute == Screen.Home.route -> "Home"
-                currentRoute == Screen.Live.route -> "Live"
-//                        Screen.WorkOuts.route -> "Workouts"
-                currentRoute == Screen.WorkOuts.route || currentRoute?.startsWith("details/") == true -> "Workouts"
-                currentRoute == Screen.Mobility.route -> "Mobility"
+                currentDestination?.hasRoute<Route.Home>() == true -> "Home"
+                currentDestination?.hasRoute<Route.Live>() == true -> "Live"
+                currentDestination?.hasRoute<Route.WorkOuts>() == true ||
+                        currentDestination?.hasRoute<Route.WorkOutsDetailsScreen>() == true -> "Workouts"
+
+                currentDestination?.hasRoute<Route.Mobility>() == true -> "Mobility"
                 else -> "Home"
             }
 
@@ -315,120 +97,74 @@ fun App() {
             ) { innerPadding ->
                 NavHost(
                     navController = navController,
-                    startDestination = Screen.Home.route,
+                    startDestination = Route.Home,
                     modifier = Modifier.padding(innerPadding)
                 ) {
-                    composable(
-                        route = Screen.Home.route,
-                        enterTransition = {
-                            fadeIn(animationSpec = tween(animationDuration))
-                        },
-                        exitTransition = {
-                            fadeOut(animationSpec = tween(animationDuration))
-                        },
-                        popEnterTransition = {
-                            fadeIn(animationSpec = tween(animationDuration))
-                        },
-                        popExitTransition = {
-                            fadeOut(animationSpec = tween(animationDuration))
-                        }
-                    ) {
-                        HomeScreen(navController, isWideScreen)
-                    }
-
-                    composable(
-                        route = Screen.VideoDetail.route,
+                    composable<Route.Home>(
                         enterTransition = { fadeIn(animationSpec = tween(animationDuration)) },
                         exitTransition = { fadeOut(animationSpec = tween(animationDuration)) },
-                        popEnterTransition = {
-                            fadeIn(
-                                animationSpec = tween(
-                                    animationDuration
-                                )
-                            )
-                        },
-                        popExitTransition = {
-                            fadeOut(
-                                animationSpec = tween(
-                                    animationDuration
-                                )
-                            )
-                        }
+                        popEnterTransition = { fadeIn(animationSpec = tween(animationDuration)) },
+                        popExitTransition = { fadeOut(animationSpec = tween(animationDuration)) }
+                    ) {
+                        HomeScreenRoot(navController, isWideScreen)
+                    }
+
+                    composable<Route.VideoDetail>(
+                        enterTransition = { fadeIn(animationSpec = tween(animationDuration)) },
+                        exitTransition = { fadeOut(animationSpec = tween(animationDuration)) },
+                        popEnterTransition = { fadeIn(animationSpec = tween(animationDuration)) },
+                        popExitTransition = { fadeOut(animationSpec = tween(animationDuration)) }
                     ) {
                         VideoDetailScreen(navController, isWideScreen)
                     }
 
-                    composable(
-                        route = Screen.Live.route,
-                        enterTransition = {
-                            fadeIn(animationSpec = tween(animationDuration))
-                        },
-                        exitTransition = {
-                            fadeOut(animationSpec = tween(animationDuration))
-                        },
-                        popEnterTransition = {
-                            fadeIn(animationSpec = tween(animationDuration))
-                        },
-                        popExitTransition = {
-                            fadeOut(animationSpec = tween(animationDuration))
-                        }
+                    composable<Route.Live>(
+                        enterTransition = { fadeIn(animationSpec = tween(animationDuration)) },
+                        exitTransition = { fadeOut(animationSpec = tween(animationDuration)) },
+                        popEnterTransition = { fadeIn(animationSpec = tween(animationDuration)) },
+                        popExitTransition = { fadeOut(animationSpec = tween(animationDuration)) }
                     ) {
-                        LiveScreen(navController, isWideScreen)
+                        LiveScreenRoot(navController, isWideScreen)
                     }
 
-                    composable(
-                        route = Screen.WorkOuts.route,
-                        enterTransition = {
-                            fadeIn(animationSpec = tween(animationDuration))
-                        },
-                        exitTransition = {
-                            fadeOut(animationSpec = tween(animationDuration))
-                        },
-                        popEnterTransition = {
-                            fadeIn(animationSpec = tween(animationDuration))
-                        },
-                        popExitTransition = {
-                            fadeOut(animationSpec = tween(animationDuration))
-                        }
+                    composable<Route.WorkOuts>(
+                        enterTransition = { fadeIn(animationSpec = tween(animationDuration)) },
+                        exitTransition = { fadeOut(animationSpec = tween(animationDuration)) },
+                        popEnterTransition = { fadeIn(animationSpec = tween(animationDuration)) },
+                        popExitTransition = { fadeOut(animationSpec = tween(animationDuration)) }
                     ) {
-                        WorkoutScreen(navController, isWideScreen)
+                        WorkoutScreenRoot(navController, isWideScreen)
                     }
 
-                    composable("details/{workoutId}") { backStackEntry ->
-                        // Get the ID passed from the previous screen
-                        val workoutId = backStackEntry.arguments?.getString("workoutId")
+                    // Arguments are now handled via Type-Safe object
+                    composable<Route.WorkOutsDetailsScreen> { backStackEntry ->
+                        val args = backStackEntry.toRoute<Route.WorkOutsDetailsScreen>()
 
-                        // Find the actual object from your data list
-                        val selectedItem = workoutCategories.find { it.title == workoutId }
+                        // Find the actual object using the ID from the Route
+                        val selectedItem = workoutCategories.find { it.title == args.id }
 
-                        // Pass it to the detail screen
                         if (selectedItem != null) {
-                            WorkoutDetailScreen(navController = navController, item = selectedItem, isWideScreen = isWideScreen)
+                            WorkoutDetailScreenRoot(
+                                navController = navController,
+                                workoutId = args.id,
+                                isWideScreen = isWideScreen
+                            )
                         }
                     }
 
-                    composable(
-                        route = Screen.Mobility.route,
-                        enterTransition = {
-                            fadeIn(animationSpec = tween(animationDuration))
-                        },
-                        exitTransition = {
-                            fadeOut(animationSpec = tween(animationDuration))
-                        },
-                        popEnterTransition = {
-                            fadeIn(animationSpec = tween(animationDuration))
-                        },
-                        popExitTransition = {
-                            fadeOut(animationSpec = tween(animationDuration))
-                        }
+                    composable<Route.Mobility>(
+                        enterTransition = { fadeIn(animationSpec = tween(animationDuration)) },
+                        exitTransition = { fadeOut(animationSpec = tween(animationDuration)) },
+                        popEnterTransition = { fadeIn(animationSpec = tween(animationDuration)) },
+                        popExitTransition = { fadeOut(animationSpec = tween(animationDuration)) }
                     ) {
-                        MobilityScreen(navController, isWideScreen)
+                        MobilityScreenRoot(navController, isWideScreen)
                     }
+
                 }
             }
         }
     }
-
 }
 
 @Composable

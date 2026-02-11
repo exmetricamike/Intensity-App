@@ -75,6 +75,8 @@ kotlin {
             implementation(libs.multiplatform.settings.no.arg)
 
             implementation(libs.material.icons.extended)
+            implementation(libs.material3.adaptive)
+
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)

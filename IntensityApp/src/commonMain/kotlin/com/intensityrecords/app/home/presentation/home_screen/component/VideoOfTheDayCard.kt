@@ -1,0 +1,167 @@
+package com.intensityrecords.app.home.presentation.home_screen.component
+
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.focusable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
+import androidx.compose.foundation.interaction.collectIsHoveredAsState
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.intensityrecord.app.Route
+import com.intensityrecord.core.presentation.CardBackground
+import com.intensityrecord.core.presentation.GlowBorderBrush
+import com.intensityrecord.core.presentation.PrimaryAccent
+import com.intensityrecord.core.presentation.TextWhite
+import org.jetbrains.compose.resources.Font
+import org.jetbrains.compose.resources.painterResource
+import com.intensityrecord.resources.Res
+import com.intensityrecord.resources.montserrat_bold
+import com.intensityrecord.resources.montserrat_regular
+import com.intensityrecord.resources._1
+
+@Composable
+fun VideoOfTheDayCard(navController: NavController, isWideScreen: Boolean) {
+    val height = if (isWideScreen) 260.dp else 220.dp
+
+    val interactionSource = remember { MutableInteractionSource() }
+    val isFocused by interactionSource.collectIsFocusedAsState()
+    val isHovered by interactionSource.collectIsHoveredAsState()
+    val isActive = isFocused || isHovered
+
+    // 1. GLOW & STROKE LOGIC
+    // We use 'colorStops' to squeeze the green into the center.
+    // 0.0 to 0.3 is Transparent
+    // 0.5 is Green (The peak)
+    // 0.7 to 1.0 is Transparent again
+    // This makes the stroke appear "shorter" horizontally.
+    val borderBrush = if (isActive) {
+        Brush.horizontalGradient(
+            colorStops = arrayOf(
+                0.0f to Color.Transparent,
+                0.3f to Color.Transparent,       // Start fading in
+                0.45f to PrimaryAccent.copy(alpha = 0.5f), // Outer Glow
+                0.5f to PrimaryAccent,           // Center Bright Core
+                0.55f to PrimaryAccent.copy(alpha = 0.5f), // Outer Glow
+                0.7f to Color.Transparent,       // Fade out
+                1.0f to Color.Transparent
+            )
+        )
+    } else {
+        GlowBorderBrush // Default subtle gradient
+    }
+
+    val borderWidth = if (isActive) 3.dp else 1.dp
+    // Standard elevation for depth, but NO Green spotColor (removes the "whole border" glow)
+    val elevationState by animateDpAsState(if (isActive) 9.dp else 4.dp)
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(height)
+            .shadow(
+                elevation = elevationState,
+                shape = RoundedCornerShape(24.dp),
+                spotColor = PrimaryAccent.copy(alpha = 0.6f), // <--- MAKES IT GLOW GREEN
+                ambientColor = PrimaryAccent.copy(alpha = 0.6f),
+            )
+            .clip(RoundedCornerShape(24.dp))
+            .background(CardBackground)
+            .border(BorderStroke(borderWidth, borderBrush), RoundedCornerShape(24.dp))
+            .focusable(interactionSource = interactionSource)
+            .clickable(
+                interactionSource = interactionSource,
+                indication = null
+            ) {
+                navController.navigate(Route.VideoDetail)
+            }
+    ) {
+        Box(modifier = Modifier.fillMaxSize().background(Color(0xFF222222))) {
+            Image(
+                painter = painterResource(resource = Res.drawable._1),
+                contentDescription = "Video Thumbnail",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
+        }
+
+        // Gradient Overlay
+        Box(
+            modifier = Modifier.fillMaxSize().background(
+                Brush.horizontalGradient(
+                    colors = listOf(Color.Black.copy(alpha = 0.9f), Color.Transparent),
+                    startX = 0f, endX = 1000f
+                )
+            )
+        )
+
+        // Text Content
+        Column(modifier = Modifier.align(Alignment.CenterStart).padding(32.dp).fillMaxWidth(0.7f)) {
+            Text(
+                "VIDEO OF THE DAY",
+                style = TextStyle(
+                    fontWeight = FontWeight.ExtraBold,
+                    fontSize = 24.sp,
+                    fontFamily = FontFamily(Font(Res.font.montserrat_bold))
+                ),
+                color = TextWhite
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                "Today's Workout: Glutes & Core",
+                style = TextStyle(
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 14.sp,
+                    color = Color.Gray,
+                    fontFamily = FontFamily(Font(Res.font.montserrat_regular))
+                )
+            )
+            Spacer(modifier = Modifier.height(24.dp))
+            Button(
+                onClick = {
+                    navController.navigate(Route.VideoDetail)
+                },
+                colors = ButtonDefaults.buttonColors(containerColor = PrimaryAccent),
+                shape = RoundedCornerShape(50),
+                modifier = Modifier.height(40.dp)
+            ) {
+                Text(
+                    "START NOW",
+                    color = Color.Black,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 12.sp,
+                    fontFamily = FontFamily(Font(Res.font.montserrat_bold))
+                )
+            }
+        }
+    }
+}

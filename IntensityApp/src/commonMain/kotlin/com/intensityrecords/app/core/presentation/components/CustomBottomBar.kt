@@ -136,7 +136,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import com.intensityrecord.app.Screen
+import com.intensityrecord.app.Route
 import com.intensityrecord.core.presentation.PrimaryAccent
 import com.intensityrecord.core.presentation.TextWhite
 import com.intensityrecord.resources.Res
@@ -207,11 +207,11 @@ fun CustomBottomBar(
                             indication = null
                         ) {
                             val route = when (label) {
-                                "Live" -> Screen.Live.route
-                                "Home" -> Screen.Home.route
-                                "Workouts" -> Screen.WorkOuts.route
-                                "Mobility" -> Screen.Mobility.route
-                                else -> Screen.Home.route
+                                "Live" -> Route.Live
+                                "Home" -> Route.Home
+                                "Workouts" -> Route.WorkOuts
+                                "Mobility" -> Route.Mobility
+                                else -> Route.Home
                             }
                             navController.navigate(route) {
                                 popUpTo(navController.graph.findStartDestination().id) {

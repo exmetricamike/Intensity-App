@@ -25,6 +25,11 @@ import com.intensityrecord.sensor.presentation.chart.ChartViewModel
 import com.intensityrecord.sensor.presentation.dashboard.DashboardViewModel
 import com.intensityrecord.sensor.presentation.demo.DemoViewModel
 import com.intensityrecord.sensor.presentation.sensor_settings.SensorSettingsViewModel
+import com.intensityrecords.app.home.presentation.home_screen.HomeScreenViewModel
+import com.intensityrecords.app.live.presentation.live_screen.LiveScreenViewModel
+import com.intensityrecords.app.mobility.presentation.mobility_screen.MobilityScreenViewModel
+import com.intensityrecords.app.workouts.presentation.workouts_details_screen.WorkOutsDetailScreenViewModel
+import com.intensityrecords.app.workouts.presentation.workouts_screen.WorkOutsScreenViewModel
 import com.russhwolf.settings.Settings
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
@@ -80,4 +85,10 @@ val sharedModule = module {
     viewModelOf(::BookListViewModel)
     viewModelOf(::BookDetailViewModel)
     viewModelOf(::SelectedBookViewModel)
+
+    viewModelOf(::HomeScreenViewModel)
+    viewModelOf(::LiveScreenViewModel)
+    viewModelOf(::MobilityScreenViewModel)
+    viewModelOf(::WorkOutsScreenViewModel)
+    viewModelOf(::WorkOutsDetailScreenViewModel)
 }
