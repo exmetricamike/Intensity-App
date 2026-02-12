@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.intensityrecord.core.presentation.DarkGradient
 import com.intensityrecord.core.presentation.FitnessAppTheme
+import com.intensityrecords.app.core.presentation.utils.LocalAppDimens
 import com.intensityrecords.app.home.domain.sampleItems
 import com.intensityrecords.app.home.presentation.home_screen.component.ContentCard
 import com.intensityrecords.app.home.presentation.home_screen.component.IntroVideoButton
@@ -46,14 +47,15 @@ fun HomeScreen(navController: NavController, isWideScreen: Boolean) {
                 .fillMaxSize()
                 .background(DarkGradient)
         ) {
+            val dimens = LocalAppDimens.current
+
             val screenWidth = maxWidth
-            val contentPadding = if (isWideScreen) 58.dp else 16.dp
 
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
-                    .padding(horizontal = contentPadding, vertical = 24.dp),
+                    .padding(horizontal = dimens.horizontalContentPadding, vertical = dimens.verticalContentPadding),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
@@ -71,9 +73,10 @@ fun HomeScreen(navController: NavController, isWideScreen: Boolean) {
                         items(items = sampleItems) { item ->
                             ContentCard(
                                 item = item,
-                                width = 300.dp,
-                                aspectRatio = 16f / 9f,
-                                navController = navController
+                                width = 230.dp,
+                                aspectRatio = 1.3f,
+                                navController = navController,
+                                dimens = dimens
                             )
                         }
                     }
@@ -83,8 +86,9 @@ fun HomeScreen(navController: NavController, isWideScreen: Boolean) {
                             ContentCard(
                                 item = item,
                                 width = screenWidth - 32.dp,
-                                aspectRatio = 16f / 9f,
-                                navController = navController
+                                aspectRatio = 3.3f,
+                                navController = navController,
+                                dimens = dimens
                             )
                         }
                     }

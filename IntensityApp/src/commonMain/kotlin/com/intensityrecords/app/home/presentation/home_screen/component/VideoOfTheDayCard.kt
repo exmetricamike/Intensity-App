@@ -48,10 +48,12 @@ import com.intensityrecord.resources.Res
 import com.intensityrecord.resources.montserrat_bold
 import com.intensityrecord.resources.montserrat_regular
 import com.intensityrecord.resources._1
+import com.intensityrecords.app.core.presentation.utils.LocalAppDimens
 
 @Composable
 fun VideoOfTheDayCard(navController: NavController, isWideScreen: Boolean) {
-    val height = if (isWideScreen) 260.dp else 220.dp
+    val height = if (isWideScreen) 260.dp else 180.dp
+    val dimens = LocalAppDimens.current
 
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
@@ -80,23 +82,23 @@ fun VideoOfTheDayCard(navController: NavController, isWideScreen: Boolean) {
         GlowBorderBrush // Default subtle gradient
     }
 
-    val borderWidth = if (isActive) 3.dp else 1.dp
+    val borderWidth = if (isActive) dimens.borderActive else dimens.borderNormal
     // Standard elevation for depth, but NO Green spotColor (removes the "whole border" glow)
     val elevationState by animateDpAsState(if (isActive) 9.dp else 4.dp)
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(height)
+            .height(dimens.videoCardHeight)
             .shadow(
                 elevation = elevationState,
-                shape = RoundedCornerShape(24.dp),
+                shape = RoundedCornerShape(dimens.cornerRadius),
                 spotColor = PrimaryAccent.copy(alpha = 0.6f), // <--- MAKES IT GLOW GREEN
                 ambientColor = PrimaryAccent.copy(alpha = 0.6f),
             )
-            .clip(RoundedCornerShape(24.dp))
+            .clip(RoundedCornerShape(dimens.cornerRadius))
             .background(CardBackground)
-            .border(BorderStroke(borderWidth, borderBrush), RoundedCornerShape(24.dp))
+            .border(BorderStroke(borderWidth, borderBrush), RoundedCornerShape(dimens.cornerRadius))
             .focusable(interactionSource = interactionSource)
             .clickable(
                 interactionSource = interactionSource,
@@ -125,23 +127,23 @@ fun VideoOfTheDayCard(navController: NavController, isWideScreen: Boolean) {
         )
 
         // Text Content
-        Column(modifier = Modifier.align(Alignment.CenterStart).padding(32.dp).fillMaxWidth(0.7f)) {
+        Column(modifier = Modifier.align(Alignment.CenterStart).padding(dimens.paddingLarge).fillMaxWidth(0.7f)) {
             Text(
                 "VIDEO OF THE DAY",
                 style = TextStyle(
                     fontWeight = FontWeight.ExtraBold,
-                    fontSize = 24.sp,
+                    fontSize = dimens.titleLarge,
                     fontFamily = FontFamily(Font(Res.font.montserrat_bold))
                 ),
                 color = TextWhite
             )
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(6.dp))
             Text(
                 "Today's Workout: Glutes & Core",
                 style = TextStyle(
                     fontWeight = FontWeight.Medium,
-                    fontSize = 14.sp,
-                    color = Color.Gray,
+                    fontSize = dimens.bodyMedium,
+                    color = Color.LightGray,
                     fontFamily = FontFamily(Font(Res.font.montserrat_regular))
                 )
             )
@@ -151,14 +153,14 @@ fun VideoOfTheDayCard(navController: NavController, isWideScreen: Boolean) {
                     navController.navigate(Route.VideoDetail)
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = PrimaryAccent),
-                shape = RoundedCornerShape(50),
-                modifier = Modifier.height(40.dp)
+                shape = RoundedCornerShape(24),
+                modifier = Modifier.height(dimens.buttonHeight)
             ) {
                 Text(
                     "START NOW",
                     color = Color.Black,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 12.sp,
+                    fontSize = dimens.buttonText,
                     fontFamily = FontFamily(Font(Res.font.montserrat_bold))
                 )
             }

@@ -30,6 +30,7 @@ import com.intensityrecord.core.presentation.DarkGradient
 import com.intensityrecord.core.presentation.FitnessAppTheme
 import com.intensityrecord.resources.Res
 import com.intensityrecord.resources.montserrat_bold
+import com.intensityrecords.app.core.presentation.utils.LocalAppDimens
 import com.intensityrecords.app.workouts.presentation.workouts_screen.component.WorkoutCard
 import org.jetbrains.compose.resources.Font
 import org.koin.compose.viewmodel.koinViewModel
@@ -70,12 +71,14 @@ fun WorkoutScreen(
                 .fillMaxSize()
                 .background(DarkGradient)
         ) {
-            val contentPadding = if (isWideScreen) 58.dp else 16.dp
+            val dimens = LocalAppDimens.current
+
+            val columnsCount = if (isWideScreen) 3 else 2
 
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = contentPadding, vertical = 14.dp),
+                    .padding(horizontal = dimens.horizontalContentPadding, vertical = 2.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
@@ -92,41 +95,33 @@ fun WorkoutScreen(
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                if (isWideScreen) {
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(3),
-                        horizontalArrangement = Arrangement.spacedBy(22.dp),
-                        verticalArrangement = Arrangement.spacedBy(20.dp),
-                        contentPadding = PaddingValues(horizontal = 4.dp, vertical = 16.dp),
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        items(state.workouts) { workout ->
-                            WorkoutCard(
-                                item = workout,
-                                isWideScreen = isWideScreen,
-                                onClick = { onAction(WorkOutsAction.OnWorkoutClick(workout = workout)) }
-                            )
-                        }
-                    }
-                } else {
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(1),
-                        horizontalArrangement = Arrangement.spacedBy(22.dp),
-                        verticalArrangement = Arrangement.spacedBy(20.dp),
-                        contentPadding = PaddingValues(horizontal = 4.dp, vertical = 16.dp),
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        items(state.workouts) { workout ->
-                            WorkoutCard(
-                                item = workout,
-                                isWideScreen = isWideScreen,
-                                onClick = { onAction(WorkOutsAction.OnWorkoutClick(workout = workout)) }
-                            )
-                        }
+                // 3. Single Unified Grid
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(columnsCount),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(22.dp),
+                    // Add bottom padding here so last items aren't cut off
+                    contentPadding = PaddingValues(
+                        top = 16.dp,
+                        bottom = 120.dp, // This replaces the external Spacer
+                        start = 4.dp,
+                        end = 4.dp
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxSize()
+                ) {
+                    items(state.workouts) { workout ->
+                        WorkoutCard(
+                            item = workout,
+                            isWideScreen = isWideScreen,
+                            onClick = { onAction(WorkOutsAction.OnWorkoutClick(workout = workout)) },
+                            dimens = dimens
+                        )
                     }
                 }
 
-                Spacer(modifier = Modifier.height(40.dp))
+                Spacer(modifier = Modifier.height(120.dp))
 
             }
 

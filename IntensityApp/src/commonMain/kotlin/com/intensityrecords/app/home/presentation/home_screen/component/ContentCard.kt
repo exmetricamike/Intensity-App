@@ -10,6 +10,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -33,6 +34,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.intensityrecord.app.Route
@@ -42,12 +44,14 @@ import com.intensityrecord.core.presentation.PrimaryAccent
 import com.intensityrecord.core.presentation.TextWhite
 import com.intensityrecord.resources.Res
 import com.intensityrecord.resources.montserrat_bold
+import com.intensityrecords.app.core.domain.AppDimens
+import com.intensityrecords.app.core.presentation.utils.LocalAppDimens
 import com.intensityrecords.app.home.domain.HomeItem
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun ContentCard(item: HomeItem, width: Dp, aspectRatio: Float, navController: NavController) {
+fun ContentCard(item: HomeItem, width: Dp, aspectRatio: Float, navController: NavController,dimens: AppDimens) {
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
     val isHovered by interactionSource.collectIsHoveredAsState()
@@ -67,22 +71,22 @@ fun ContentCard(item: HomeItem, width: Dp, aspectRatio: Float, navController: Na
         GlowBorderBrush
     }
 
-    val borderWidth = if (isActive) 2.dp else 1.dp
+    val borderWidth = if (isActive) dimens.borderWidthActive else dimens.borderWidthNormal
     val elevationState = if (isActive) 12.dp else 4.dp
 
     Card(
         modifier = Modifier
             .width(width)
-            .height(width / aspectRatio)
+            .aspectRatio(aspectRatio)
             .shadow(
                 elevation = elevationState,
-                shape = RoundedCornerShape(16.dp),
+                shape = RoundedCornerShape(dimens.cardCornerRadius),
                 spotColor = PrimaryAccent.copy(alpha = 0.4f),
                 ambientColor = PrimaryAccent.copy(alpha = 0.4f)
             )
-            .clip(RoundedCornerShape(16.dp))
+            .clip(RoundedCornerShape(dimens.cardCornerRadius))
             // Spotlight Border
-            .border(BorderStroke(borderWidth, borderBrush), RoundedCornerShape(16.dp))
+            .border(BorderStroke(borderWidth, borderBrush), RoundedCornerShape(dimens.cardCornerRadius))
             .focusable(interactionSource = interactionSource)
             .clickable(interactionSource = interactionSource, indication = null) {
                 when (item.title) {
@@ -122,11 +126,12 @@ fun ContentCard(item: HomeItem, width: Dp, aspectRatio: Float, navController: Na
                 )
             )
             Text(
-                item.title.uppercase(),
+                text = item.title.uppercase(),
                 style = TextStyle(
                     fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp,
-                    fontFamily = FontFamily(Font(Res.font.montserrat_bold))
+                    fontSize = dimens.title,
+                    fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
+                    letterSpacing = 0.1.sp
                 ),
                 color = TextWhite,
                 modifier = Modifier.align(Alignment.BottomStart).padding(16.dp)
@@ -140,7 +145,7 @@ fun ContentCard(item: HomeItem, width: Dp, aspectRatio: Float, navController: Na
                     Text(
                         "LIVE",
                         color = Color.Black,
-                        fontSize = 10.sp,
+                        fontSize = dimens.live,
                         fontWeight = FontWeight.Bold,
                         fontFamily = FontFamily(Font(Res.font.montserrat_bold))
                     )

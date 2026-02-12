@@ -46,13 +46,15 @@ import org.jetbrains.compose.resources.painterResource
 import com.intensityrecord.resources.Res
 import com.intensityrecord.resources.montserrat_bold
 import com.intensityrecord.resources.montserrat_regular
+import com.intensityrecords.app.core.domain.AppDimens
 
 @Composable
 fun WorkoutCard(
     item: WorkoutItem,
     modifier: Modifier = Modifier,
     isWideScreen: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    dimens: AppDimens
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
@@ -73,14 +75,17 @@ fun WorkoutCard(
         GlowBorderBrush
     }
 
-    val borderWidth = if (isFocused) 3.dp else 1.dp
-    val elevationState by animateDpAsState(if (isActive) 6.5.dp else 2.dp)
+//    val borderWidth = if (isFocused) 3.dp else 1.dp
+//    val elevationState by animateDpAsState(if (isActive) 6.5.dp else 2.dp)
+    val borderWidth = if (isActive) dimens.borderWidthActive else dimens.borderWidthNormal
+    val elevationState by animateDpAsState(if (isActive) dimens.elevationStateActive else dimens.elevationStateNormal)
 
-    val aspectRatioForCard = if (isWideScreen) {
-        1.2f
-    } else {
-        16f / 9f
-    }
+//    val aspectRatioForCard = if (isWideScreen) {
+//        1.2f
+//    } else {
+//        16f / 9f
+//    }
+    val aspectRatioForCard = if (isWideScreen) 1.2f else 0.8f
 
     Card(
         modifier = modifier
@@ -107,6 +112,21 @@ fun WorkoutCard(
                 contentDescription = item.title,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize().alpha(0.7f)
+            )
+
+            // 2. Gradient Overlay (Scrim) - Crucial for text readability
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(
+                                Color.Black.copy(alpha = 0.3f), // Top slightly dark
+                                Color.Transparent,              // Middle clear
+                                Color.Black.copy(alpha = 0.9f)  // Bottom dark for text
+                            )
+                        )
+                    )
             )
 
             Column(modifier = Modifier.padding(12.dp)) {

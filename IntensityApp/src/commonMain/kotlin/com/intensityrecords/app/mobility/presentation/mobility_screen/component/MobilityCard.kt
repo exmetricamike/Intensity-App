@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -30,6 +31,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.intensityrecord.core.presentation.CardBackground
@@ -63,14 +65,17 @@ fun MobilityCard(item: MobilityItem, modifier: Modifier = Modifier, isWideScreen
         GlowBorderBrush
     }
 
+    val aspectRatioForCard = if (isWideScreen) 1.5f else 0.7f
+    val titleFontSize = if (isWideScreen) 22.sp else 16.sp
+
     val borderWidth = if (isFocused) 3.dp else 1.dp
     val elevationState by animateDpAsState(if (isActive) 6.5.dp else 2.dp)
 
-    val aspectRatioForCard = if (isWideScreen) {
-        1.5f
-    } else {
-        16f / 9f
-    }
+//    val aspectRatioForCard = if (isWideScreen) {
+//        1.5f
+//    } else {
+//        16f / 9f
+//    }
 
     Card(
         modifier = modifier
@@ -100,11 +105,12 @@ fun MobilityCard(item: MobilityItem, modifier: Modifier = Modifier, isWideScreen
             Text(
                 text = item.title,
                 color = Color.White,
-                fontSize = 22.sp,
+                fontSize = titleFontSize,
                 fontWeight = FontWeight.ExtraBold,
-                modifier = Modifier.align(Alignment.Center),
+                modifier = Modifier.align(Alignment.BottomCenter).padding(8.dp), // Added padding
                 fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
-                letterSpacing = 1.sp
+                letterSpacing = if (isWideScreen) 1.5.sp else 0.5.sp,
+                textAlign = TextAlign.Center // Ensure centered if text wraps
             )
         }
     }

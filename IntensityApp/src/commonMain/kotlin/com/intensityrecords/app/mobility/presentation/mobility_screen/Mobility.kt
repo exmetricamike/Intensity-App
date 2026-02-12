@@ -27,6 +27,7 @@ import com.intensityrecord.core.presentation.DarkGradient
 import com.intensityrecord.core.presentation.FitnessAppTheme
 import com.intensityrecord.resources.Res
 import com.intensityrecord.resources.montserrat_bold
+import com.intensityrecords.app.core.presentation.utils.LocalAppDimens
 import com.intensityrecords.app.mobility.domain.mobilityCategories
 import com.intensityrecords.app.mobility.presentation.mobility_screen.component.MobilityCard
 import org.jetbrains.compose.resources.Font
@@ -46,19 +47,21 @@ fun MobilityScreenRoot(
 }
 
 @Composable
-fun MobilityScreen(navController: NavController,isWideScreen: Boolean) {
+fun MobilityScreen(navController: NavController, isWideScreen: Boolean) {
     FitnessAppTheme {
         BoxWithConstraints(
             modifier = Modifier
                 .fillMaxSize()
                 .background(DarkGradient)
         ) {
-            val contentPadding = if (isWideScreen) 58.dp else 16.dp
+
+            val dimens = LocalAppDimens.current
+
 
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = contentPadding, vertical = 14.dp),
+                    .padding(horizontal = dimens.horizontalContentPadding, vertical = 2.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
@@ -75,32 +78,25 @@ fun MobilityScreen(navController: NavController,isWideScreen: Boolean) {
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                if (isWideScreen) {
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(2),
-                        horizontalArrangement = Arrangement.spacedBy(24.dp),
-                        verticalArrangement = Arrangement.spacedBy(24.dp),
-                        contentPadding = PaddingValues(horizontal = 4.dp, vertical = 16.dp),
-                        modifier = Modifier.fillMaxWidth(0.85f)
-                    ) {
-                        items(mobilityCategories) { item ->
-                            MobilityCard(item = item, isWideScreen = isWideScreen)
-                        }
-                    }
+                val gridWidth = if (isWideScreen) 0.85f else 1f
 
-                } else {
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(1),
-                        horizontalArrangement = Arrangement.spacedBy(24.dp),
-                        verticalArrangement = Arrangement.spacedBy(24.dp),
-                        contentPadding = PaddingValues(horizontal = 4.dp, vertical = 16.dp),
-                        modifier = Modifier.fillMaxWidth(0.85f)
-                    ) {
-                        items(mobilityCategories) { item ->
-                            MobilityCard(item = item, isWideScreen = isWideScreen)
-                        }
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    horizontalArrangement = Arrangement.spacedBy(if (isWideScreen) 24.dp else 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(24.dp),
+                    modifier = Modifier.fillMaxWidth(gridWidth).fillMaxSize(),
+                    contentPadding = PaddingValues(
+                        top = 16.dp,
+                        bottom = 120.dp, // This replaces the external Spacer
+                        start = 4.dp,
+                        end = 4.dp
+                    )
+                ) {
+                    items(mobilityCategories) { item ->
+                        MobilityCard(item = item, isWideScreen = isWideScreen)
                     }
                 }
+
 
                 Spacer(modifier = Modifier.height(40.dp))
 

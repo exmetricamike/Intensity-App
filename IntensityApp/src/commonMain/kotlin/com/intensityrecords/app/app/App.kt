@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -35,6 +36,9 @@ import com.intensityrecord.core.presentation.DarkGradient
 import com.intensityrecord.core.presentation.FitnessAppTheme
 import com.intensityrecords.app.core.presentation.components.AppHeader
 import com.intensityrecords.app.core.presentation.components.CustomBottomBar
+import com.intensityrecords.app.core.presentation.utils.CompactDimens
+import com.intensityrecords.app.core.presentation.utils.ExpandedDimens
+import com.intensityrecords.app.core.presentation.utils.LocalAppDimens
 import com.intensityrecords.app.core.presentation.utils.currentDeviceConfiguration
 import com.intensityrecords.app.home.presentation.home_screen.HomeScreenRoot
 import com.intensityrecords.app.home.presentation.video_detail_screen.VideoDetailScreen
@@ -58,110 +62,114 @@ fun App() {
         {
             val isWideScreen = currentDeviceConfiguration().isWideScreen
             val animationDuration = if (isWideScreen) 500 else 300
+            val dimens = if (!isWideScreen) CompactDimens else ExpandedDimens
 
-            val navController = rememberNavController()
-            val currentBackStackEntry by navController.currentBackStackEntryAsState()
-            val currentDestination = currentBackStackEntry?.destination
+            CompositionLocalProvider(LocalAppDimens provides dimens) {
+                val navController = rememberNavController()
+                val currentBackStackEntry by navController.currentBackStackEntryAsState()
+                val currentDestination = currentBackStackEntry?.destination
 
-            val currentTab = when {
-                currentDestination?.hasRoute<Route.Home>() == true -> "Home"
-                currentDestination?.hasRoute<Route.Live>() == true -> "Live"
-                currentDestination?.hasRoute<Route.WorkOuts>() == true ||
-                        currentDestination?.hasRoute<Route.WorkOutsDetailsScreen>() == true -> "Workouts"
+                val currentTab = when {
+                    currentDestination?.hasRoute<Route.Home>() == true -> "Home"
+                    currentDestination?.hasRoute<Route.Live>() == true -> "Live"
+                    currentDestination?.hasRoute<Route.WorkOuts>() == true ||
+                            currentDestination?.hasRoute<Route.WorkOutsDetailsScreen>() == true -> "Workouts"
 
-                currentDestination?.hasRoute<Route.Mobility>() == true -> "Mobility"
-                else -> "Home"
-            }
-
-            Scaffold(
-                containerColor = Color.Transparent,
-                modifier = Modifier.windowInsetsPadding(WindowInsets.safeDrawing),
-                topBar = {
-                    AppHeader()
-                },
-                bottomBar = {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .navigationBarsPadding()
-                            .padding(bottom = 10.dp),
-                        contentAlignment = Alignment.BottomCenter
-                    ) {
-                        CustomBottomBar(
-                            isWideScreen = isWideScreen,
-                            currentTab = currentTab,
-                            navController = navController
-                        )
-                    }
+                    currentDestination?.hasRoute<Route.Mobility>() == true -> "Mobility"
+                    else -> "Home"
                 }
-            ) { innerPadding ->
-                NavHost(
-                    navController = navController,
-                    startDestination = Route.Home,
-                    modifier = Modifier.padding(innerPadding)
-                ) {
-                    composable<Route.Home>(
-                        enterTransition = { fadeIn(animationSpec = tween(animationDuration)) },
-                        exitTransition = { fadeOut(animationSpec = tween(animationDuration)) },
-                        popEnterTransition = { fadeIn(animationSpec = tween(animationDuration)) },
-                        popExitTransition = { fadeOut(animationSpec = tween(animationDuration)) }
-                    ) {
-                        HomeScreenRoot(navController, isWideScreen)
-                    }
 
-                    composable<Route.VideoDetail>(
-                        enterTransition = { fadeIn(animationSpec = tween(animationDuration)) },
-                        exitTransition = { fadeOut(animationSpec = tween(animationDuration)) },
-                        popEnterTransition = { fadeIn(animationSpec = tween(animationDuration)) },
-                        popExitTransition = { fadeOut(animationSpec = tween(animationDuration)) }
-                    ) {
-                        VideoDetailScreen(navController, isWideScreen)
-                    }
-
-                    composable<Route.Live>(
-                        enterTransition = { fadeIn(animationSpec = tween(animationDuration)) },
-                        exitTransition = { fadeOut(animationSpec = tween(animationDuration)) },
-                        popEnterTransition = { fadeIn(animationSpec = tween(animationDuration)) },
-                        popExitTransition = { fadeOut(animationSpec = tween(animationDuration)) }
-                    ) {
-                        LiveScreenRoot(navController, isWideScreen)
-                    }
-
-                    composable<Route.WorkOuts>(
-                        enterTransition = { fadeIn(animationSpec = tween(animationDuration)) },
-                        exitTransition = { fadeOut(animationSpec = tween(animationDuration)) },
-                        popEnterTransition = { fadeIn(animationSpec = tween(animationDuration)) },
-                        popExitTransition = { fadeOut(animationSpec = tween(animationDuration)) }
-                    ) {
-                        WorkoutScreenRoot(navController, isWideScreen)
-                    }
-
-                    // Arguments are now handled via Type-Safe object
-                    composable<Route.WorkOutsDetailsScreen> { backStackEntry ->
-                        val args = backStackEntry.toRoute<Route.WorkOutsDetailsScreen>()
-
-                        // Find the actual object using the ID from the Route
-                        val selectedItem = workoutCategories.find { it.title == args.id }
-
-                        if (selectedItem != null) {
-                            WorkoutDetailScreenRoot(
-                                navController = navController,
-                                workoutId = args.id,
-                                isWideScreen = isWideScreen
+                Scaffold(
+                    containerColor = Color.Transparent,
+                    modifier = Modifier.windowInsetsPadding(WindowInsets.safeDrawing),
+                    topBar = {
+                        AppHeader()
+                    },
+                    bottomBar = {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .navigationBarsPadding()
+                                .padding(bottom = 10.dp),
+                            contentAlignment = Alignment.BottomCenter
+                        ) {
+                            CustomBottomBar(
+                                isWideScreen = isWideScreen,
+                                currentTab = currentTab,
+                                navController = navController
                             )
                         }
                     }
-
-                    composable<Route.Mobility>(
-                        enterTransition = { fadeIn(animationSpec = tween(animationDuration)) },
-                        exitTransition = { fadeOut(animationSpec = tween(animationDuration)) },
-                        popEnterTransition = { fadeIn(animationSpec = tween(animationDuration)) },
-                        popExitTransition = { fadeOut(animationSpec = tween(animationDuration)) }
+                ) { innerPadding ->
+                    NavHost(
+                        navController = navController,
+                        startDestination = Route.Home,
+                        modifier = Modifier.padding(top = innerPadding.calculateTopPadding())
                     ) {
-                        MobilityScreenRoot(navController, isWideScreen)
-                    }
+                        composable<Route.Home>(
+                            enterTransition = { fadeIn(animationSpec = tween(animationDuration)) },
+                            exitTransition = { fadeOut(animationSpec = tween(animationDuration)) },
+                            popEnterTransition = { fadeIn(animationSpec = tween(animationDuration)) },
+                            popExitTransition = { fadeOut(animationSpec = tween(animationDuration)) }
+                        ) {
+                            HomeScreenRoot(navController, isWideScreen)
+                        }
 
+                        composable<Route.VideoDetail>(
+                            enterTransition = { fadeIn(animationSpec = tween(animationDuration)) },
+                            exitTransition = { fadeOut(animationSpec = tween(animationDuration)) },
+                            popEnterTransition = { fadeIn(animationSpec = tween(animationDuration)) },
+                            popExitTransition = { fadeOut(animationSpec = tween(animationDuration)) }
+                        ) {
+                            VideoDetailScreen(navController, isWideScreen)
+                        }
+
+                        composable<Route.Live>(
+                            enterTransition = { fadeIn(animationSpec = tween(animationDuration)) },
+                            exitTransition = { fadeOut(animationSpec = tween(animationDuration)) },
+                            popEnterTransition = { fadeIn(animationSpec = tween(animationDuration)) },
+                            popExitTransition = { fadeOut(animationSpec = tween(animationDuration)) }
+                        ) {
+                            LiveScreenRoot(navController, isWideScreen)
+                        }
+
+                        composable<Route.WorkOuts>(
+                            enterTransition = { fadeIn(animationSpec = tween(animationDuration)) },
+                            exitTransition = { fadeOut(animationSpec = tween(animationDuration)) },
+                            popEnterTransition = { fadeIn(animationSpec = tween(animationDuration)) },
+                            popExitTransition = { fadeOut(animationSpec = tween(animationDuration)) }
+                        ) {
+                            WorkoutScreenRoot(navController, isWideScreen)
+                        }
+
+                        // Arguments are now handled via Type-Safe object
+                        composable<Route.WorkOutsDetailsScreen> { backStackEntry ->
+                            val args = backStackEntry.toRoute<Route.WorkOutsDetailsScreen>()
+
+                            // Find the actual object using the ID from the Route
+                            val selectedItem = workoutCategories.find { it.title == args.id }
+
+                            if (selectedItem != null) {
+                                WorkoutDetailScreenRoot(
+                                    navController = navController,
+                                    workoutId = args.id,
+                                    isWideScreen = isWideScreen
+                                )
+                            }
+                        }
+
+                        composable<Route.Mobility>(
+                            enterTransition = { fadeIn(animationSpec = tween(animationDuration)) },
+                            exitTransition = { fadeOut(animationSpec = tween(animationDuration)) },
+                            popEnterTransition = { fadeIn(animationSpec = tween(animationDuration)) },
+                            popExitTransition = { fadeOut(animationSpec = tween(animationDuration)) }
+                        ) {
+                            MobilityScreenRoot(navController, isWideScreen)
+                        }
+
+                    }
                 }
+
             }
         }
     }
