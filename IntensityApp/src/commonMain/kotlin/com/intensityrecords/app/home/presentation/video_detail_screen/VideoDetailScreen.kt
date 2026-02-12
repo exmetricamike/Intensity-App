@@ -49,10 +49,9 @@ import com.intensityrecord.resources.Res
 import com.intensityrecord.resources._1
 import com.intensityrecord.resources.montserrat_regular
 import com.intensityrecords.app.core.presentation.utils.LocalAppDimens
-import com.multiplatform.webview.web.NativeWebView
 import com.multiplatform.webview.web.WebView
-import com.multiplatform.webview.web.WebViewFactoryParam
 import com.multiplatform.webview.web.rememberWebViewState
+import com.multiplatform.webview.web.rememberWebViewStateWithHTMLData
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.painterResource
 
@@ -285,8 +284,48 @@ fun VideoDetailScreen(navController: NavController, isWideScreen: Boolean) {
 fun VideoPlayerArea(width: Dp, height: Dp) {
     var isPlaying by remember { mutableStateOf(false) }
 
-    // YouTube Embed URL (Important: use /embed/ instead of /watch?v=)
-    val webViewState = rememberWebViewState("https://www.youtube.com/watch?v=Fkt6n72KGvo&t=2s")
+    // Use iframe HTML with a proper baseUrl so the WebView sends a valid
+    // Referer header — YouTube error 153 occurs when Referer is missing/invalid
+    val iframeHtml = """
+    <html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="referrer" content="strict-origin-when-cross-origin">
+    </head>
+    <style>
+        * { margin: 0; padding: 0; }
+        body { background-color: black; overflow: hidden; }
+        .container { position: relative; width: 100%; height: 100%; }
+        iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+    </style>
+    <body>
+        <div class="container">
+            <iframe 
+                src="https://www.youtube.com/embed/Fkt6n72KGvo?si=TS6HeV-lj6Jvk-LR" 
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowfullscreen
+                referrerpolicy="strict-origin-when-cross-origin">
+            </iframe>
+        </div>
+    </body>
+    </html>
+    """.trimIndent()
+
+    // Load with baseUrl so WebView sends a proper Referer header to YouTube
+    val webViewState = rememberWebViewStateWithHTMLData(
+        data = iframeHtml,
+        baseUrl = "https://www.youtube.com"
+    )
+
+    // Enable JavaScript and DOM storage (required for YouTube player)
+    webViewState.webSettings.apply {
+        isJavaScriptEnabled = true
+        androidWebSettings.apply {
+            domStorageEnabled = true
+            mediaPlaybackRequiresUserGesture = false
+        }
+    }
 
     Box(
         modifier = Modifier
