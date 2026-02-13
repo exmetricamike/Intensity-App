@@ -104,7 +104,7 @@ fun App() {
                     NavHost(
                         navController = navController,
                         startDestination = Route.Home,
-                        modifier = Modifier.padding(top = innerPadding.calculateTopPadding())
+                        modifier = Modifier.padding(top = innerPadding.calculateTopPadding(), bottom = innerPadding.calculateBottomPadding())
                     ) {
                         composable<Route.Home>(
                             enterTransition = { fadeIn(animationSpec = tween(animationDuration)) },

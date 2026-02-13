@@ -31,6 +31,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -83,8 +84,10 @@ fun HeroSection(item: WorkoutItem, isWideScreen: Boolean) {
     }
 
     val borderWidth = if (isFocused) 3.dp else 1.dp
-    val elevationState by animateDpAsState(if (isActive) 6.5.dp else 2.dp)
+    val elevationState by animateDpAsState(if (isActive) 10.5.dp else 2.dp)
 
+    val textSize = if (isWideScreen) 14.sp else 10.sp
+    val surfaceHeight = if (isWideScreen) 45.dp else 30.dp
 
     Card(
         modifier = Modifier
@@ -93,12 +96,12 @@ fun HeroSection(item: WorkoutItem, isWideScreen: Boolean) {
             .shadow(
                 elevation = elevationState,
                 shape = RoundedCornerShape(24.dp),
-                spotColor = PrimaryAccent.copy(alpha = 0.4f),
-                ambientColor = PrimaryAccent.copy(alpha = 0.4f)
+                spotColor = PrimaryAccent.copy(alpha = 0.6f),
+                ambientColor = PrimaryAccent.copy(alpha = 0.6f)
             )
             .clip(RoundedCornerShape(24.dp))
             .border(BorderStroke(borderWidth, borderBrush), RoundedCornerShape(24.dp))
-            .focusable(interactionSource = interactionSource)
+//            .focusable(interactionSource = interactionSource)
             .clickable(interactionSource = interactionSource, indication = null) { },
         colors = CardDefaults.cardColors(containerColor = CardBackground),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
@@ -164,12 +167,33 @@ fun HeroSection(item: WorkoutItem, isWideScreen: Boolean) {
                 Spacer(modifier = Modifier.height(12.dp))
 
 
-                Text(
-                    text = "12 sessions this month · ${item.duration} · ${item.level} / High",
-                    color = Color.LightGray,
-                    fontSize = 16.sp,
-                    fontFamily = FontFamily(Font(Res.font.montserrat_regular))
-                )
+//                Text(
+//                    text = "12 sessions this month · ${item.duration} · ${item.level} / High",
+//                    color = Color.White,
+//                    fontSize = 16.sp,
+//                    fontFamily = FontFamily(Font(Res.font.montserrat_regular))
+//                )
+
+                Surface(
+                    color = PrimaryAccent.copy(alpha = 0.2f),
+                    shape = RoundedCornerShape(50),
+                    border = BorderStroke(1.dp, PrimaryAccent),
+                    modifier = Modifier.height(surfaceHeight)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center,
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 2.dp)
+                    ) {
+                        Text(
+                            text = "12 sessions this month · ${item.duration} · ${item.level} / High",
+                            color = PrimaryAccent,
+                            fontSize = textSize,
+                            fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
+                            fontWeight = FontWeight.Bold,
+                        )
+                    }
+                }
 
                 Spacer(modifier = Modifier.height(30.dp))
 
@@ -210,7 +234,7 @@ fun HeroSection(item: WorkoutItem, isWideScreen: Boolean) {
 
                 Text(
                     text = "Surprise workout selected by your coach",
-                    color = Color.Gray,
+                    color = Color.White,
                     fontSize = 14.sp,
                     fontFamily = FontFamily(Font(Res.font.montserrat_regular))
                 )

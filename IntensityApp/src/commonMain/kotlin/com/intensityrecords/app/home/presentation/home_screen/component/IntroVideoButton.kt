@@ -66,7 +66,7 @@ fun IntroVideoButton() {
                 .clip(CircleShape)
                 .background(Color(0xFF111111)) // Dark BG
                 .border(BorderStroke(borderWidth, borderBrush), CircleShape) // Gradient Border
-                .focusable(interactionSource = interactionSource)
+//                .focusable(interactionSource = interactionSource)
                 .clickable { /* Play */ }
                 .padding(start = 8.dp, end = 24.dp),
             verticalAlignment = Alignment.CenterVertically

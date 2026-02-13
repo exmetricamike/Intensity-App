@@ -82,8 +82,8 @@ fun MobilityScreen(navController: NavController, isWideScreen: Boolean) {
 
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(2),
-                    horizontalArrangement = Arrangement.spacedBy(if (isWideScreen) 24.dp else 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(24.dp),
+                    horizontalArrangement = Arrangement.spacedBy(if (isWideScreen) 25.dp else 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(if(isWideScreen) 45.dp else 24.dp),
                     modifier = Modifier.fillMaxWidth(gridWidth).fillMaxSize(),
                     contentPadding = PaddingValues(
                         top = 16.dp,
@@ -93,12 +93,13 @@ fun MobilityScreen(navController: NavController, isWideScreen: Boolean) {
                     )
                 ) {
                     items(mobilityCategories) { item ->
-                        MobilityCard(item = item, isWideScreen = isWideScreen)
+                        MobilityCard(item = item, isWideScreen = isWideScreen, dimens = dimens)
+                        Spacer(modifier = Modifier.height(40.dp))
                     }
                 }
 
 
-                Spacer(modifier = Modifier.height(40.dp))
+                Spacer(modifier = Modifier.height(120.dp))
 
             }
 

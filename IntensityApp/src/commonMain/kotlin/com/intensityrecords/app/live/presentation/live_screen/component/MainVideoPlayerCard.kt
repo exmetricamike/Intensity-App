@@ -11,6 +11,7 @@ import androidx.compose.foundation.focusable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -24,6 +25,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.rounded.AccessTime
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -41,6 +43,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.intensityrecord.core.presentation.CardBackground
@@ -49,6 +52,7 @@ import com.intensityrecord.core.presentation.PrimaryAccent
 import com.intensityrecord.core.presentation.TextWhite
 import com.intensityrecord.resources.Res
 import com.intensityrecord.resources.montserrat_regular
+import com.intensityrecord.resources.montserrat_bold
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.painterResource
 import com.intensityrecord.resources._4
@@ -83,6 +87,10 @@ fun MainVideoPlayerCard(isWideScreen: Boolean) {
         GlowBorderBrush
     }
 
+    val textSize = if (isWideScreen) 14.sp else 10.sp
+    val surfaceHeight = if (isWideScreen) 45.dp else 30.dp
+
+
     Box(
         modifier = Modifier
             .width(cardWidth)
@@ -116,28 +124,28 @@ fun MainVideoPlayerCard(isWideScreen: Boolean) {
                 .background(Color.Black.copy(alpha = 0.4f))
         )
 
-        Box(
-            modifier = Modifier.align(Alignment.Center),
-            contentAlignment = Alignment.Center
-        ) {
-            Canvas(modifier = Modifier.size(80.dp)) {
-                drawRoundRect(
-                    color = PrimaryAccent,
-                    size = size,
-                    cornerRadius = CornerRadius(100f, 100f),
-                    style = Stroke(
-                        width = 4.dp.toPx(),
-                        pathEffect = PathEffect.dashPathEffect(floatArrayOf(20f, 20f), 0f)
-                    )
-                )
-            }
-            Icon(
-                imageVector = Icons.Filled.PlayArrow,
-                contentDescription = "Play",
-                tint = PrimaryAccent,
-                modifier = Modifier.size(40.dp)
-            )
-        }
+//        Box(
+//            modifier = Modifier.align(Alignment.Center),
+//            contentAlignment = Alignment.Center
+//        ) {
+//            Canvas(modifier = Modifier.size(80.dp)) {
+//                drawRoundRect(
+//                    color = PrimaryAccent,
+//                    size = size,
+//                    cornerRadius = CornerRadius(100f, 100f),
+//                    style = Stroke(
+//                        width = 4.dp.toPx(),
+//                        pathEffect = PathEffect.dashPathEffect(floatArrayOf(20f, 20f), 0f)
+//                    )
+//                )
+//            }
+//            Icon(
+//                imageVector = Icons.Filled.PlayArrow,
+//                contentDescription = "Play",
+//                tint = PrimaryAccent,
+//                modifier = Modifier.size(40.dp)
+//            )
+//        }
 
         Row(
             modifier = Modifier
@@ -145,21 +153,49 @@ fun MainVideoPlayerCard(isWideScreen: Boolean) {
                 .padding(bottom = 24.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                imageVector = Icons.Rounded.AccessTime,
-                contentDescription = null,
-                tint = TextWhite,
-                modifier = Modifier.size(18.dp)
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                text = "15-20 min",
-                style = TextStyle(
-                    color = TextWhite,
-                    fontSize = 16.sp,
-                    fontFamily = FontFamily(Font(Res.font.montserrat_regular))
-                )
-            )
+            Surface(
+                color = PrimaryAccent.copy(alpha = 0.2f),
+                shape = RoundedCornerShape(50),
+                border = BorderStroke(1.dp, PrimaryAccent),
+                modifier = Modifier.height(surfaceHeight)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 2.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.AccessTime,
+                        contentDescription = null,
+                        tint = PrimaryAccent,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "15-20 MIN",
+                        color = PrimaryAccent,
+                        fontSize = textSize,
+                        fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
+                        fontWeight = FontWeight.Bold,
+                    )
+                }
+            }
+//            Icon(
+//                imageVector = Icons.Rounded.AccessTime,
+//                contentDescription = null,
+//                tint = TextWhite,
+//                modifier = Modifier.size(18.dp)
+//            )
+//            Spacer(modifier = Modifier.width(8.dp))
+//            Text(
+//                text = "15-20 min",
+//                style = TextStyle(
+//                    color = TextWhite,
+//                    fontSize = 16.sp,
+//                    fontFamily = FontFamily(Font(Res.font.montserrat_regular))
+//                )
+//            )
         }
+
     }
 }

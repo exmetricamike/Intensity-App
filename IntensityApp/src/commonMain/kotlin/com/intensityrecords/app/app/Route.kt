@@ -4,19 +4,6 @@ import kotlinx.serialization.Serializable
 
 sealed interface Route {
 
-    // --- Zensi sensor monitoring ---
-    @Serializable
-    data class SensorSettings(val padId: String) : Route
-
-    @Serializable
-    data class Calibrate(val padId: String) : Route
-
-    @Serializable
-    data class Chart(val sensorName: String) : Route
-
-    @Serializable
-    data class BookDetail(val id: String) : Route
-
     @Serializable
     data object Home : Route
 

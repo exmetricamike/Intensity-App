@@ -53,7 +53,7 @@ fun LargePlayButton() {
             .clip(CircleShape)
             .background(containerColor)
             .border(BorderStroke(2.dp, borderBrush), CircleShape)
-            .focusable(interactionSource = interactionSource)
+//            .focusable(interactionSource = interactionSource)
             .clickable(interactionSource = interactionSource, indication = null) { },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center

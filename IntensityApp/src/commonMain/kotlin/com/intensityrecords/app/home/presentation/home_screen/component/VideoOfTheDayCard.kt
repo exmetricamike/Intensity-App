@@ -10,8 +10,12 @@ import androidx.compose.foundation.focusable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,6 +24,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -52,7 +57,6 @@ import com.intensityrecords.app.core.presentation.utils.LocalAppDimens
 
 @Composable
 fun VideoOfTheDayCard(navController: NavController, isWideScreen: Boolean) {
-    val height = if (isWideScreen) 260.dp else 180.dp
     val dimens = LocalAppDimens.current
 
     val interactionSource = remember { MutableInteractionSource() }
@@ -86,6 +90,10 @@ fun VideoOfTheDayCard(navController: NavController, isWideScreen: Boolean) {
     // Standard elevation for depth, but NO Green spotColor (removes the "whole border" glow)
     val elevationState by animateDpAsState(if (isActive) 9.dp else 4.dp)
 
+    val textSize = if (isWideScreen) 14.sp else 10.sp
+    val surfaceHeight = if (isWideScreen) 45.dp else 30.dp
+    val buttonElevation by animateDpAsState(if (isActive) 20.dp else 0.dp)
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -99,7 +107,7 @@ fun VideoOfTheDayCard(navController: NavController, isWideScreen: Boolean) {
             .clip(RoundedCornerShape(dimens.cornerRadius))
             .background(CardBackground)
             .border(BorderStroke(borderWidth, borderBrush), RoundedCornerShape(dimens.cornerRadius))
-            .focusable(interactionSource = interactionSource)
+//            .focusable(interactionSource = interactionSource)
             .clickable(
                 interactionSource = interactionSource,
                 indication = null
@@ -121,13 +129,16 @@ fun VideoOfTheDayCard(navController: NavController, isWideScreen: Boolean) {
             modifier = Modifier.fillMaxSize().background(
                 Brush.horizontalGradient(
                     colors = listOf(Color.Black.copy(alpha = 0.9f), Color.Transparent),
-                    startX = 0f, endX = 1000f
+                    startX = 0f, endX = 1500f
                 )
             )
         )
 
         // Text Content
-        Column(modifier = Modifier.align(Alignment.CenterStart).padding(dimens.paddingLarge).fillMaxWidth(0.7f)) {
+        Column(
+            modifier = Modifier.align(Alignment.CenterStart).padding(dimens.paddingLarge)
+                .fillMaxWidth(0.7f)
+        ) {
             Text(
                 "VIDEO OF THE DAY",
                 style = TextStyle(
@@ -137,13 +148,49 @@ fun VideoOfTheDayCard(navController: NavController, isWideScreen: Boolean) {
                 ),
                 color = TextWhite
             )
-            Spacer(modifier = Modifier.height(6.dp))
+            Spacer(modifier = Modifier.height(8.dp))
+            Surface(
+                color = PrimaryAccent.copy(alpha = 0.2f),
+                shape = RoundedCornerShape(50),
+                border = BorderStroke(1.dp, PrimaryAccent),
+                modifier = Modifier.height(surfaceHeight)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 2.dp)
+                ) {
+                    Text(
+                        text = "8 min",
+                        color = PrimaryAccent,
+                        fontSize = textSize,
+                        fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
+                        fontWeight = FontWeight.Bold,
+                    )
+                    Text(
+                        text = " | ABS | ",
+                        color = Color.White,
+                        fontSize = textSize,
+                        fontFamily = FontFamily(Font(Res.font.montserrat_regular)),
+                        fontWeight = FontWeight.Bold,
+                    )
+                    Text(
+                        text = "180 KCAL",
+                        color = Color.White,
+                        fontSize = textSize,
+                        fontFamily = FontFamily(Font(Res.font.montserrat_regular)),
+
+                        fontWeight = FontWeight.Bold,
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(8.dp))
             Text(
                 "Today's Workout: Glutes & Core",
                 style = TextStyle(
                     fontWeight = FontWeight.Medium,
                     fontSize = dimens.bodyMedium,
-                    color = Color.LightGray,
+                    color = Color.White,
                     fontFamily = FontFamily(Font(Res.font.montserrat_regular))
                 )
             )
@@ -155,6 +202,12 @@ fun VideoOfTheDayCard(navController: NavController, isWideScreen: Boolean) {
                 colors = ButtonDefaults.buttonColors(containerColor = PrimaryAccent),
                 shape = RoundedCornerShape(24),
                 modifier = Modifier.height(dimens.buttonHeight)
+                    .shadow(
+                        elevation = buttonElevation,
+                        shape = RoundedCornerShape(24),
+                        spotColor = PrimaryAccent,
+                        ambientColor = PrimaryAccent
+                    )
             ) {
                 Text(
                     "START NOW",

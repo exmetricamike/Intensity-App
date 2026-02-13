@@ -89,7 +89,7 @@ fun WorkoutScreen(
                     color = Color.White,
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
-                    letterSpacing = 2.sp,
+                    letterSpacing = 1.5.sp,
                     fontFamily = FontFamily(Font(Res.font.montserrat_bold))
                 )
 
@@ -98,8 +98,8 @@ fun WorkoutScreen(
                 // 3. Single Unified Grid
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(columnsCount),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(22.dp),
+                    horizontalArrangement = Arrangement.spacedBy(25.dp),
+                    verticalArrangement = Arrangement.spacedBy(45.dp),
                     // Add bottom padding here so last items aren't cut off
                     contentPadding = PaddingValues(
                         top = 16.dp,

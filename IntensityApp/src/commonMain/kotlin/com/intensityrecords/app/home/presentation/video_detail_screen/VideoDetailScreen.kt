@@ -1,9 +1,13 @@
 package com.intensityrecords.app.home.presentation.video_detail_screen
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.focusable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -15,6 +19,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -22,9 +27,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.rounded.Layers
 import androidx.compose.material.icons.rounded.Schedule
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,6 +41,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
@@ -41,13 +52,16 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.intensityrecord.app.Route
 import com.intensityrecord.core.presentation.DarkGradient
 import com.intensityrecord.core.presentation.FitnessAppTheme
 import com.intensityrecord.core.presentation.PrimaryAccent
 import com.intensityrecord.core.presentation.TextWhite
 import com.intensityrecord.resources.Res
 import com.intensityrecord.resources._1
+import com.intensityrecord.resources.montserrat_bold
 import com.intensityrecord.resources.montserrat_regular
+import com.intensityrecords.app.core.domain.AppDimens
 import com.intensityrecords.app.core.presentation.utils.LocalAppDimens
 import com.multiplatform.webview.web.WebView
 import com.multiplatform.webview.web.rememberWebViewState
@@ -72,88 +86,66 @@ fun VideoDetailScreen(navController: NavController, isWideScreen: Boolean) {
             val contentPadding = if (isWideScreen) 58.dp else 16.dp
             val width = if (isWideScreen) 800.dp else screenWidth - 32.dp
             val height = if (isWideScreen) width / (16f / 9f) else 350.dp
+            val textSize = if (isWideScreen) 14.sp else 10.sp
+            val surfaceHeight = if (isWideScreen) 45.dp else 30.dp
 
+            // 1. Set up Focus Requester for the Video Area
+            val videoFocusRequester = remember { FocusRequester() }
 
-            Column(
+            LaunchedEffect(Unit) {
+                videoFocusRequester.requestFocus()
+            }
+
+            LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
                     .padding(horizontal = contentPadding, vertical = 24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                Spacer(modifier = Modifier.height(32.dp))
-
-                Text(
-                    text = "VIDEO OF THE DAY",
-                    style = TextStyle(
-                        fontWeight = FontWeight.Normal,
-                        fontSize = 28.sp,
-                        letterSpacing = 1.sp,
-                        fontFamily = FontFamily(Font(Res.font.montserrat_regular))
-                    ),
-                    color = TextWhite
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    text = "Glutes & Core  •  Intermediate  •  8 min",
-                    style = TextStyle(
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 14.sp,
-                        color = Color.Gray,
-                        fontFamily = FontFamily(Font(Res.font.montserrat_regular))
-                    )
-                )
-
-                Spacer(modifier = Modifier.height(32.dp))
-
-                VideoPlayerArea(width = width, height = height)
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Icon(
-                        imageVector = Icons.Rounded.Schedule,
-                        contentDescription = null,
-                        tint = Color.Gray,
-                        modifier = Modifier.size(16.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
+                // Header Text
+                item {
                     Text(
-                        text = "8 min",
+                        text = "VIDEO OF THE DAY",
                         style = TextStyle(
-                            color = Color.Gray,
-                            fontSize = 14.sp,
-                            fontFamily = FontFamily(Font(Res.font.montserrat_regular))
-                        )
+                            fontWeight = FontWeight.ExtraBold,
+                            fontSize = dimens.titleLarge,
+                            fontFamily = FontFamily(Font(Res.font.montserrat_bold))
+                        ),
+                        color = TextWhite
                     )
-
-                    Spacer(modifier = Modifier.width(24.dp))
-
-                    Icon(
-                        imageVector = Icons.Rounded.Layers, // Using "Layers" as closest match to stack icon
-                        contentDescription = null,
-                        tint = Color.Gray,
-                        modifier = Modifier.size(16.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = "Core Focus",
-                        style = TextStyle(
-                            color = Color.Gray,
-                            fontSize = 14.sp,
-                            fontFamily = FontFamily(Font(Res.font.montserrat_regular))
-                        )
-                    )
+                    Spacer(modifier = Modifier.height(32.dp))
                 }
 
-                // Bottom spacing to ensure content isn't hidden behind navbar
-                Spacer(modifier = Modifier.height(100.dp))
+                // Video Player Area (Now Focusable)
+                item {
+                    VideoPlayerArea(
+                        width = width,
+                        height = height,
+                        dimens = dimens,
+                    )
+                    Spacer(modifier = Modifier.height(24.dp))
+                }
+
+                // Stats Info
+                item {
+                    Surface(
+                        color = PrimaryAccent.copy(alpha = 0.2f),
+                        shape = RoundedCornerShape(50),
+                        border = BorderStroke(1.dp, PrimaryAccent),
+                        modifier = Modifier.height(surfaceHeight)
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center,
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 2.dp)
+                        ) {
+                            Text("8 MIN", color = PrimaryAccent, fontSize = textSize, fontWeight = FontWeight.Bold, fontFamily = FontFamily(Font(Res.font.montserrat_bold)))
+                            Text(" | ABS | ", color = Color.White, fontSize = textSize, fontWeight = FontWeight.Bold, fontFamily = FontFamily(Font(Res.font.montserrat_regular)))
+                            Text("180 KCAL", color = Color.White, fontSize = textSize, fontWeight = FontWeight.Bold, fontFamily = FontFamily(Font(Res.font.montserrat_regular)))
+                        }
+                    }
+                }
             }
         }
     }
@@ -281,8 +273,13 @@ fun VideoDetailScreen(navController: NavController, isWideScreen: Boolean) {
 
 
 @Composable
-fun VideoPlayerArea(width: Dp, height: Dp) {
+fun VideoPlayerArea(width: Dp, height: Dp,dimens: AppDimens) {
     var isPlaying by remember { mutableStateOf(false) }
+
+    // Focus Tracking
+    val interactionSource = remember { MutableInteractionSource() }
+    val isFocused by interactionSource.collectIsFocusedAsState()
+    val isActive = isFocused
 
     // Use iframe HTML with a proper baseUrl so the WebView sends a valid
     // Referer header — YouTube error 153 occurs when Referer is missing/invalid
@@ -334,6 +331,10 @@ fun VideoPlayerArea(width: Dp, height: Dp) {
             .clip(RoundedCornerShape(16.dp))
             .background(Color.Black)
             .border(1.dp, PrimaryAccent, RoundedCornerShape(16.dp))
+            .clickable(interactionSource = interactionSource, indication = null) {
+                isPlaying = true
+            }
+            .focusable(interactionSource = interactionSource)
     ) {
         if (isPlaying) {
             // This single component works for both Android and iOS
@@ -351,18 +352,44 @@ fun VideoPlayerArea(width: Dp, height: Dp) {
             )
 
             // Play Button Overlay
+//            Box(
+//                modifier = Modifier
+//                    .fillMaxSize()
+//                    .clickable { isPlaying = true },
+//                contentAlignment = Alignment.Center
+//            ) {
+//                Icon(
+//                    imageVector = Icons.Filled.PlayArrow,
+//                    contentDescription = "Play",
+//                    tint = PrimaryAccent,
+//                    modifier = Modifier.size(60.dp)
+//                )
+//            }
+
             Box(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .clickable { isPlaying = true },
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 32.dp)
+                    .clickable { isPlaying = true},
                 contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    imageVector = Icons.Filled.PlayArrow,
-                    contentDescription = "Play",
-                    tint = PrimaryAccent,
-                    modifier = Modifier.size(60.dp)
-                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Button(
+                        onClick = { isPlaying = true },
+                        colors = ButtonDefaults.buttonColors(containerColor = PrimaryAccent),
+                        shape = RoundedCornerShape(24),
+                        modifier = Modifier.height(dimens.buttonHeight)
+                    ) {
+                        Text(
+                            "START NOW",
+                            color = Color.Black,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = dimens.buttonText,
+                            fontFamily = FontFamily(Font(Res.font.montserrat_bold))
+                        )
+                    }
+                }
+
             }
         }
     }

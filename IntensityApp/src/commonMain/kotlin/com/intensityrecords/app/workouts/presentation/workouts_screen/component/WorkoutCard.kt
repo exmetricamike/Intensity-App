@@ -10,8 +10,10 @@ import androidx.compose.foundation.focusable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -65,9 +67,11 @@ fun WorkoutCard(
         Brush.horizontalGradient(
             colorStops = arrayOf(
                 0.0f to Color.Transparent,
-                0.35f to Color.Transparent,
-                0.5f to PrimaryAccent,
-                0.65f to Color.Transparent,
+                0.3f to Color.Transparent,       // Start fading in
+                0.45f to PrimaryAccent.copy(alpha = 0.5f), // Outer Glow
+                0.5f to PrimaryAccent,           // Center Bright Core
+                0.55f to PrimaryAccent.copy(alpha = 0.5f), // Outer Glow
+                0.7f to Color.Transparent,       // Fade out
                 1.0f to Color.Transparent
             )
         )
@@ -86,6 +90,8 @@ fun WorkoutCard(
 //        16f / 9f
 //    }
     val aspectRatioForCard = if (isWideScreen) 1.2f else 0.8f
+    val textSize = if (isWideScreen) 14.sp else 10.sp
+    val surfaceHeight = if (isWideScreen) 45.dp else 30.dp
 
     Card(
         modifier = modifier
@@ -93,12 +99,12 @@ fun WorkoutCard(
             .shadow(
                 elevation = elevationState,
                 shape = RoundedCornerShape(16.dp),
-                spotColor = PrimaryAccent.copy(alpha = 0.4f),
-                ambientColor = PrimaryAccent.copy(alpha = 0.4f)
+                spotColor = PrimaryAccent.copy(alpha = 0.6f),
+                ambientColor = PrimaryAccent.copy(alpha = 0.6f)
             )
             .clip(RoundedCornerShape(16.dp))
             .border(BorderStroke(borderWidth, borderBrush), RoundedCornerShape(16.dp))
-            .focusable(interactionSource = interactionSource)
+//            .focusable(interactionSource = interactionSource)
             .clickable(interactionSource = interactionSource, indication = null, onClick = onClick),
         colors = CardDefaults.cardColors(containerColor = CardBackground),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
@@ -129,35 +135,35 @@ fun WorkoutCard(
                     )
             )
 
-            Column(modifier = Modifier.padding(12.dp)) {
-                Surface(
-                    color = Color.Black.copy(alpha = 0.6f),
-                    shape = RoundedCornerShape(4.dp),
-                    border = BorderStroke(0.5.dp, PrimaryAccent.copy(alpha = 0.5f))
-                ) {
-                    Text(
-                        text = item.duration,
-                        color = PrimaryAccent,
-                        fontSize = 10.sp,
-                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
-                        fontWeight = FontWeight.Bold,
-                        fontFamily = FontFamily(Font(Res.font.montserrat_regular))
-                    )
-                }
-                Spacer(modifier = Modifier.height(4.dp))
-                Surface(
-                    color = Color.Black.copy(alpha = 0.6f),
-                    shape = RoundedCornerShape(4.dp)
-                ) {
-                    Text(
-                        text = item.level,
-                        color = Color.LightGray,
-                        fontSize = 9.sp,
-                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
-                        fontFamily = FontFamily(Font(Res.font.montserrat_regular))
-                    )
-                }
-            }
+//            Column(modifier = Modifier.padding(12.dp)) {
+//                Surface(
+//                    color = Color.Black.copy(alpha = 0.6f),
+//                    shape = RoundedCornerShape(4.dp),
+//                    border = BorderStroke(0.5.dp, PrimaryAccent.copy(alpha = 0.5f))
+//                ) {
+//                    Text(
+//                        text = item.duration,
+//                        color = PrimaryAccent,
+//                        fontSize = 10.sp,
+//                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+//                        fontWeight = FontWeight.Bold,
+//                        fontFamily = FontFamily(Font(Res.font.montserrat_regular))
+//                    )
+//                }
+//                Spacer(modifier = Modifier.height(4.dp))
+//                Surface(
+//                    color = Color.Black.copy(alpha = 0.6f),
+//                    shape = RoundedCornerShape(4.dp)
+//                ) {
+//                    Text(
+//                        text = item.level,
+//                        color = Color.LightGray,
+//                        fontSize = 9.sp,
+//                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+//                        fontFamily = FontFamily(Font(Res.font.montserrat_regular))
+//                    )
+//                }
+//            }
 
             Column(
                 modifier = Modifier
@@ -176,16 +182,37 @@ fun WorkoutCard(
                 Surface(
                     color = PrimaryAccent.copy(alpha = 0.2f),
                     shape = RoundedCornerShape(50),
-                    border = BorderStroke(1.dp, PrimaryAccent)
+                    border = BorderStroke(1.dp, PrimaryAccent),
+                    modifier = Modifier.height(surfaceHeight)
                 ) {
-                    Text(
-                        text = item.duration,
-                        color = PrimaryAccent,
-                        fontSize = 10.sp,
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 2.dp),
-                        fontWeight = FontWeight.Bold,
-                        fontFamily = FontFamily(Font(Res.font.montserrat_regular))
-                    )
+//                    Text(
+//                        text = item.duration,
+//                        color = PrimaryAccent,
+//                        fontSize = 10.sp,
+//                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 2.dp),
+//                        fontWeight = FontWeight.Bold,
+//                        fontFamily = FontFamily(Font(Res.font.montserrat_regular))
+//                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center,
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 2.dp)
+                    ) {
+                        Text(
+                            text = item.duration,
+                            color = PrimaryAccent,
+                            fontSize = textSize,
+                            fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
+                            fontWeight = FontWeight.Bold,
+                        )
+                        Text(
+                            text = " | 180 KCAL",
+                            color = Color.White,
+                            fontSize = textSize,
+                            fontFamily = FontFamily(Font(Res.font.montserrat_regular)),
+                            fontWeight = FontWeight.Bold,
+                        )
+                    }
                 }
             }
 

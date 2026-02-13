@@ -149,14 +149,15 @@ fun CustomBottomBar(
     currentTab: String = "Home",
     navController: NavController
 ) {
-    val barWidth = if (isWideScreen) 500.dp else 380.dp
-    val textSize = if (isWideScreen) 12.sp else 11.sp
-    val iconSize = if (isWideScreen) 20.dp else 16.dp
+    val barWidth = if (isWideScreen) 650.dp else 380.dp
+    val textSize = if (isWideScreen) 18.sp else 11.sp
+    val iconSize = if (isWideScreen) 35.dp else 16.dp
+    val barHeight = if (isWideScreen) 80.dp else 60.dp
 
     Box(
         modifier = Modifier
             .width(barWidth)
-            .height(60.dp)
+            .height(barHeight)
             .shadow(20.dp, CircleShape)
             .clip(CircleShape)
             .background(Color(0xFF050505).copy(alpha = 0.95f))
@@ -179,8 +180,8 @@ fun CustomBottomBar(
 
                 val isActive = (currentTab == label) || isFocused
 
-                val iconColor = if (isActive) PrimaryAccent else Color.Gray
-                val textColor = if (isActive) TextWhite else Color.Gray
+                val iconColor = if (isActive) PrimaryAccent else Color.LightGray
+                val textColor = if (isActive) TextWhite else Color.LightGray
 
                 val glowBrush = Brush.horizontalGradient(
                     colorStops = arrayOf(

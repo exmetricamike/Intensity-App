@@ -87,7 +87,7 @@ fun ContentCard(item: HomeItem, width: Dp, aspectRatio: Float, navController: Na
             .clip(RoundedCornerShape(dimens.cardCornerRadius))
             // Spotlight Border
             .border(BorderStroke(borderWidth, borderBrush), RoundedCornerShape(dimens.cardCornerRadius))
-            .focusable(interactionSource = interactionSource)
+//            .focusable(interactionSource = interactionSource)
             .clickable(interactionSource = interactionSource, indication = null) {
                 when (item.title) {
                     "Workout" -> {

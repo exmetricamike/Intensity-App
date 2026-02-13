@@ -10,8 +10,10 @@ import androidx.compose.foundation.focusable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,6 +28,7 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -39,6 +42,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -82,9 +86,11 @@ fun SessionCard(
     }
 
     val borderWidth = if (isFocused) 3.dp else 1.dp
-    val elevationState by animateDpAsState(if (isActive) 6.5.dp else 2.dp)
+    val elevationState by animateDpAsState(if (isActive) 8.5.dp else 2.dp)
     val cardWidth = if (isWideScreen) 280.dp else 170.dp
     val cardAspectRatio = if (isWideScreen) 1.2f else 0.85f
+    val textSize = if (isWideScreen) 14.sp else 10.sp
+    val surfaceHeight = if (isWideScreen) 45.dp else 30.dp
 
     Card(
         modifier = Modifier
@@ -93,12 +99,12 @@ fun SessionCard(
             .shadow(
                 elevation = elevationState,
                 shape = RoundedCornerShape(20.dp), // Matches the roundness in your image
-                spotColor = PrimaryAccent.copy(alpha = 0.5f),
-                ambientColor = PrimaryAccent.copy(alpha = 0.5f)
+                spotColor = PrimaryAccent.copy(alpha = 0.6f),
+                ambientColor = PrimaryAccent.copy(alpha = 0.6f)
             )
             .border(BorderStroke(borderWidth, borderBrush), RoundedCornerShape(20.dp))
             .clip(RoundedCornerShape(20.dp))
-            .focusable(interactionSource = interactionSource)
+//            .focusable(interactionSource = interactionSource)
             .clickable(interactionSource = interactionSource, indication = null, onClick = onClick),
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(containerColor = Color.Black) // Solid dark background
@@ -140,12 +146,33 @@ fun SessionCard(
 
                     Spacer(modifier = Modifier.height(4.dp))
 
-                    Text(
-                        text = "${session.duration} · ${session.level}",
-                        color = Color.Gray,
-                        fontSize = 12.sp,
-                        fontFamily = FontFamily(Font(Res.font.montserrat_regular))
-                    )
+                    Surface(
+                        color = PrimaryAccent.copy(alpha = 0.2f),
+                        shape = RoundedCornerShape(50),
+                        border = BorderStroke(1.dp, PrimaryAccent),
+                        modifier = Modifier.height(surfaceHeight).fillMaxWidth()
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center,
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 2.dp)
+                        ) {
+                            Text(
+                                text = session.duration.uppercase(),
+                                color = PrimaryAccent,
+                                fontSize = textSize,
+                                fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
+                                fontWeight = FontWeight.Bold,
+                            )
+                            Text(
+                                text = " | 180 KCAL",
+                                color = Color.White,
+                                fontSize = textSize,
+                                fontFamily = FontFamily(Font(Res.font.montserrat_regular)),
+                                fontWeight = FontWeight.Bold,
+                            )
+                        }
+                    }
                 }
             }
 
