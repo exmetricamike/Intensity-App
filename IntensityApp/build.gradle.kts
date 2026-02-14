@@ -75,6 +75,8 @@ kotlin {
             implementation(libs.multiplatform.settings.no.arg)
 
             implementation(libs.material.icons.extended)
+            implementation(libs.material3.adaptive)
+            implementation("io.github.kevinnzou:compose-webview-multiplatform:1.9.40")
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)

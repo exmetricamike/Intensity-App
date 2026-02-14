@@ -2,7 +2,7 @@ package com.intensityrecord
 
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import com.intensityrecord.app.App
+import com.intensityrecords.app.app.App
 import com.intensityrecord.di.initKoin
 
 fun main() {
