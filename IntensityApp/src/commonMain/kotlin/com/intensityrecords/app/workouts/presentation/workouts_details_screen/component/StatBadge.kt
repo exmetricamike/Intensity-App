@@ -19,6 +19,7 @@ import org.jetbrains.compose.resources.Font
 import com.intensityrecord.resources.Res
 import com.intensityrecord.resources.montserrat_bold
 import com.intensityrecord.resources.montserrat_regular
+import com.intensityrecords.app.core.presentation.captions
 
 
 @Composable
@@ -33,8 +34,7 @@ fun StatBadge(icon: ImageVector, text: String) {
         Spacer(modifier = Modifier.width(8.dp))
         Text(
             text = text,
-            color = Color.White,
-            fontSize = 14.sp,
+            style = captions,
             fontFamily = FontFamily(Font(Res.font.montserrat_regular))
         )
     }

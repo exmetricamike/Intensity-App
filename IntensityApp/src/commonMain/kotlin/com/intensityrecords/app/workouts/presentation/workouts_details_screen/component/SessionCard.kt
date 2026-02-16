@@ -56,6 +56,8 @@ import com.intensityrecord.resources.Res
 import com.intensityrecord.resources.montserrat_bold
 import com.intensityrecord.resources.montserrat_regular
 import com.intensityrecords.app.core.domain.AppDimens
+import com.intensityrecords.app.core.presentation.chipButtonText
+import com.intensityrecords.app.core.presentation.sessionText
 
 
 @Composable
@@ -68,7 +70,6 @@ fun SessionCard(
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
     val isHovered by interactionSource.collectIsHoveredAsState()
-    val isSelected = isFocused || isHovered
     val isActive = isFocused || isHovered
 
     val borderBrush = if (isActive) {
@@ -104,7 +105,6 @@ fun SessionCard(
             )
             .border(BorderStroke(borderWidth, borderBrush), RoundedCornerShape(20.dp))
             .clip(RoundedCornerShape(20.dp))
-//            .focusable(interactionSource = interactionSource)
             .clickable(interactionSource = interactionSource, indication = null, onClick = onClick),
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(containerColor = Color.Black) // Solid dark background
@@ -136,12 +136,10 @@ fun SessionCard(
                 ) {
                     Text(
                         text = session.title,
-                        color = Color.White,
-                        fontSize = dimens.sessionTitle, // Larger font like in your image
-                        fontWeight = FontWeight.SemiBold,
                         fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
+                        style = sessionText.copy(fontSize = dimens.sessionTitle)
                     )
 
                     Spacer(modifier = Modifier.height(4.dp))
@@ -159,17 +157,16 @@ fun SessionCard(
                         ) {
                             Text(
                                 text = session.duration.uppercase(),
-                                color = PrimaryAccent,
-                                fontSize = textSize,
                                 fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
-                                fontWeight = FontWeight.Bold,
+                                style = chipButtonText.copy(fontSize = textSize)
                             )
                             Text(
                                 text = " | 180 KCAL",
-                                color = Color.White,
-                                fontSize = textSize,
+                                style = chipButtonText.copy(
+                                    fontSize = textSize,
+                                    color = Color.White
+                                ),
                                 fontFamily = FontFamily(Font(Res.font.montserrat_regular)),
-                                fontWeight = FontWeight.Bold,
                             )
                         }
                     }

@@ -48,16 +48,13 @@ fun IntroVideoButton() {
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
 
-    // Border Logic
     val borderBrush = if (isFocused) SolidColor(PrimaryAccent) else GlowBorderBrush
     val borderWidth = if (isFocused) 2.dp else 1.dp
 
-    // Outer Box ensures the button is centered in the screen
     Box(
         modifier = Modifier.fillMaxWidth(),
         contentAlignment = Alignment.CenterStart
     ) {
-        // The Pill Button itself
         Row(
             modifier = Modifier
                 .widthIn(min = 250.dp, max = 300.dp) // Constrain width (Pill shape)
@@ -66,7 +63,6 @@ fun IntroVideoButton() {
                 .clip(CircleShape)
                 .background(Color(0xFF111111)) // Dark BG
                 .border(BorderStroke(borderWidth, borderBrush), CircleShape) // Gradient Border
-//                .focusable(interactionSource = interactionSource)
                 .clickable { /* Play */ }
                 .padding(start = 8.dp, end = 24.dp),
             verticalAlignment = Alignment.CenterVertically
@@ -89,7 +85,7 @@ fun IntroVideoButton() {
                 style = TextStyle(
                     fontWeight = FontWeight.Medium,
                     fontSize = 16.sp,
-                    color = TextWhite,
+                    color = Color.White,
                     fontFamily = FontFamily(Font(Res.font.montserrat_bold))
                 )
             )

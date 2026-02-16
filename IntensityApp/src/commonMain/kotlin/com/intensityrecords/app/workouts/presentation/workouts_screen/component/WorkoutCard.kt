@@ -49,6 +49,8 @@ import com.intensityrecord.resources.Res
 import com.intensityrecord.resources.montserrat_bold
 import com.intensityrecord.resources.montserrat_regular
 import com.intensityrecords.app.core.domain.AppDimens
+import com.intensityrecords.app.core.presentation.cardTitle
+import com.intensityrecords.app.core.presentation.chipButtonText
 
 @Composable
 fun WorkoutCard(
@@ -79,16 +81,8 @@ fun WorkoutCard(
         GlowBorderBrush
     }
 
-//    val borderWidth = if (isFocused) 3.dp else 1.dp
-//    val elevationState by animateDpAsState(if (isActive) 6.5.dp else 2.dp)
     val borderWidth = if (isActive) dimens.borderWidthActive else dimens.borderWidthNormal
     val elevationState by animateDpAsState(if (isActive) dimens.elevationStateActive else dimens.elevationStateNormal)
-
-//    val aspectRatioForCard = if (isWideScreen) {
-//        1.2f
-//    } else {
-//        16f / 9f
-//    }
     val aspectRatioForCard = if (isWideScreen) 1.2f else 0.8f
     val textSize = if (isWideScreen) 14.sp else 10.sp
     val surfaceHeight = if (isWideScreen) 45.dp else 30.dp
@@ -104,7 +98,6 @@ fun WorkoutCard(
             )
             .clip(RoundedCornerShape(16.dp))
             .border(BorderStroke(borderWidth, borderBrush), RoundedCornerShape(16.dp))
-//            .focusable(interactionSource = interactionSource)
             .clickable(interactionSource = interactionSource, indication = null, onClick = onClick),
         colors = CardDefaults.cardColors(containerColor = CardBackground),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
@@ -135,36 +128,6 @@ fun WorkoutCard(
                     )
             )
 
-//            Column(modifier = Modifier.padding(12.dp)) {
-//                Surface(
-//                    color = Color.Black.copy(alpha = 0.6f),
-//                    shape = RoundedCornerShape(4.dp),
-//                    border = BorderStroke(0.5.dp, PrimaryAccent.copy(alpha = 0.5f))
-//                ) {
-//                    Text(
-//                        text = item.duration,
-//                        color = PrimaryAccent,
-//                        fontSize = 10.sp,
-//                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
-//                        fontWeight = FontWeight.Bold,
-//                        fontFamily = FontFamily(Font(Res.font.montserrat_regular))
-//                    )
-//                }
-//                Spacer(modifier = Modifier.height(4.dp))
-//                Surface(
-//                    color = Color.Black.copy(alpha = 0.6f),
-//                    shape = RoundedCornerShape(4.dp)
-//                ) {
-//                    Text(
-//                        text = item.level,
-//                        color = Color.LightGray,
-//                        fontSize = 9.sp,
-//                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
-//                        fontFamily = FontFamily(Font(Res.font.montserrat_regular))
-//                    )
-//                }
-//            }
-
             Column(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
@@ -173,9 +136,7 @@ fun WorkoutCard(
             ) {
                 Text(
                     text = item.title,
-                    color = Color.White,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.ExtraBold,
+                    style = cardTitle,
                     fontFamily = FontFamily(Font(Res.font.montserrat_bold))
                 )
                 Spacer(modifier = Modifier.height(14.dp))
@@ -185,14 +146,6 @@ fun WorkoutCard(
                     border = BorderStroke(1.dp, PrimaryAccent),
                     modifier = Modifier.height(surfaceHeight)
                 ) {
-//                    Text(
-//                        text = item.duration,
-//                        color = PrimaryAccent,
-//                        fontSize = 10.sp,
-//                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 2.dp),
-//                        fontWeight = FontWeight.Bold,
-//                        fontFamily = FontFamily(Font(Res.font.montserrat_regular))
-//                    )
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center,
@@ -200,17 +153,13 @@ fun WorkoutCard(
                     ) {
                         Text(
                             text = item.duration,
-                            color = PrimaryAccent,
-                            fontSize = textSize,
                             fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
-                            fontWeight = FontWeight.Bold,
+                            style = chipButtonText.copy(fontSize = textSize),
                         )
                         Text(
                             text = " | 180 KCAL",
-                            color = Color.White,
-                            fontSize = textSize,
                             fontFamily = FontFamily(Font(Res.font.montserrat_regular)),
-                            fontWeight = FontWeight.Bold,
+                            style = chipButtonText.copy(fontSize = textSize, color = Color.White),
                         )
                     }
                 }

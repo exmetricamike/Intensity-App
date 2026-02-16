@@ -87,9 +87,6 @@ fun WorkoutDetailScreen(
     isWideScreen: Boolean,
     onAction: (WorkOutsDetailAction) -> Unit,
 ) {
-
-    val contentPadding = if (isWideScreen) 58.dp else 16.dp
-
     val dimens = LocalAppDimens.current
 
     val pagerState = rememberPagerState(pageCount = { state.sessions.size })
@@ -103,20 +100,12 @@ fun WorkoutDetailScreen(
             .background(Color.Black) // or DarkGradient
             .verticalScroll(rememberScrollState())
     ) {
-        // Background Image Faded (Global background ambiance)
-//        Image(
-//            painter = painterResource(item.image),
-//            contentDescription = null,
-//            contentScale = ContentScale.Crop,
-//            modifier = Modifier.fillMaxSize().alpha(0.15f)
-//        )
 
         Column(
             modifier = Modifier
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally // Centers the indicator
         ) {
-            // Hero section needs horizontal padding
             Box(modifier = Modifier.padding(horizontal = dimens.horizontalContentPadding)) {
                 state.item?.let {
                     HeroSection(item = it, isWideScreen = isWideScreen)

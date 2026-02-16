@@ -46,13 +46,20 @@ import com.intensityrecord.resources.Res
 import com.intensityrecord.resources.montserrat_bold
 import com.intensityrecord.resources.montserrat_regular
 import com.intensityrecords.app.core.domain.AppDimens
+import com.intensityrecords.app.core.presentation.cardTitle
+import com.intensityrecords.app.core.presentation.chipButtonText
 import com.intensityrecords.app.mobility.domain.MobilityItem
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.painterResource
 
 
 @Composable
-fun MobilityCard(item: MobilityItem, modifier: Modifier = Modifier, isWideScreen: Boolean,dimens: AppDimens) {
+fun MobilityCard(
+    item: MobilityItem,
+    modifier: Modifier = Modifier,
+    isWideScreen: Boolean,
+    dimens: AppDimens
+) {
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
     val isHovered by interactionSource.collectIsHoveredAsState()
@@ -61,13 +68,13 @@ fun MobilityCard(item: MobilityItem, modifier: Modifier = Modifier, isWideScreen
     val borderBrush = if (isActive) {
         Brush.horizontalGradient(
             colorStops = arrayOf(
-                0.0f to Color.Transparent,
-                0.3f to Color.Transparent,       // Start fading in
-                0.45f to PrimaryAccent.copy(alpha = 0.5f), // Outer Glow
-                0.5f to PrimaryAccent,           // Center Bright Core
-                0.55f to PrimaryAccent.copy(alpha = 0.5f), // Outer Glow
-                0.7f to Color.Transparent,       // Fade out
-                1.0f to Color.Transparent
+                0.0f to PrimaryAccent.copy(alpha = 0.3f),
+                0.3f to PrimaryAccent.copy(alpha = 0.5f),
+                0.45f to PrimaryAccent.copy(alpha = 0.8f),
+                0.5f to PrimaryAccent,
+                0.55f to PrimaryAccent.copy(alpha = 0.8f),
+                0.7f to PrimaryAccent.copy(alpha = 0.5f),
+                1.0f to PrimaryAccent.copy(alpha = 0.3f)
             )
         )
     } else {
@@ -79,12 +86,6 @@ fun MobilityCard(item: MobilityItem, modifier: Modifier = Modifier, isWideScreen
 
     val borderWidth = if (isActive) dimens.borderWidthActive else dimens.borderWidthNormal
     val elevationState by animateDpAsState(if (isActive) dimens.elevationStateActive else dimens.elevationStateNormal)
-
-//    val aspectRatioForCard = if (isWideScreen) {
-//        1.5f
-//    } else {
-//        16f / 9f
-//    }
     val textSize = if (isWideScreen) 14.sp else 10.sp
     val surfaceHeight = if (isWideScreen) 45.dp else 30.dp
 
@@ -100,7 +101,6 @@ fun MobilityCard(item: MobilityItem, modifier: Modifier = Modifier, isWideScreen
             )
             .clip(RoundedCornerShape(16.dp))
             .border(BorderStroke(borderWidth, borderBrush), RoundedCornerShape(16.dp))
-//            .focusable(interactionSource = interactionSource)
             .clickable(interactionSource = interactionSource, indication = null) { },
         colors = CardDefaults.cardColors(containerColor = CardBackground),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
@@ -115,13 +115,13 @@ fun MobilityCard(item: MobilityItem, modifier: Modifier = Modifier, isWideScreen
 
             Text(
                 text = item.title,
-                color = Color.White,
-                fontSize = titleFontSize,
-                fontWeight = FontWeight.ExtraBold,
+                style = cardTitle.copy(
+                    fontSize = titleFontSize,
+                    letterSpacing = if (isWideScreen) 1.5.sp else 0.5.sp,
+                    textAlign = TextAlign.Center,
+                ),
                 modifier = Modifier.align(Alignment.Center).padding(8.dp), // Added padding
                 fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
-                letterSpacing = if (isWideScreen) 1.5.sp else 0.5.sp,
-                textAlign = TextAlign.Center // Ensure centered if text wraps
             )
 
             Column(
@@ -143,24 +143,18 @@ fun MobilityCard(item: MobilityItem, modifier: Modifier = Modifier, isWideScreen
                     ) {
                         Text(
                             text = "10 MIN",
-                            color = PrimaryAccent,
-                            fontSize = textSize,
                             fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
-                            fontWeight = FontWeight.Bold,
+                            style = chipButtonText.copy(fontSize = textSize)
                         )
                         Text(
                             text = " | LIGHT | ",
-                            color = Color.White,
-                            fontSize = textSize,
                             fontFamily = FontFamily(Font(Res.font.montserrat_regular)),
-                            fontWeight = FontWeight.Bold,
+                            style = chipButtonText.copy(fontSize = textSize, color = Color.White)
                         )
                         Text(
                             text = "180 KCAL",
-                            color = Color.White,
-                            fontSize = textSize,
                             fontFamily = FontFamily(Font(Res.font.montserrat_regular)),
-                            fontWeight = FontWeight.Bold,
+                            style = chipButtonText.copy(fontSize = textSize, color = Color.White)
                         )
                     }
                 }

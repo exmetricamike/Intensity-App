@@ -21,4 +21,7 @@ sealed interface Route {
 
     @Serializable
     data class WorkOutsDetailsScreen(val id: String) : Route
+
+    @Serializable
+    data object TimeTable : Route
 }

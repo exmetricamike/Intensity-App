@@ -43,6 +43,7 @@ import com.intensityrecords.app.core.presentation.utils.currentDeviceConfigurati
 import com.intensityrecords.app.home.presentation.home_screen.HomeScreenRoot
 import com.intensityrecords.app.home.presentation.video_detail_screen.VideoDetailScreen
 import com.intensityrecords.app.live.presentation.live_screen.LiveScreenRoot
+import com.intensityrecords.app.live.presentation.timetable_screen.TimeTableScreen
 import com.intensityrecords.app.mobility.presentation.mobility_screen.MobilityScreenRoot
 import com.intensityrecords.app.workouts.domain.workoutCategories
 import com.intensityrecords.app.workouts.presentation.workouts_details_screen.WorkoutDetailScreenRoot
@@ -71,7 +72,10 @@ fun App() {
 
                 val currentTab = when {
                     currentDestination?.hasRoute<Route.Home>() == true -> "Home"
-                    currentDestination?.hasRoute<Route.Live>() == true -> "Live"
+
+                    currentDestination?.hasRoute<Route.Live>() == true ||
+                            currentDestination?.hasRoute<Route.TimeTable>() == true -> "Live"
+
                     currentDestination?.hasRoute<Route.WorkOuts>() == true ||
                             currentDestination?.hasRoute<Route.WorkOutsDetailsScreen>() == true -> "Workouts"
 
@@ -104,7 +108,10 @@ fun App() {
                     NavHost(
                         navController = navController,
                         startDestination = Route.Home,
-                        modifier = Modifier.padding(top = innerPadding.calculateTopPadding(), bottom = innerPadding.calculateBottomPadding())
+                        modifier = Modifier.padding(
+                            top = innerPadding.calculateTopPadding(),
+                            bottom = innerPadding.calculateBottomPadding()
+                        )
                     ) {
                         composable<Route.Home>(
                             enterTransition = { fadeIn(animationSpec = tween(animationDuration)) },
@@ -131,6 +138,18 @@ fun App() {
                             popExitTransition = { fadeOut(animationSpec = tween(animationDuration)) }
                         ) {
                             LiveScreenRoot(navController, isWideScreen)
+                        }
+
+                        composable<Route.TimeTable>(
+                            enterTransition = { fadeIn(animationSpec = tween(animationDuration)) },
+                            exitTransition = { fadeOut(animationSpec = tween(animationDuration)) },
+                            popEnterTransition = { fadeIn(animationSpec = tween(animationDuration)) },
+                            popExitTransition = { fadeOut(animationSpec = tween(animationDuration)) }
+                        ) {
+                            TimeTableScreen(
+                                navController = navController,
+                                isWideScreen = isWideScreen
+                            )
                         }
 
                         composable<Route.WorkOuts>(

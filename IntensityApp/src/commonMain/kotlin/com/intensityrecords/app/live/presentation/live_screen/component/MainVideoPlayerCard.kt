@@ -56,6 +56,7 @@ import com.intensityrecord.resources.montserrat_bold
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.painterResource
 import com.intensityrecord.resources._4
+import com.intensityrecords.app.core.presentation.chipButtonText
 
 @Composable
 fun MainVideoPlayerCard(isWideScreen: Boolean) {
@@ -124,29 +125,6 @@ fun MainVideoPlayerCard(isWideScreen: Boolean) {
                 .background(Color.Black.copy(alpha = 0.4f))
         )
 
-//        Box(
-//            modifier = Modifier.align(Alignment.Center),
-//            contentAlignment = Alignment.Center
-//        ) {
-//            Canvas(modifier = Modifier.size(80.dp)) {
-//                drawRoundRect(
-//                    color = PrimaryAccent,
-//                    size = size,
-//                    cornerRadius = CornerRadius(100f, 100f),
-//                    style = Stroke(
-//                        width = 4.dp.toPx(),
-//                        pathEffect = PathEffect.dashPathEffect(floatArrayOf(20f, 20f), 0f)
-//                    )
-//                )
-//            }
-//            Icon(
-//                imageVector = Icons.Filled.PlayArrow,
-//                contentDescription = "Play",
-//                tint = PrimaryAccent,
-//                modifier = Modifier.size(40.dp)
-//            )
-//        }
-
         Row(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -173,28 +151,11 @@ fun MainVideoPlayerCard(isWideScreen: Boolean) {
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = "15-20 MIN",
-                        color = PrimaryAccent,
-                        fontSize = textSize,
                         fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
-                        fontWeight = FontWeight.Bold,
+                        style = chipButtonText.copy(fontSize = textSize)
                     )
                 }
             }
-//            Icon(
-//                imageVector = Icons.Rounded.AccessTime,
-//                contentDescription = null,
-//                tint = TextWhite,
-//                modifier = Modifier.size(18.dp)
-//            )
-//            Spacer(modifier = Modifier.width(8.dp))
-//            Text(
-//                text = "15-20 min",
-//                style = TextStyle(
-//                    color = TextWhite,
-//                    fontSize = 16.sp,
-//                    fontFamily = FontFamily(Font(Res.font.montserrat_regular))
-//                )
-//            )
         }
 
     }

@@ -6,15 +6,12 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.focusable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -46,14 +43,16 @@ import com.intensityrecord.app.Route
 import com.intensityrecord.core.presentation.CardBackground
 import com.intensityrecord.core.presentation.GlowBorderBrush
 import com.intensityrecord.core.presentation.PrimaryAccent
-import com.intensityrecord.core.presentation.TextWhite
-import org.jetbrains.compose.resources.Font
-import org.jetbrains.compose.resources.painterResource
 import com.intensityrecord.resources.Res
+import com.intensityrecord.resources._1
 import com.intensityrecord.resources.montserrat_bold
 import com.intensityrecord.resources.montserrat_regular
-import com.intensityrecord.resources._1
+import com.intensityrecords.app.core.presentation.buttonText
+import com.intensityrecords.app.core.presentation.cardTitle
+import com.intensityrecords.app.core.presentation.chipButtonText
 import com.intensityrecords.app.core.presentation.utils.LocalAppDimens
+import org.jetbrains.compose.resources.Font
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun VideoOfTheDayCard(navController: NavController, isWideScreen: Boolean) {
@@ -141,12 +140,10 @@ fun VideoOfTheDayCard(navController: NavController, isWideScreen: Boolean) {
         ) {
             Text(
                 "VIDEO OF THE DAY",
-                style = TextStyle(
-                    fontWeight = FontWeight.ExtraBold,
+                style = cardTitle.copy(
                     fontSize = dimens.titleLarge,
                     fontFamily = FontFamily(Font(Res.font.montserrat_bold))
-                ),
-                color = TextWhite
+                )
             )
             Spacer(modifier = Modifier.height(8.dp))
             Surface(
@@ -162,25 +159,18 @@ fun VideoOfTheDayCard(navController: NavController, isWideScreen: Boolean) {
                 ) {
                     Text(
                         text = "8 min",
-                        color = PrimaryAccent,
-                        fontSize = textSize,
                         fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
-                        fontWeight = FontWeight.Bold,
+                        style = chipButtonText.copy(fontSize = textSize)
                     )
                     Text(
                         text = " | ABS | ",
-                        color = Color.White,
-                        fontSize = textSize,
                         fontFamily = FontFamily(Font(Res.font.montserrat_regular)),
-                        fontWeight = FontWeight.Bold,
+                        style = chipButtonText.copy(fontSize = textSize, color = Color.White)
                     )
                     Text(
                         text = "180 KCAL",
-                        color = Color.White,
-                        fontSize = textSize,
                         fontFamily = FontFamily(Font(Res.font.montserrat_regular)),
-
-                        fontWeight = FontWeight.Bold,
+                        style = chipButtonText.copy(fontSize = textSize, color = Color.White)
                     )
                 }
             }
@@ -211,9 +201,7 @@ fun VideoOfTheDayCard(navController: NavController, isWideScreen: Boolean) {
             ) {
                 Text(
                     "START NOW",
-                    color = Color.Black,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = dimens.buttonText,
+                    style = buttonText.copy(fontSize = dimens.buttonText),
                     fontFamily = FontFamily(Font(Res.font.montserrat_bold))
                 )
             }

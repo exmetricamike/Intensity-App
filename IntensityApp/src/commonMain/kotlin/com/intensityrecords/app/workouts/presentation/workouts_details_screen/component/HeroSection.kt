@@ -6,7 +6,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.focusable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
@@ -49,13 +48,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.intensityrecord.core.presentation.CardBackground
 import com.intensityrecord.core.presentation.GlowBorderBrush
+import com.intensityrecord.core.presentation.OffWhite
 import com.intensityrecord.core.presentation.PrimaryAccent
-import com.intensityrecords.app.workouts.domain.WorkoutItem
-import org.jetbrains.compose.resources.Font
-import org.jetbrains.compose.resources.painterResource
 import com.intensityrecord.resources.Res
 import com.intensityrecord.resources.montserrat_bold
 import com.intensityrecord.resources.montserrat_regular
+import com.intensityrecords.app.core.presentation.Title
+import com.intensityrecords.app.core.presentation.buttonText
+import com.intensityrecords.app.core.presentation.captions
+import com.intensityrecords.app.core.presentation.chipButtonText
+import com.intensityrecords.app.workouts.domain.WorkoutItem
+import org.jetbrains.compose.resources.Font
+import org.jetbrains.compose.resources.painterResource
 
 
 @Composable
@@ -93,6 +97,7 @@ fun HeroSection(item: WorkoutItem, isWideScreen: Boolean) {
         modifier = Modifier
             .fillMaxWidth()
             .height(height)
+            .padding(horizontal = if (isWideScreen) 10.dp else 0.dp)
             .shadow(
                 elevation = elevationState,
                 shape = RoundedCornerShape(24.dp),
@@ -157,22 +162,16 @@ fun HeroSection(item: WorkoutItem, isWideScreen: Boolean) {
 
                 Text(
                     text = item.title.uppercase(),
-                    color = Color(0xFFF0F0F0), // Off-white
-                    fontSize = customFontSize,
-                    fontWeight = FontWeight.ExtraBold,
                     fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
-                    letterSpacing = 1.sp,
+                    style = Title.copy(
+                        fontSize = customFontSize,
+                        fontWeight = FontWeight.ExtraBold,
+                        letterSpacing = 1.sp,
+                        color = OffWhite
+                    )
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
-
-
-//                Text(
-//                    text = "12 sessions this month · ${item.duration} · ${item.level} / High",
-//                    color = Color.White,
-//                    fontSize = 16.sp,
-//                    fontFamily = FontFamily(Font(Res.font.montserrat_regular))
-//                )
 
                 Surface(
                     color = PrimaryAccent.copy(alpha = 0.2f),
@@ -187,10 +186,8 @@ fun HeroSection(item: WorkoutItem, isWideScreen: Boolean) {
                     ) {
                         Text(
                             text = "12 sessions this month · ${item.duration} · ${item.level} / High",
-                            color = PrimaryAccent,
-                            fontSize = textSize,
                             fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
-                            fontWeight = FontWeight.Bold,
+                            style = chipButtonText.copy(fontSize = textSize)
                         )
                     }
                 }
@@ -207,10 +204,8 @@ fun HeroSection(item: WorkoutItem, isWideScreen: Boolean) {
                     ) {
                         Text(
                             text = "LET THE COACH CHOOSE",
-                            color = Color.Black,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp,
-                            fontFamily = FontFamily(Font(Res.font.montserrat_bold))
+                            fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
+                            style = buttonText
                         )
                     }
                 } else {
@@ -222,10 +217,8 @@ fun HeroSection(item: WorkoutItem, isWideScreen: Boolean) {
                     ) {
                         Text(
                             text = "LET THE COACH CHOOSE",
-                            color = Color.Black,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp,
-                            fontFamily = FontFamily(Font(Res.font.montserrat_bold))
+                            fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
+                            style = buttonText
                         )
                     }
                 }
@@ -234,8 +227,7 @@ fun HeroSection(item: WorkoutItem, isWideScreen: Boolean) {
 
                 Text(
                     text = "Surprise workout selected by your coach",
-                    color = Color.White,
-                    fontSize = 14.sp,
+                    style = captions,
                     fontFamily = FontFamily(Font(Res.font.montserrat_regular))
                 )
 
