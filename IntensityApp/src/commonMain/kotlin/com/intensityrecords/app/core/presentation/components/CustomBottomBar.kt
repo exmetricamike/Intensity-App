@@ -96,6 +96,7 @@ package com.intensityrecords.app.core.presentation.components
 //}
 
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
@@ -125,6 +126,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -180,8 +182,19 @@ fun CustomBottomBar(
 
                 val isActive = (currentTab == label) || isFocused
 
-                val iconColor = if (isActive) PrimaryAccent else Color.LightGray
-                val textColor = if (isActive) TextWhite else Color.LightGray
+//                val iconColor = if (isActive) PrimaryAccent else Color.LightGray
+//                val textColor = if (isActive) TextWhite else Color.LightGray
+
+                val isSelected = currentTab == label
+
+                // 2. isHighlighted: True if Selected OR Focused. (Controls Color/Visibility of Text)
+                val isHighlighted = isSelected || isFocused
+
+                val iconColor = if (isHighlighted) PrimaryAccent else Color.LightGray
+                val textColor = if (isHighlighted) TextWhite else Color.LightGray
+
+                // Optional: Add a slight scale effect when focused on TV so user knows where they are
+                val scale by animateFloatAsState(if (isFocused) 1.1f else 1.0f)
 
                 val glowBrush = Brush.horizontalGradient(
                     colorStops = arrayOf(
@@ -203,6 +216,7 @@ fun CustomBottomBar(
                     modifier = Modifier
                         .height(60.dp)
                         .clip(RectangleShape)
+                        .scale(scale) // Apply scale animation for TV focus
                         .clickable(
                             interactionSource = interactionSource,
                             indication = null
@@ -249,7 +263,7 @@ fun CustomBottomBar(
                         )
                     }
 
-                    if (isActive) {
+                    if (isSelected) {
                         Box(
                             modifier = Modifier
                                 .align(Alignment.BottomCenter)

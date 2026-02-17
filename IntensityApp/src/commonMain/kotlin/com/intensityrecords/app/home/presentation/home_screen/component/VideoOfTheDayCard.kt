@@ -1,6 +1,8 @@
 package com.intensityrecords.app.home.presentation.home_screen.component
 
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -18,7 +20,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CenterFocusStrong
+import androidx.compose.material.icons.filled.LocalFireDepartment
+import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Surface
@@ -32,6 +39,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -51,6 +59,7 @@ import com.intensityrecords.app.core.presentation.buttonText
 import com.intensityrecords.app.core.presentation.cardTitle
 import com.intensityrecords.app.core.presentation.chipButtonText
 import com.intensityrecords.app.core.presentation.utils.LocalAppDimens
+import com.intensityrecords.app.workouts.presentation.workouts_details_screen.component.StatBadge
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.painterResource
 
@@ -62,6 +71,23 @@ fun VideoOfTheDayCard(navController: NavController, isWideScreen: Boolean) {
     val isFocused by interactionSource.collectIsFocusedAsState()
     val isHovered by interactionSource.collectIsHoveredAsState()
     val isActive = isFocused || isHovered
+
+    val scale by animateFloatAsState(
+        targetValue = if (isFocused) 1.05f else 1f,
+        animationSpec = tween(300),
+        label = "scale"
+    )
+
+    val shadowElevation by animateDpAsState(
+        targetValue = if (isFocused) 14.dp else 0.dp,
+        animationSpec = tween(300),
+        label = "elevation"
+    )
+
+    val borderWidth = if (isFocused) dimens.borderActive else dimens.borderNormal
+
+    // Inner Button Animation
+    val buttonElevation by animateDpAsState(if (isFocused) 22.dp else 0.dp)
 
     // 1. GLOW & STROKE LOGIC
     // We use 'colorStops' to squeeze the green into the center.
@@ -85,23 +111,19 @@ fun VideoOfTheDayCard(navController: NavController, isWideScreen: Boolean) {
         GlowBorderBrush // Default subtle gradient
     }
 
-    val borderWidth = if (isActive) dimens.borderActive else dimens.borderNormal
-    // Standard elevation for depth, but NO Green spotColor (removes the "whole border" glow)
-    val elevationState by animateDpAsState(if (isActive) 9.dp else 4.dp)
-
-    val textSize = if (isWideScreen) 14.sp else 10.sp
-    val surfaceHeight = if (isWideScreen) 45.dp else 30.dp
-    val buttonElevation by animateDpAsState(if (isActive) 20.dp else 0.dp)
-
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(dimens.videoCardHeight)
+            .graphicsLayer {
+                scaleX = scale
+                scaleY = scale
+            }
             .shadow(
-                elevation = elevationState,
+                elevation = shadowElevation,
                 shape = RoundedCornerShape(dimens.cornerRadius),
-                spotColor = PrimaryAccent.copy(alpha = 0.6f), // <--- MAKES IT GLOW GREEN
-                ambientColor = PrimaryAccent.copy(alpha = 0.6f),
+                spotColor = PrimaryAccent, // <--- MAKES IT GLOW GREEN
+                ambientColor = PrimaryAccent,
             )
             .clip(RoundedCornerShape(dimens.cornerRadius))
             .background(CardBackground)
@@ -146,37 +168,8 @@ fun VideoOfTheDayCard(navController: NavController, isWideScreen: Boolean) {
                 )
             )
             Spacer(modifier = Modifier.height(8.dp))
-            Surface(
-                color = PrimaryAccent.copy(alpha = 0.2f),
-                shape = RoundedCornerShape(50),
-                border = BorderStroke(1.dp, PrimaryAccent),
-                modifier = Modifier.height(surfaceHeight)
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center,
-                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 2.dp)
-                ) {
-                    Text(
-                        text = "8 min",
-                        fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
-                        style = chipButtonText.copy(fontSize = textSize)
-                    )
-                    Text(
-                        text = " | ABS | ",
-                        fontFamily = FontFamily(Font(Res.font.montserrat_regular)),
-                        style = chipButtonText.copy(fontSize = textSize, color = Color.White)
-                    )
-                    Text(
-                        text = "180 KCAL",
-                        fontFamily = FontFamily(Font(Res.font.montserrat_regular)),
-                        style = chipButtonText.copy(fontSize = textSize, color = Color.White)
-                    )
-                }
-            }
-            Spacer(modifier = Modifier.height(8.dp))
             Text(
-                "Today's Workout: Glutes & Core",
+                "Your daily 8-minute abs workout",
                 style = TextStyle(
                     fontWeight = FontWeight.Medium,
                     fontSize = dimens.bodyMedium,
@@ -184,7 +177,7 @@ fun VideoOfTheDayCard(navController: NavController, isWideScreen: Boolean) {
                     fontFamily = FontFamily(Font(Res.font.montserrat_regular))
                 )
             )
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(16.dp))
             Button(
                 onClick = {
                     navController.navigate(Route.VideoDetail)
@@ -205,6 +198,53 @@ fun VideoOfTheDayCard(navController: NavController, isWideScreen: Boolean) {
                     fontFamily = FontFamily(Font(Res.font.montserrat_bold))
                 )
             }
+            Spacer(modifier = Modifier.height(10.dp))
+            if (isWideScreen) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    StatBadge(icon = Icons.Default.Timer, text = "Average 15-20 min")
+                    Spacer(modifier = Modifier.width(24.dp))
+                    StatBadge(icon = Icons.Default.LocalFireDepartment, text = "Bodyweight")
+                    Spacer(modifier = Modifier.width(24.dp))
+                    StatBadge(icon = Icons.Default.CenterFocusStrong, text = "Focus glutes + legs")
+                }
+            } else {
+                Column(
+                    horizontalAlignment = Alignment.Start,
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    StatBadge(icon = Icons.Default.Timer, text = "Average 15-20 min")
+                    StatBadge(icon = Icons.Default.LocalFireDepartment, text = "Bodyweight")
+                    StatBadge(icon = Icons.Default.CenterFocusStrong, text = "Focus glutes + legs")
+                }
+            }
+//            Surface(
+//                color = PrimaryAccent.copy(alpha = 0.2f),
+//                shape = RoundedCornerShape(50),
+//                border = BorderStroke(1.dp, PrimaryAccent),
+//                modifier = Modifier.height(surfaceHeight)
+//            ) {
+//                Row(
+//                    verticalAlignment = Alignment.CenterVertically,
+//                    horizontalArrangement = Arrangement.Center,
+//                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 2.dp)
+//                ) {
+//                    Text(
+//                        text = "",
+//                        fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
+//                        style = chipButtonText.copy(fontSize = textSize)
+//                    )
+//                    Text(
+//                        text = " | ABS | ",
+//                        fontFamily = FontFamily(Font(Res.font.montserrat_regular)),
+//                        style = chipButtonText.copy(fontSize = textSize, color = Color.White)
+//                    )
+//                    Text(
+//                        text = "180 KCAL",
+//                        fontFamily = FontFamily(Font(Res.font.montserrat_regular)),
+//                        style = chipButtonText.copy(fontSize = textSize, color = Color.White)
+//                    )
+//                }
+//            }
         }
     }
 }

@@ -19,12 +19,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.intensityrecord.core.presentation.DarkGradient
 import com.intensityrecord.core.presentation.FitnessAppTheme
 import com.intensityrecord.resources.Res
 import com.intensityrecord.resources.montserrat_bold
 import com.intensityrecords.app.core.presentation.Title
+import com.intensityrecords.app.core.presentation.captions
 import com.intensityrecords.app.core.presentation.utils.LocalAppDimens
 import com.intensityrecords.app.mobility.domain.mobilityCategories
 import com.intensityrecords.app.mobility.presentation.mobility_screen.component.MobilityCard
@@ -71,6 +73,14 @@ fun MobilityScreen(navController: NavController, isWideScreen: Boolean) {
                     style = Title
                 )
 
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = "Programs designed for recovery and relaxation",
+                    style = captions.copy(letterSpacing = 0.1.sp),
+                    fontFamily = FontFamily(Font(Res.font.montserrat_bold))
+                )
+
                 Spacer(modifier = Modifier.height(20.dp))
 
                 val gridWidth = if (isWideScreen) 0.85f else 1f
@@ -90,6 +100,10 @@ fun MobilityScreen(navController: NavController, isWideScreen: Boolean) {
                     items(mobilityCategories) { item ->
                         MobilityCard(item = item, isWideScreen = isWideScreen, dimens = dimens)
                         Spacer(modifier = Modifier.height(40.dp))
+                    }
+                    // Add a transparent spacer item at the end of the grid list
+                    item {
+                        Spacer(modifier = Modifier.height(50.dp))
                     }
                 }
             }

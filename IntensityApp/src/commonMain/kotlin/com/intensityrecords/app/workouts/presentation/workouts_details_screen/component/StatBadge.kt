@@ -11,7 +11,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.intensityrecord.core.presentation.PrimaryAccent
@@ -23,19 +26,27 @@ import com.intensityrecords.app.core.presentation.captions
 
 
 @Composable
-fun StatBadge(icon: ImageVector, text: String) {
+fun StatBadge(
+    icon: ImageVector,
+    text: String,
+    iconSize: Dp = 20.dp,
+    textStyle: TextStyle = captions,
+    spacing: Dp = 8.dp
+) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Icon(
             imageVector = icon,
             contentDescription = null,
             tint = PrimaryAccent,
-            modifier = Modifier.size(20.dp)
+            modifier = Modifier.size(iconSize)
         )
-        Spacer(modifier = Modifier.width(8.dp))
+        Spacer(modifier = Modifier.width(spacing))
         Text(
             text = text,
-            style = captions,
-            fontFamily = FontFamily(Font(Res.font.montserrat_regular))
+            style = textStyle,
+            fontFamily = FontFamily(Font(Res.font.montserrat_regular)),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
         )
     }
 }

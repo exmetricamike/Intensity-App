@@ -225,24 +225,6 @@ fun DayColumnItem(
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
 
-//    val borderColor = if (isFocused || isSelected) PrimaryAccent else Color.White.copy(alpha = 0.2f)
-//    val borderWidth = if (isFocused || isSelected) 2.dp else 1.dp
-
-    // Animation Logic:
-    // If Focused (TV Dpad) -> Large Scale (1.15f)
-    // If Selected (Mobile/TV) -> Slight Scale (1.05f)
-    // Default -> 1.0f
-//    val targetScale = if (isFocused) 1.15f else if (day.isSelected) 1.05f else 1f
-//
-//    val scale by animateFloatAsState(
-//        targetValue = targetScale,
-//        animationSpec = tween(durationMillis = 300),
-//        label = "scaleAnimation"
-//    )
-
-    // Focus state for TV
-//    val finalBorderColor = if (isFocused) PrimaryAccent else borderColor
-
     // Combined State for Visuals
     val isActive = isFocused || isSelected
 

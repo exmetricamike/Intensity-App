@@ -1,5 +1,8 @@
 package com.intensityrecords.app.home.presentation.home_screen.component
 
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -26,6 +29,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -49,18 +53,36 @@ import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun ContentCard(item: HomeItem, width: Dp, aspectRatio: Float, navController: NavController,dimens: AppDimens) {
+
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
+
     val isHovered by interactionSource.collectIsHoveredAsState()
     val isActive = isFocused || isHovered
+
+    val scale by animateFloatAsState(
+        targetValue = if (isFocused) 1.08f else 1f,
+        animationSpec = tween(300),
+        label = "scale"
+    )
+
+    val shadowElevation by animateDpAsState(
+        targetValue = if (isFocused) 10.dp else 0.dp,
+        animationSpec = tween(300),
+        label = "elevation"
+    )
+
+    val borderWidth = if (isFocused) dimens.borderWidthActive else dimens.borderWidthNormal
 
     val borderBrush = if (isActive) {
         Brush.horizontalGradient(
             colorStops = arrayOf(
                 0.0f to Color.Transparent,
-                0.35f to Color.Transparent,
-                0.5f to PrimaryAccent,
-                0.65f to Color.Transparent,
+                0.3f to Color.Transparent,       // Start fading in
+                0.45f to PrimaryAccent.copy(alpha = 0.5f), // Outer Glow
+                0.5f to PrimaryAccent,           // Center Bright Core
+                0.55f to PrimaryAccent.copy(alpha = 0.5f), // Outer Glow
+                0.7f to Color.Transparent,       // Fade out
                 1.0f to Color.Transparent
             )
         )
@@ -68,18 +90,21 @@ fun ContentCard(item: HomeItem, width: Dp, aspectRatio: Float, navController: Na
         GlowBorderBrush
     }
 
-    val borderWidth = if (isActive) dimens.borderWidthActive else dimens.borderWidthNormal
     val elevationState = if (isActive) 12.dp else 4.dp
 
     Card(
         modifier = Modifier
             .width(width)
             .aspectRatio(aspectRatio)
+            .graphicsLayer {
+                scaleX = scale
+                scaleY = scale
+            }
             .shadow(
-                elevation = elevationState,
+                elevation = shadowElevation,
                 shape = RoundedCornerShape(dimens.cardCornerRadius),
-                spotColor = PrimaryAccent.copy(alpha = 0.4f),
-                ambientColor = PrimaryAccent.copy(alpha = 0.4f)
+                spotColor = PrimaryAccent,
+                ambientColor = PrimaryAccent
             )
             .clip(RoundedCornerShape(dimens.cardCornerRadius))
             .border(BorderStroke(borderWidth, borderBrush), RoundedCornerShape(dimens.cardCornerRadius))

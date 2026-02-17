@@ -33,7 +33,7 @@ val captions =  TextStyle(
 
 val cardTitle = TextStyle(
     fontWeight = FontWeight.ExtraBold,
-    fontSize = 18.sp,
+    fontSize = 24.sp,
     color = Color.White
 )
 

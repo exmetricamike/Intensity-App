@@ -1,6 +1,8 @@
 package com.intensityrecords.app.live.presentation.live_screen.component
 
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
@@ -20,6 +22,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
@@ -40,7 +43,9 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -67,6 +72,18 @@ fun MainVideoPlayerCard(isWideScreen: Boolean) {
     val isFocused by interactionSource.collectIsFocusedAsState()
     val isHovered by interactionSource.collectIsHoveredAsState()
     val isActive = isFocused || isHovered
+
+    val scale by animateFloatAsState(
+        targetValue = if (isFocused) 1.08f else 1f,
+        animationSpec = tween(300),
+        label = "scale"
+    )
+
+    val shadowElevation by animateDpAsState(
+        targetValue = if (isFocused) 14.dp else 0.dp,
+        animationSpec = tween(300),
+        label = "elevation"
+    )
 
     val borderWidth = if (isFocused) 3.dp else 1.dp
     val elevation by animateDpAsState(if (isFocused) 24.dp else 8.dp)
@@ -96,11 +113,15 @@ fun MainVideoPlayerCard(isWideScreen: Boolean) {
         modifier = Modifier
             .width(cardWidth)
             .height(cardHeight)
+            .graphicsLayer {
+                scaleX = scale
+                scaleY = scale
+            }
             .shadow(
-                elevation = elevationState,
+                elevation = shadowElevation,
                 shape = RoundedCornerShape(24.dp),
-                spotColor = PrimaryAccent.copy(alpha = 0.6f),
-                ambientColor = PrimaryAccent.copy(alpha = 0.6f)
+                spotColor = PrimaryAccent,
+                ambientColor = PrimaryAccent
             )
             .clip(RoundedCornerShape(24.dp))
             .background(CardBackground)

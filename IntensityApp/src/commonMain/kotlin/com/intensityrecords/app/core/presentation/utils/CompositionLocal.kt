@@ -13,7 +13,7 @@ val CompactDimens = AppDimens(
     borderActive = 3.dp,
     cornerRadius = 16.dp,
 
-    videoCardHeight = 200.dp,
+    videoCardHeight = 255.dp,
     buttonHeight = 40.dp,
 
     titleLarge = 20.sp,
@@ -58,7 +58,7 @@ val ExpandedDimens = AppDimens(
     cardCornerRadius = 16.dp,
     title = 18.sp,
     live = 10.sp,
-    sessionTitle = 16.sp
+    sessionTitle = 20.sp
 )
 
 

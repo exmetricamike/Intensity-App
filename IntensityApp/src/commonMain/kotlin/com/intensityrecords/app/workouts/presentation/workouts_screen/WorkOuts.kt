@@ -31,6 +31,7 @@ import com.intensityrecord.core.presentation.FitnessAppTheme
 import com.intensityrecord.resources.Res
 import com.intensityrecord.resources.montserrat_bold
 import com.intensityrecords.app.core.presentation.Title
+import com.intensityrecords.app.core.presentation.captions
 import com.intensityrecords.app.core.presentation.utils.LocalAppDimens
 import com.intensityrecords.app.workouts.presentation.workouts_screen.component.WorkoutCard
 import org.jetbrains.compose.resources.Font
@@ -88,6 +89,14 @@ fun WorkoutScreen(
                 Text(
                     text = "WORKOUT",
                     style = Title,
+                    fontFamily = FontFamily(Font(Res.font.montserrat_bold))
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = "Choose your workout focus",
+                    style = captions.copy(letterSpacing = 0.1.sp),
                     fontFamily = FontFamily(Font(Res.font.montserrat_bold))
                 )
 

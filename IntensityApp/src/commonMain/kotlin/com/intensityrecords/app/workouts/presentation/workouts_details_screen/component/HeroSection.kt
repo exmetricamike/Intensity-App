@@ -1,6 +1,8 @@
 package com.intensityrecords.app.workouts.presentation.workouts_details_screen.component
 
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -20,16 +22,22 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowForwardIos
+import androidx.compose.material.icons.automirrored.rounded.PlaylistPlay
 import androidx.compose.material.icons.filled.CenterFocusStrong
 import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material.icons.filled.Timer
+import androidx.compose.material.icons.rounded.PlayArrow
+import androidx.compose.material.icons.rounded.SlowMotionVideo
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,6 +49,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -67,11 +77,25 @@ fun HeroSection(item: WorkoutItem, isWideScreen: Boolean) {
 
     val height = if (isWideScreen) 380.dp else 450.dp
 
-
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
+
     val isHovered by interactionSource.collectIsHoveredAsState()
     val isActive = isFocused || isHovered
+
+    val scale by animateFloatAsState(
+        targetValue = if (isFocused) 1.08f else 1f,
+        animationSpec = tween(300),
+        label = "scale"
+    )
+
+    val shadowElevation by animateDpAsState(
+        targetValue = if (isFocused) 14.dp else 0.dp,
+        animationSpec = tween(300),
+        label = "elevation"
+    )
+
+    val borderWidth = if (isFocused) 3.dp else 1.dp
 
     val borderBrush = if (isActive) {
         Brush.horizontalGradient(
@@ -87,22 +111,20 @@ fun HeroSection(item: WorkoutItem, isWideScreen: Boolean) {
         GlowBorderBrush
     }
 
-    val borderWidth = if (isFocused) 3.dp else 1.dp
-    val elevationState by animateDpAsState(if (isActive) 10.5.dp else 2.dp)
-
-    val textSize = if (isWideScreen) 14.sp else 10.sp
-    val surfaceHeight = if (isWideScreen) 45.dp else 30.dp
-
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .height(height)
-            .padding(horizontal = if (isWideScreen) 10.dp else 0.dp)
+            .graphicsLayer {
+                scaleX = scale
+                scaleY = scale
+            }
+            .padding(horizontal = if (isWideScreen) 10.dp else 0.dp, vertical = if (isWideScreen) 20.dp else 0.dp)
             .shadow(
-                elevation = elevationState,
+                elevation = shadowElevation,
                 shape = RoundedCornerShape(24.dp),
-                spotColor = PrimaryAccent.copy(alpha = 0.6f),
-                ambientColor = PrimaryAccent.copy(alpha = 0.6f)
+                spotColor = PrimaryAccent,
+                ambientColor = PrimaryAccent
             )
             .clip(RoundedCornerShape(24.dp))
             .border(BorderStroke(borderWidth, borderBrush), RoundedCornerShape(24.dp))
@@ -114,15 +136,7 @@ fun HeroSection(item: WorkoutItem, isWideScreen: Boolean) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(height) // Adjust height to match screenshot
-//                .border(
-//                    border = BorderStroke(
-//                        2.dp, Brush.horizontalGradient(
-//                            colors = listOf(PrimaryAccent, PrimaryAccent.copy(alpha = 0.5f))
-//                        )
-//                    ),
-//                    shape = RoundedCornerShape(24.dp)
-//                )
+                .height(height)
                 .clip(RoundedCornerShape(24.dp))
                 .background(Color.Black.copy(alpha = 0.6f))
         )
@@ -171,26 +185,26 @@ fun HeroSection(item: WorkoutItem, isWideScreen: Boolean) {
                     )
                 )
 
-                Spacer(modifier = Modifier.height(12.dp))
-
-                Surface(
-                    color = PrimaryAccent.copy(alpha = 0.2f),
-                    shape = RoundedCornerShape(50),
-                    border = BorderStroke(1.dp, PrimaryAccent),
-                    modifier = Modifier.height(surfaceHeight)
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center,
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 2.dp)
-                    ) {
-                        Text(
-                            text = "12 sessions this month · ${item.duration} · ${item.level} / High",
-                            fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
-                            style = chipButtonText.copy(fontSize = textSize)
-                        )
-                    }
-                }
+//                Spacer(modifier = Modifier.height(12.dp))
+//
+//                Surface(
+//                    color = PrimaryAccent.copy(alpha = 0.2f),
+//                    shape = RoundedCornerShape(50),
+//                    border = BorderStroke(1.dp, PrimaryAccent),
+//                    modifier = Modifier.height(surfaceHeight)
+//                ) {
+//                    Row(
+//                        verticalAlignment = Alignment.CenterVertically,
+//                        horizontalArrangement = Arrangement.Center,
+//                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 2.dp)
+//                    ) {
+//                        Text(
+//                            text = "12 sessions this month · ${item.duration} · ${item.level} / High",
+//                            fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
+//                            style = chipButtonText.copy(fontSize = textSize)
+//                        )
+//                    }
+//                }
 
                 Spacer(modifier = Modifier.height(30.dp))
 
@@ -202,6 +216,27 @@ fun HeroSection(item: WorkoutItem, isWideScreen: Boolean) {
                         shape = RoundedCornerShape(12.dp),
                         contentPadding = PaddingValues(horizontal = 32.dp, vertical = 16.dp)
                     ) {
+                        Card(
+                            modifier = Modifier
+                                .height(25.dp)
+                                .width(40.dp)
+                                .clip(RectangleShape),
+                            colors = CardDefaults.cardColors(containerColor = CardBackground),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+                        ) {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Rounded.PlayArrow,
+                                    contentDescription = null,
+                                    tint = PrimaryAccent,
+                                    modifier = Modifier.size(24.dp)
+                                )
+                            }
+                        }
+                        Spacer(modifier = Modifier.width(10.dp))
                         Text(
                             text = "LET THE COACH CHOOSE",
                             fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
@@ -215,6 +250,27 @@ fun HeroSection(item: WorkoutItem, isWideScreen: Boolean) {
                         shape = RoundedCornerShape(12.dp),
                         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp)
                     ) {
+                        Card(
+                            modifier = Modifier
+                                .height(25.dp)
+                                .width(30.dp)
+                                .clip(RectangleShape),
+                            colors = CardDefaults.cardColors(containerColor = CardBackground),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+                        ) {
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Rounded.PlayArrow,
+                                    contentDescription = null,
+                                    tint = PrimaryAccent,
+                                    modifier = Modifier.size(14.dp)
+                                )
+                            }
+                        }
+                        Spacer(modifier = Modifier.width(10.dp))
                         Text(
                             text = "LET THE COACH CHOOSE",
                             fontFamily = FontFamily(Font(Res.font.montserrat_bold)),

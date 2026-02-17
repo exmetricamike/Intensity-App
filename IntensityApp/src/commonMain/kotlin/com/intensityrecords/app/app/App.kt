@@ -36,6 +36,7 @@ import com.intensityrecord.core.presentation.DarkGradient
 import com.intensityrecord.core.presentation.FitnessAppTheme
 import com.intensityrecords.app.core.presentation.components.AppHeader
 import com.intensityrecords.app.core.presentation.components.CustomBottomBar
+import com.intensityrecords.app.core.presentation.components.TopNavigationLayout
 import com.intensityrecords.app.core.presentation.utils.CompactDimens
 import com.intensityrecords.app.core.presentation.utils.ExpandedDimens
 import com.intensityrecords.app.core.presentation.utils.LocalAppDimens
@@ -87,21 +88,36 @@ fun App() {
                     containerColor = Color.Transparent,
                     modifier = Modifier.windowInsetsPadding(WindowInsets.safeDrawing),
                     topBar = {
-                        AppHeader()
+                        if (!isWideScreen) AppHeader(isWideScreen = isWideScreen) else
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .navigationBarsPadding()
+                                    .padding(top = 10.dp),
+                                contentAlignment = Alignment.TopCenter
+                            ) {
+                                TopNavigationLayout(
+                                    isWideScreen = isWideScreen,
+                                    currentTab = currentTab,
+                                    navController = navController
+                                )
+                            }
                     },
                     bottomBar = {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .navigationBarsPadding()
-                                .padding(bottom = 10.dp),
-                            contentAlignment = Alignment.BottomCenter
-                        ) {
-                            CustomBottomBar(
-                                isWideScreen = isWideScreen,
-                                currentTab = currentTab,
-                                navController = navController
-                            )
+                        if (!isWideScreen) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .navigationBarsPadding()
+                                    .padding(bottom = 10.dp),
+                                contentAlignment = Alignment.BottomCenter
+                            ) {
+                                CustomBottomBar(
+                                    isWideScreen = isWideScreen,
+                                    currentTab = currentTab,
+                                    navController = navController
+                                )
+                            }
                         }
                     }
                 ) { innerPadding ->
