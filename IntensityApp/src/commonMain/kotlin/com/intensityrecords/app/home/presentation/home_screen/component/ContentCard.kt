@@ -67,7 +67,7 @@ fun ContentCard(item: HomeItem, width: Dp, aspectRatio: Float, navController: Na
     )
 
     val shadowElevation by animateDpAsState(
-        targetValue = if (isFocused) 10.dp else 0.dp,
+        targetValue = if (isFocused) 6.dp else 0.dp,
         animationSpec = tween(300),
         label = "elevation"
     )

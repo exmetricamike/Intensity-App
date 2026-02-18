@@ -68,7 +68,7 @@ fun IntroVideoButton() {
     )
 
     val shadowElevation by animateDpAsState(
-        targetValue = if (isFocused) 15.dp else 0.dp,
+        targetValue = if (isFocused) 6.dp else 0.dp,
         animationSpec = tween(300),
         label = "elevation"
     )
