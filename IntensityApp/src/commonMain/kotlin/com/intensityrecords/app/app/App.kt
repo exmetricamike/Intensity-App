@@ -46,6 +46,10 @@ import com.intensityrecords.app.home.presentation.video_detail_screen.VideoDetai
 import com.intensityrecords.app.live.presentation.live_screen.LiveScreenRoot
 import com.intensityrecords.app.live.presentation.timetable_screen.TimeTableScreen
 import com.intensityrecords.app.mobility.presentation.mobility_screen.MobilityScreenRoot
+import com.intensityrecords.app.steptrip.domain.trips
+import com.intensityrecords.app.steptrip.presentation.step_trip_detail_screen.StepTripDetailScreen
+import com.intensityrecords.app.steptrip.presentation.step_trip_detail_screen.StepTripDetailScreenRoot
+import com.intensityrecords.app.steptrip.presentation.steptrip.StepTripScreenRoot
 import com.intensityrecords.app.workouts.domain.workoutCategories
 import com.intensityrecords.app.workouts.presentation.workouts_details_screen.WorkoutDetailScreenRoot
 import com.intensityrecords.app.workouts.presentation.workouts_screen.WorkoutScreenRoot
@@ -81,6 +85,10 @@ fun App() {
                             currentDestination?.hasRoute<Route.WorkOutsDetailsScreen>() == true -> "Workouts"
 
                     currentDestination?.hasRoute<Route.Mobility>() == true -> "Mobility"
+
+                    currentDestination?.hasRoute<Route.StepTrip>() == true ||
+                            currentDestination?.hasRoute<Route.StepTripDetailScreen>() == true -> "Home"
+
                     else -> "Home"
                 }
 
@@ -202,9 +210,32 @@ fun App() {
                             MobilityScreenRoot(navController, isWideScreen)
                         }
 
+                        composable<Route.StepTrip>(
+                            enterTransition = { fadeIn(animationSpec = tween(animationDuration)) },
+                            exitTransition = { fadeOut(animationSpec = tween(animationDuration)) },
+                            popEnterTransition = { fadeIn(animationSpec = tween(animationDuration)) },
+                            popExitTransition = { fadeOut(animationSpec = tween(animationDuration)) }
+                        ) {
+                            StepTripScreenRoot(navController, isWideScreen)
+                        }
+
+                        composable<Route.StepTripDetailScreen> { backStackEntry ->
+                            val args = backStackEntry.toRoute<Route.StepTripDetailScreen>()
+
+                            // Find the actual object using the ID from the Route
+                            val selectedItem = trips.find { it.title == args.id }
+
+                            if (selectedItem != null) {
+                                StepTripDetailScreenRoot(
+                                    navController = navController,
+                                    stepTripID = args.id,
+                                    isWideScreen = isWideScreen
+                                )
+                            }
+                        }
+
                     }
                 }
-
             }
         }
     }

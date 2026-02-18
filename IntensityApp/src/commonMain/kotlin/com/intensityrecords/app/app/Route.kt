@@ -24,4 +24,10 @@ sealed interface Route {
 
     @Serializable
     data object TimeTable : Route
+
+    @Serializable
+    data object StepTrip : Route
+
+    @Serializable
+    data class StepTripDetailScreen(val id: String) : Route
 }

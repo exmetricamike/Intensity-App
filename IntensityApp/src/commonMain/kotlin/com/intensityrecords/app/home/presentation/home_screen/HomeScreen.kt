@@ -78,7 +78,8 @@ fun HomeScreen(navController: NavController, isWideScreen: Boolean) {
                                     width = 230.dp,
                                     aspectRatio = 1.3f,
                                     navController = navController,
-                                    dimens = dimens
+                                    dimens = dimens,
+                                    isWideScreen = isWideScreen
                                 )
                             }
                         }
@@ -91,7 +92,8 @@ fun HomeScreen(navController: NavController, isWideScreen: Boolean) {
                                 width = screenWidth - 32.dp,
                                 aspectRatio = 3.3f,
                                 navController = navController,
-                                dimens = dimens
+                                dimens = dimens,
+                                isWideScreen = isWideScreen
                             )
                         }
                     }

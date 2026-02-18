@@ -52,7 +52,14 @@ import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun ContentCard(item: HomeItem, width: Dp, aspectRatio: Float, navController: NavController,dimens: AppDimens) {
+fun ContentCard(
+    item: HomeItem,
+    width: Dp,
+    aspectRatio: Float,
+    navController: NavController,
+    dimens: AppDimens,
+    isWideScreen: Boolean
+) {
 
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
@@ -107,7 +114,10 @@ fun ContentCard(item: HomeItem, width: Dp, aspectRatio: Float, navController: Na
                 ambientColor = PrimaryAccent
             )
             .clip(RoundedCornerShape(dimens.cardCornerRadius))
-            .border(BorderStroke(borderWidth, borderBrush), RoundedCornerShape(dimens.cardCornerRadius))
+            .border(
+                BorderStroke(borderWidth, borderBrush),
+                RoundedCornerShape(dimens.cardCornerRadius)
+            )
             .clickable(interactionSource = interactionSource, indication = null) {
                 when (item.title) {
                     "Workout" -> {
@@ -120,6 +130,10 @@ fun ContentCard(item: HomeItem, width: Dp, aspectRatio: Float, navController: Na
 
                     "Live Class" -> {
                         navController.navigate(Route.Live)
+                    }
+
+                    "Step Trip" -> {
+                        if (!isWideScreen) navController.navigate(Route.StepTrip)
                     }
                 }
             },
