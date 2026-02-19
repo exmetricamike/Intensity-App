@@ -1,6 +1,8 @@
 package com.intensityrecords.app.workouts.presentation.workouts_details_screen.component
 
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -22,9 +24,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -40,6 +45,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
@@ -56,6 +62,9 @@ import com.intensityrecord.resources.Res
 import com.intensityrecord.resources.montserrat_bold
 import com.intensityrecord.resources.montserrat_regular
 import com.intensityrecords.app.core.domain.AppDimens
+import com.intensityrecords.app.core.presentation.captions
+import com.intensityrecords.app.core.presentation.chipButtonText
+import com.intensityrecords.app.core.presentation.sessionText
 
 
 @Composable
@@ -68,8 +77,21 @@ fun SessionCard(
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
     val isHovered by interactionSource.collectIsHoveredAsState()
-    val isSelected = isFocused || isHovered
     val isActive = isFocused || isHovered
+
+    val scale by animateFloatAsState(
+        targetValue = if (isFocused) 1.08f else 1f,
+        animationSpec = tween(300),
+        label = "scale"
+    )
+
+    val shadowElevation by animateDpAsState(
+        targetValue = if (isFocused) 6.dp else 0.dp,
+        animationSpec = tween(300),
+        label = "elevation"
+    )
+
+    val borderWidth = if (isFocused) 3.dp else 1.dp
 
     val borderBrush = if (isActive) {
         Brush.horizontalGradient(
@@ -85,26 +107,35 @@ fun SessionCard(
         GlowBorderBrush
     }
 
-    val borderWidth = if (isFocused) 3.dp else 1.dp
     val elevationState by animateDpAsState(if (isActive) 8.5.dp else 2.dp)
     val cardWidth = if (isWideScreen) 280.dp else 170.dp
     val cardAspectRatio = if (isWideScreen) 1.2f else 0.85f
     val textSize = if (isWideScreen) 14.sp else 10.sp
-    val surfaceHeight = if (isWideScreen) 45.dp else 30.dp
+
+    val badgeTextSize = if (isWideScreen) 14.sp else 8.sp
+    val badgeIconSize = if (isWideScreen) 20.dp else 10.dp
+    val badgeInternalSpacing = if (isWideScreen) 8.dp else 2.dp
+    val badgeGroupSpacing = if (isWideScreen) 10.dp else 4.dp
+    val surfaceHeight = if (isWideScreen) 45.dp else 35.dp
+    val surfacePaddingH = if (isWideScreen) 10.dp else 4.dp
+    val badgeTextStyle = captions.copy(fontSize = badgeTextSize)
 
     Card(
         modifier = Modifier
             .width(cardWidth)
             .aspectRatio(cardAspectRatio)
+            .graphicsLayer {
+                scaleX = scale
+                scaleY = scale
+            }
             .shadow(
-                elevation = elevationState,
+                elevation = shadowElevation,
                 shape = RoundedCornerShape(20.dp), // Matches the roundness in your image
-                spotColor = PrimaryAccent.copy(alpha = 0.6f),
-                ambientColor = PrimaryAccent.copy(alpha = 0.6f)
+                spotColor = PrimaryAccent,
+                ambientColor = PrimaryAccent
             )
             .border(BorderStroke(borderWidth, borderBrush), RoundedCornerShape(20.dp))
             .clip(RoundedCornerShape(20.dp))
-//            .focusable(interactionSource = interactionSource)
             .clickable(interactionSource = interactionSource, indication = null, onClick = onClick),
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(containerColor = Color.Black) // Solid dark background
@@ -132,54 +163,97 @@ fun SessionCard(
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(0.7f) // Text area
-                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
                         text = session.title,
-                        color = Color.White,
-                        fontSize = dimens.sessionTitle, // Larger font like in your image
-                        fontWeight = FontWeight.SemiBold,
                         fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
+                        style = sessionText.copy(fontSize = dimens.sessionTitle)
                     )
 
                     Spacer(modifier = Modifier.height(4.dp))
+
+//                    Surface(
+//                        color = PrimaryAccent.copy(alpha = 0.2f),
+//                        shape = RoundedCornerShape(50),
+//                        border = BorderStroke(1.dp, PrimaryAccent),
+//                        modifier = Modifier.height(surfaceHeight).fillMaxWidth()
+//                    ) {
+//                        Row(
+//                            verticalAlignment = Alignment.CenterVertically,
+//                            horizontalArrangement = Arrangement.Center,
+//                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 2.dp)
+//                        ) {
+//                            Text(
+//                                text = session.duration.uppercase(),
+//                                fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
+//                                style = chipButtonText.copy(fontSize = textSize)
+//                            )
+//                            Text(
+//                                text = " | 180 KCAL",
+//                                style = chipButtonText.copy(
+//                                    fontSize = textSize,
+//                                    color = Color.White
+//                                ),
+//                                fontFamily = FontFamily(Font(Res.font.montserrat_regular)),
+//                            )
+//                        }
+//                    }
 
                     Surface(
                         color = PrimaryAccent.copy(alpha = 0.2f),
                         shape = RoundedCornerShape(50),
                         border = BorderStroke(1.dp, PrimaryAccent),
-                        modifier = Modifier.height(surfaceHeight).fillMaxWidth()
+                        modifier = Modifier
+                            .padding(bottom = 8.dp, start = 2.dp, end = 2.dp)
+                            .height(surfaceHeight)
+                            .wrapContentWidth()
                     ) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.Center,
-                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 2.dp)
+                            modifier = Modifier.padding(horizontal = surfacePaddingH)
                         ) {
-                            Text(
+
+                            StatBadge(
+                                icon = Icons.Default.Timer,
                                 text = session.duration.uppercase(),
-                                color = PrimaryAccent,
-                                fontSize = textSize,
-                                fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
-                                fontWeight = FontWeight.Bold,
+                                iconSize = badgeIconSize,
+                                textStyle = badgeTextStyle,
+                                spacing = badgeInternalSpacing
                             )
-                            Text(
-                                text = " | 180 KCAL",
-                                color = Color.White,
-                                fontSize = textSize,
-                                fontFamily = FontFamily(Font(Res.font.montserrat_regular)),
-                                fontWeight = FontWeight.Bold,
+
+                            Spacer(modifier = Modifier.width(badgeGroupSpacing))
+
+                            Box(modifier = Modifier
+                                .width(1.dp)
+                                .height(12.dp)
+                                .background(PrimaryAccent.copy(0.5f))
                             )
+
+                            Spacer(modifier = Modifier.width(badgeGroupSpacing))
+
+                            StatBadge(
+                                icon = Icons.Default.LocalFireDepartment,
+                                text = "180 KCAL",
+                                iconSize = badgeIconSize,
+                                textStyle = badgeTextStyle,
+                                spacing = badgeInternalSpacing
+                            )
+
                         }
                     }
+
                 }
             }
 
             // 3. Play Button Overlay (Positioned like the image)
             Box(
                 modifier = Modifier
-                    .align(Alignment.CenterEnd) // Centers vertically relative to the whole card
+                    .align(Alignment.Center) // Centers vertically relative to the whole card
                     .padding(end = 12.dp)
                     .size(42.dp)
                     .background(Color.Black, shape = RoundedCornerShape(50)) // Outer black ring

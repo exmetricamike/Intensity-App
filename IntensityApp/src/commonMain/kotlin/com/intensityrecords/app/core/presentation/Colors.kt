@@ -39,6 +39,8 @@ val PrimaryAccent = Color(0xFFC1FF72) // Lime Green
 val DeepBlack = Color(0xFF0A0A0A)     // Deep black for TV
 val CardBackground = Color(0xFF141414) // Slightly lighter than black
 val TextWhite = Color(0xFFFFFFFF)
+val OffWhite = Color(0xFFF0F0F0)
+val DetailTextSecondary = Color(0xFFB0B0B0)
 
 // --- Gradients & Brushes ---
 val DarkGradient = Brush.verticalGradient(

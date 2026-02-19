@@ -3,6 +3,7 @@ package com.intensityrecords.app.workouts.presentation.workouts_details_screen
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,6 +34,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontFamily
@@ -87,9 +90,6 @@ fun WorkoutDetailScreen(
     isWideScreen: Boolean,
     onAction: (WorkOutsDetailAction) -> Unit,
 ) {
-
-    val contentPadding = if (isWideScreen) 58.dp else 16.dp
-
     val dimens = LocalAppDimens.current
 
     val pagerState = rememberPagerState(pageCount = { state.sessions.size })
@@ -103,20 +103,12 @@ fun WorkoutDetailScreen(
             .background(Color.Black) // or DarkGradient
             .verticalScroll(rememberScrollState())
     ) {
-        // Background Image Faded (Global background ambiance)
-//        Image(
-//            painter = painterResource(item.image),
-//            contentDescription = null,
-//            contentScale = ContentScale.Crop,
-//            modifier = Modifier.fillMaxSize().alpha(0.15f)
-//        )
 
         Column(
             modifier = Modifier
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally // Centers the indicator
         ) {
-            // Hero section needs horizontal padding
             Box(modifier = Modifier.padding(horizontal = dimens.horizontalContentPadding)) {
                 state.item?.let {
                     HeroSection(item = it, isWideScreen = isWideScreen)

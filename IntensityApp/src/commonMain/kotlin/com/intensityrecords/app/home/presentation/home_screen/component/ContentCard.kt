@@ -1,18 +1,19 @@
 package com.intensityrecords.app.home.presentation.home_screen.component
 
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.focusable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -28,13 +29,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.intensityrecord.app.Route
@@ -45,25 +46,50 @@ import com.intensityrecord.core.presentation.TextWhite
 import com.intensityrecord.resources.Res
 import com.intensityrecord.resources.montserrat_bold
 import com.intensityrecords.app.core.domain.AppDimens
-import com.intensityrecords.app.core.presentation.utils.LocalAppDimens
+import com.intensityrecords.app.core.presentation.buttonText
 import com.intensityrecords.app.home.domain.HomeItem
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun ContentCard(item: HomeItem, width: Dp, aspectRatio: Float, navController: NavController,dimens: AppDimens) {
+fun ContentCard(
+    item: HomeItem,
+    width: Dp,
+    aspectRatio: Float,
+    navController: NavController,
+    dimens: AppDimens,
+    isWideScreen: Boolean
+) {
+
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
+
     val isHovered by interactionSource.collectIsHoveredAsState()
     val isActive = isFocused || isHovered
+
+    val scale by animateFloatAsState(
+        targetValue = if (isFocused) 1.08f else 1f,
+        animationSpec = tween(300),
+        label = "scale"
+    )
+
+    val shadowElevation by animateDpAsState(
+        targetValue = if (isFocused) 6.dp else 0.dp,
+        animationSpec = tween(300),
+        label = "elevation"
+    )
+
+    val borderWidth = if (isFocused) dimens.borderWidthActive else dimens.borderWidthNormal
 
     val borderBrush = if (isActive) {
         Brush.horizontalGradient(
             colorStops = arrayOf(
                 0.0f to Color.Transparent,
-                0.35f to Color.Transparent,
-                0.5f to PrimaryAccent,
-                0.65f to Color.Transparent,
+                0.3f to Color.Transparent,       // Start fading in
+                0.45f to PrimaryAccent.copy(alpha = 0.5f), // Outer Glow
+                0.5f to PrimaryAccent,           // Center Bright Core
+                0.55f to PrimaryAccent.copy(alpha = 0.5f), // Outer Glow
+                0.7f to Color.Transparent,       // Fade out
                 1.0f to Color.Transparent
             )
         )
@@ -71,23 +97,27 @@ fun ContentCard(item: HomeItem, width: Dp, aspectRatio: Float, navController: Na
         GlowBorderBrush
     }
 
-    val borderWidth = if (isActive) dimens.borderWidthActive else dimens.borderWidthNormal
     val elevationState = if (isActive) 12.dp else 4.dp
 
     Card(
         modifier = Modifier
             .width(width)
             .aspectRatio(aspectRatio)
+            .graphicsLayer {
+                scaleX = scale
+                scaleY = scale
+            }
             .shadow(
-                elevation = elevationState,
+                elevation = shadowElevation,
                 shape = RoundedCornerShape(dimens.cardCornerRadius),
-                spotColor = PrimaryAccent.copy(alpha = 0.4f),
-                ambientColor = PrimaryAccent.copy(alpha = 0.4f)
+                spotColor = PrimaryAccent,
+                ambientColor = PrimaryAccent
             )
             .clip(RoundedCornerShape(dimens.cardCornerRadius))
-            // Spotlight Border
-            .border(BorderStroke(borderWidth, borderBrush), RoundedCornerShape(dimens.cardCornerRadius))
-//            .focusable(interactionSource = interactionSource)
+            .border(
+                BorderStroke(borderWidth, borderBrush),
+                RoundedCornerShape(dimens.cardCornerRadius)
+            )
             .clickable(interactionSource = interactionSource, indication = null) {
                 when (item.title) {
                     "Workout" -> {
@@ -100,6 +130,10 @@ fun ContentCard(item: HomeItem, width: Dp, aspectRatio: Float, navController: Na
 
                     "Live Class" -> {
                         navController.navigate(Route.Live)
+                    }
+
+                    "Step Trip" -> {
+                        if (!isWideScreen) navController.navigate(Route.StepTrip)
                     }
                 }
             },
@@ -133,7 +167,7 @@ fun ContentCard(item: HomeItem, width: Dp, aspectRatio: Float, navController: Na
                     fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
                     letterSpacing = 0.1.sp
                 ),
-                color = TextWhite,
+                color = Color.White,
                 modifier = Modifier.align(Alignment.BottomStart).padding(16.dp)
             )
             if (item.isLive) {
@@ -144,9 +178,7 @@ fun ContentCard(item: HomeItem, width: Dp, aspectRatio: Float, navController: Na
                 ) {
                     Text(
                         "LIVE",
-                        color = Color.Black,
-                        fontSize = dimens.live,
-                        fontWeight = FontWeight.Bold,
+                        style = buttonText.copy(fontSize = dimens.live),
                         fontFamily = FontFamily(Font(Res.font.montserrat_bold))
                     )
                 }

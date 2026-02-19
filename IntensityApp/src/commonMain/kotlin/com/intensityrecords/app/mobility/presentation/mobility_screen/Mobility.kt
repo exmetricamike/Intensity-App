@@ -17,9 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -27,6 +25,8 @@ import com.intensityrecord.core.presentation.DarkGradient
 import com.intensityrecord.core.presentation.FitnessAppTheme
 import com.intensityrecord.resources.Res
 import com.intensityrecord.resources.montserrat_bold
+import com.intensityrecords.app.core.presentation.Title
+import com.intensityrecords.app.core.presentation.captions
 import com.intensityrecords.app.core.presentation.utils.LocalAppDimens
 import com.intensityrecords.app.mobility.domain.mobilityCategories
 import com.intensityrecords.app.mobility.presentation.mobility_screen.component.MobilityCard
@@ -69,10 +69,15 @@ fun MobilityScreen(navController: NavController, isWideScreen: Boolean) {
 
                 Text(
                     text = "MOBILITY & RECOVERY",
-                    color = Color.White,
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    letterSpacing = 1.5.sp,
+                    fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
+                    style = Title
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = "Programs designed for recovery and relaxation",
+                    style = captions.copy(letterSpacing = 0.1.sp),
                     fontFamily = FontFamily(Font(Res.font.montserrat_bold))
                 )
 
@@ -84,7 +89,7 @@ fun MobilityScreen(navController: NavController, isWideScreen: Boolean) {
                     columns = GridCells.Fixed(2),
                     horizontalArrangement = Arrangement.spacedBy(if (isWideScreen) 25.dp else 16.dp),
                     verticalArrangement = Arrangement.spacedBy(if(isWideScreen) 45.dp else 24.dp),
-                    modifier = Modifier.fillMaxWidth(gridWidth).fillMaxSize(),
+                    modifier = Modifier.fillMaxWidth(gridWidth).weight(1f),
                     contentPadding = PaddingValues(
                         top = 16.dp,
                         bottom = 120.dp, // This replaces the external Spacer
@@ -96,13 +101,12 @@ fun MobilityScreen(navController: NavController, isWideScreen: Boolean) {
                         MobilityCard(item = item, isWideScreen = isWideScreen, dimens = dimens)
                         Spacer(modifier = Modifier.height(40.dp))
                     }
+                    // Add a transparent spacer item at the end of the grid list
+                    item {
+                        Spacer(modifier = Modifier.height(50.dp))
+                    }
                 }
-
-
-                Spacer(modifier = Modifier.height(120.dp))
-
             }
-
         }
     }
 }

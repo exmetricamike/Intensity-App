@@ -1,4 +1,4 @@
-package com.intensityrecords.app.workouts.presentation.workouts_details_screen.component
+package com.intensityrecords.app.steptrip.presentation.step_trip_detail_screen.component
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,42 +11,28 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.intensityrecord.core.presentation.PrimaryAccent
-import org.jetbrains.compose.resources.Font
 import com.intensityrecord.resources.Res
 import com.intensityrecord.resources.montserrat_bold
-import com.intensityrecord.resources.montserrat_regular
-import com.intensityrecords.app.core.presentation.captions
-
+import org.jetbrains.compose.resources.Font
 
 @Composable
-fun StatBadge(
-    icon: ImageVector,
-    text: String,
-    iconSize: Dp = 20.dp,
-    textStyle: TextStyle = captions,
-    spacing: Dp = 8.dp
-) {
+fun DetailStatItem(icon: ImageVector, text: String) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Icon(
             imageVector = icon,
             contentDescription = null,
-            tint = PrimaryAccent,
-            modifier = Modifier.size(iconSize)
+            tint = Color.Black,
+            modifier = Modifier.size(18.dp)
         )
-        Spacer(modifier = Modifier.width(spacing))
+        Spacer(modifier = Modifier.width(6.dp))
         Text(
             text = text,
-            style = textStyle,
-            fontFamily = FontFamily(Font(Res.font.montserrat_regular)),
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
+            color = Color.Black,
+            fontSize = 14.sp,
+            fontFamily = FontFamily(Font(Res.font.montserrat_bold))
         )
     }
 }

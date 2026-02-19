@@ -1,6 +1,8 @@
 package com.intensityrecords.app.live.presentation.live_screen.component
 
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
@@ -20,6 +22,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
@@ -40,7 +43,9 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -56,6 +61,7 @@ import com.intensityrecord.resources.montserrat_bold
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.painterResource
 import com.intensityrecord.resources._4
+import com.intensityrecords.app.core.presentation.chipButtonText
 
 @Composable
 fun MainVideoPlayerCard(isWideScreen: Boolean) {
@@ -66,6 +72,18 @@ fun MainVideoPlayerCard(isWideScreen: Boolean) {
     val isFocused by interactionSource.collectIsFocusedAsState()
     val isHovered by interactionSource.collectIsHoveredAsState()
     val isActive = isFocused || isHovered
+
+    val scale by animateFloatAsState(
+        targetValue = if (isFocused) 1.08f else 1f,
+        animationSpec = tween(300),
+        label = "scale"
+    )
+
+    val shadowElevation by animateDpAsState(
+        targetValue = if (isFocused) 8.dp else 0.dp,
+        animationSpec = tween(300),
+        label = "elevation"
+    )
 
     val borderWidth = if (isFocused) 3.dp else 1.dp
     val elevation by animateDpAsState(if (isFocused) 24.dp else 8.dp)
@@ -95,11 +113,15 @@ fun MainVideoPlayerCard(isWideScreen: Boolean) {
         modifier = Modifier
             .width(cardWidth)
             .height(cardHeight)
+            .graphicsLayer {
+                scaleX = scale
+                scaleY = scale
+            }
             .shadow(
-                elevation = elevationState,
+                elevation = shadowElevation,
                 shape = RoundedCornerShape(24.dp),
-                spotColor = PrimaryAccent.copy(alpha = 0.6f),
-                ambientColor = PrimaryAccent.copy(alpha = 0.6f)
+                spotColor = PrimaryAccent,
+                ambientColor = PrimaryAccent
             )
             .clip(RoundedCornerShape(24.dp))
             .background(CardBackground)
@@ -123,29 +145,6 @@ fun MainVideoPlayerCard(isWideScreen: Boolean) {
                 .fillMaxSize()
                 .background(Color.Black.copy(alpha = 0.4f))
         )
-
-//        Box(
-//            modifier = Modifier.align(Alignment.Center),
-//            contentAlignment = Alignment.Center
-//        ) {
-//            Canvas(modifier = Modifier.size(80.dp)) {
-//                drawRoundRect(
-//                    color = PrimaryAccent,
-//                    size = size,
-//                    cornerRadius = CornerRadius(100f, 100f),
-//                    style = Stroke(
-//                        width = 4.dp.toPx(),
-//                        pathEffect = PathEffect.dashPathEffect(floatArrayOf(20f, 20f), 0f)
-//                    )
-//                )
-//            }
-//            Icon(
-//                imageVector = Icons.Filled.PlayArrow,
-//                contentDescription = "Play",
-//                tint = PrimaryAccent,
-//                modifier = Modifier.size(40.dp)
-//            )
-//        }
 
         Row(
             modifier = Modifier
@@ -173,28 +172,11 @@ fun MainVideoPlayerCard(isWideScreen: Boolean) {
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = "15-20 MIN",
-                        color = PrimaryAccent,
-                        fontSize = textSize,
                         fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
-                        fontWeight = FontWeight.Bold,
+                        style = chipButtonText.copy(fontSize = textSize)
                     )
                 }
             }
-//            Icon(
-//                imageVector = Icons.Rounded.AccessTime,
-//                contentDescription = null,
-//                tint = TextWhite,
-//                modifier = Modifier.size(18.dp)
-//            )
-//            Spacer(modifier = Modifier.width(8.dp))
-//            Text(
-//                text = "15-20 min",
-//                style = TextStyle(
-//                    color = TextWhite,
-//                    fontSize = 16.sp,
-//                    fontFamily = FontFamily(Font(Res.font.montserrat_regular))
-//                )
-//            )
         }
 
     }

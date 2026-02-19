@@ -21,4 +21,13 @@ sealed interface Route {
 
     @Serializable
     data class WorkOutsDetailsScreen(val id: String) : Route
+
+    @Serializable
+    data object TimeTable : Route
+
+    @Serializable
+    data object StepTrip : Route
+
+    @Serializable
+    data class StepTripDetailScreen(val id: String) : Route
 }

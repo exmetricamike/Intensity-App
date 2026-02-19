@@ -36,6 +36,7 @@ import com.intensityrecord.core.presentation.DarkGradient
 import com.intensityrecord.core.presentation.FitnessAppTheme
 import com.intensityrecords.app.core.presentation.components.AppHeader
 import com.intensityrecords.app.core.presentation.components.CustomBottomBar
+import com.intensityrecords.app.core.presentation.components.TopNavigationLayout
 import com.intensityrecords.app.core.presentation.utils.CompactDimens
 import com.intensityrecords.app.core.presentation.utils.ExpandedDimens
 import com.intensityrecords.app.core.presentation.utils.LocalAppDimens
@@ -43,7 +44,12 @@ import com.intensityrecords.app.core.presentation.utils.currentDeviceConfigurati
 import com.intensityrecords.app.home.presentation.home_screen.HomeScreenRoot
 import com.intensityrecords.app.home.presentation.video_detail_screen.VideoDetailScreen
 import com.intensityrecords.app.live.presentation.live_screen.LiveScreenRoot
+import com.intensityrecords.app.live.presentation.timetable_screen.TimeTableScreen
 import com.intensityrecords.app.mobility.presentation.mobility_screen.MobilityScreenRoot
+import com.intensityrecords.app.steptrip.domain.trips
+import com.intensityrecords.app.steptrip.presentation.step_trip_detail_screen.StepTripDetailScreen
+import com.intensityrecords.app.steptrip.presentation.step_trip_detail_screen.StepTripDetailScreenRoot
+import com.intensityrecords.app.steptrip.presentation.steptrip.StepTripScreenRoot
 import com.intensityrecords.app.workouts.domain.workoutCategories
 import com.intensityrecords.app.workouts.presentation.workouts_details_screen.WorkoutDetailScreenRoot
 import com.intensityrecords.app.workouts.presentation.workouts_screen.WorkoutScreenRoot
@@ -71,11 +77,18 @@ fun App() {
 
                 val currentTab = when {
                     currentDestination?.hasRoute<Route.Home>() == true -> "Home"
-                    currentDestination?.hasRoute<Route.Live>() == true -> "Live"
+
+                    currentDestination?.hasRoute<Route.Live>() == true ||
+                            currentDestination?.hasRoute<Route.TimeTable>() == true -> "Live"
+
                     currentDestination?.hasRoute<Route.WorkOuts>() == true ||
                             currentDestination?.hasRoute<Route.WorkOutsDetailsScreen>() == true -> "Workouts"
 
                     currentDestination?.hasRoute<Route.Mobility>() == true -> "Mobility"
+
+                    currentDestination?.hasRoute<Route.StepTrip>() == true ||
+                            currentDestination?.hasRoute<Route.StepTripDetailScreen>() == true -> "Home"
+
                     else -> "Home"
                 }
 
@@ -83,28 +96,46 @@ fun App() {
                     containerColor = Color.Transparent,
                     modifier = Modifier.windowInsetsPadding(WindowInsets.safeDrawing),
                     topBar = {
-                        AppHeader()
+                        if (!isWideScreen) AppHeader(isWideScreen = isWideScreen) else
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .navigationBarsPadding()
+                                    .padding(top = 10.dp),
+                                contentAlignment = Alignment.TopCenter
+                            ) {
+                                TopNavigationLayout(
+                                    isWideScreen = isWideScreen,
+                                    currentTab = currentTab,
+                                    navController = navController
+                                )
+                            }
                     },
                     bottomBar = {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .navigationBarsPadding()
-                                .padding(bottom = 10.dp),
-                            contentAlignment = Alignment.BottomCenter
-                        ) {
-                            CustomBottomBar(
-                                isWideScreen = isWideScreen,
-                                currentTab = currentTab,
-                                navController = navController
-                            )
+                        if (!isWideScreen) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .navigationBarsPadding()
+                                    .padding(bottom = 10.dp),
+                                contentAlignment = Alignment.BottomCenter
+                            ) {
+                                CustomBottomBar(
+                                    isWideScreen = isWideScreen,
+                                    currentTab = currentTab,
+                                    navController = navController
+                                )
+                            }
                         }
                     }
                 ) { innerPadding ->
                     NavHost(
                         navController = navController,
                         startDestination = Route.Home,
-                        modifier = Modifier.padding(top = innerPadding.calculateTopPadding(), bottom = innerPadding.calculateBottomPadding())
+                        modifier = Modifier.padding(
+                            top = innerPadding.calculateTopPadding(),
+                            bottom = innerPadding.calculateBottomPadding()
+                        )
                     ) {
                         composable<Route.Home>(
                             enterTransition = { fadeIn(animationSpec = tween(animationDuration)) },
@@ -131,6 +162,18 @@ fun App() {
                             popExitTransition = { fadeOut(animationSpec = tween(animationDuration)) }
                         ) {
                             LiveScreenRoot(navController, isWideScreen)
+                        }
+
+                        composable<Route.TimeTable>(
+                            enterTransition = { fadeIn(animationSpec = tween(animationDuration)) },
+                            exitTransition = { fadeOut(animationSpec = tween(animationDuration)) },
+                            popEnterTransition = { fadeIn(animationSpec = tween(animationDuration)) },
+                            popExitTransition = { fadeOut(animationSpec = tween(animationDuration)) }
+                        ) {
+                            TimeTableScreen(
+                                navController = navController,
+                                isWideScreen = isWideScreen
+                            )
                         }
 
                         composable<Route.WorkOuts>(
@@ -167,9 +210,32 @@ fun App() {
                             MobilityScreenRoot(navController, isWideScreen)
                         }
 
+                        composable<Route.StepTrip>(
+                            enterTransition = { fadeIn(animationSpec = tween(animationDuration)) },
+                            exitTransition = { fadeOut(animationSpec = tween(animationDuration)) },
+                            popEnterTransition = { fadeIn(animationSpec = tween(animationDuration)) },
+                            popExitTransition = { fadeOut(animationSpec = tween(animationDuration)) }
+                        ) {
+                            StepTripScreenRoot(navController, isWideScreen)
+                        }
+
+                        composable<Route.StepTripDetailScreen> { backStackEntry ->
+                            val args = backStackEntry.toRoute<Route.StepTripDetailScreen>()
+
+                            // Find the actual object using the ID from the Route
+                            val selectedItem = trips.find { it.title == args.id }
+
+                            if (selectedItem != null) {
+                                StepTripDetailScreenRoot(
+                                    navController = navController,
+                                    stepTripID = args.id,
+                                    isWideScreen = isWideScreen
+                                )
+                            }
+                        }
+
                     }
                 }
-
             }
         }
     }

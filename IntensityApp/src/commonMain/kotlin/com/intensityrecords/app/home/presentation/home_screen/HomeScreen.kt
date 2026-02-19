@@ -2,6 +2,7 @@ package com.intensityrecords.app.home.presentation.home_screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -67,17 +68,20 @@ fun HomeScreen(navController: NavController, isWideScreen: Boolean) {
 
                 if (isWideScreen) {
                     LazyRow(
-                        horizontalArrangement = Arrangement.spacedBy(24.dp),
-                        contentPadding = PaddingValues(horizontal = 4.dp, vertical = 16.dp)
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        contentPadding = PaddingValues(horizontal = 36.dp, vertical = 16.dp)
                     ) {
                         items(items = sampleItems) { item ->
-                            ContentCard(
-                                item = item,
-                                width = 230.dp,
-                                aspectRatio = 1.3f,
-                                navController = navController,
-                                dimens = dimens
-                            )
+                            Box(modifier = Modifier.padding(12.dp)) {
+                                ContentCard(
+                                    item = item,
+                                    width = 230.dp,
+                                    aspectRatio = 1.3f,
+                                    navController = navController,
+                                    dimens = dimens,
+                                    isWideScreen = isWideScreen
+                                )
+                            }
                         }
                     }
                 } else {
@@ -88,7 +92,8 @@ fun HomeScreen(navController: NavController, isWideScreen: Boolean) {
                                 width = screenWidth - 32.dp,
                                 aspectRatio = 3.3f,
                                 navController = navController,
-                                dimens = dimens
+                                dimens = dimens,
+                                isWideScreen = isWideScreen
                             )
                         }
                     }

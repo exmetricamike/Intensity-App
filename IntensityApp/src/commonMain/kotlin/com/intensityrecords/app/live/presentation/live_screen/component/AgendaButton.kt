@@ -1,4 +1,4 @@
-package com.intensityrecords.app.home.presentation.home_screen.component
+package com.intensityrecords.app.live.presentation.live_screen.component
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
@@ -10,21 +10,18 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowForwardIos
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.PlayCircle
+import androidx.compose.material.icons.filled.Preview
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -51,15 +48,18 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import com.intensityrecord.core.presentation.GlowBorderBrush
 import com.intensityrecord.core.presentation.PrimaryAccent
-import com.intensityrecord.core.presentation.TextWhite
 import com.intensityrecord.resources.Res
 import com.intensityrecord.resources.montserrat_bold
+import com.intensityrecords.app.core.presentation.cardTitle
 import org.jetbrains.compose.resources.Font
 
 @Composable
-fun IntroVideoButton() {
+fun AgendaButton(onClick: () -> Unit, isWideScreen: Boolean) {
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
+
+    val borderBrush = if (isFocused) SolidColor(PrimaryAccent) else GlowBorderBrush
+    val borderWidth = if (isFocused) 2.dp else 1.dp
 
     val scale by animateFloatAsState(
         targetValue = if (isFocused) 1.05f else 1f,
@@ -72,9 +72,6 @@ fun IntroVideoButton() {
         animationSpec = tween(300),
         label = "elevation"
     )
-
-    val borderBrush = if (isFocused) SolidColor(PrimaryAccent) else GlowBorderBrush
-    val borderWidth = if (isFocused) 2.dp else 1.dp
 
     // 1. Create the requester and scope
     val bringIntoViewRequester = remember { BringIntoViewRequester() }
@@ -101,69 +98,44 @@ fun IntroVideoButton() {
         }
     }
 
-    Box(
-        modifier = Modifier.fillMaxWidth(),
-        contentAlignment = Alignment.CenterStart
-    ) {
-        Row(
-            modifier = Modifier
-                .widthIn(min = 250.dp, max = 300.dp) // Constrain width (Pill shape)
-                .graphicsLayer {
-                    scaleX = scale
-                    scaleY = scale
-                }
-                .shadow(
-                    elevation = shadowElevation,
-                    shape = CircleShape,
-                    spotColor = PrimaryAccent,
-                    ambientColor = PrimaryAccent
-                )
-                .onSizeChanged { cardSize = it }
-                // 5. Attach the requester (MUST be before clickable/focusable)
-                .bringIntoViewRequester(bringIntoViewRequester)
-                .border(BorderStroke(borderWidth, borderBrush), CircleShape)
-                .clip(CircleShape)
-                .background(Color(0xFF111111))
-                .height(64.dp)
-                .clickable(
-                    interactionSource = interactionSource,
-                    indication = null
-                ) { /* Play Action */ }
-                .padding(start = 8.dp, end = 24.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Icon Circle
-            Box(
-                modifier = Modifier
-                    .size(48.dp)
-                    .background(if (isFocused) PrimaryAccent else PrimaryAccent.copy(alpha = 0.8f),
-                        CircleShape)
-                    .border(1.dp, PrimaryAccent, CircleShape),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(Icons.Filled.PlayArrow, contentDescription = null, tint = Color.Black)
+    Row(
+        modifier = Modifier
+            .width(if (isWideScreen) 200.dp else 150.dp)
+            .height(56.dp)
+            .graphicsLayer {
+                scaleX = scale
+                scaleY = scale
             }
-
-            Spacer(modifier = Modifier.width(16.dp))
-
-            Text(
-                text = "Intro Video",
-                style = TextStyle(
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 16.sp,
-                    color = Color.White,
-                    fontFamily = FontFamily(Font(Res.font.montserrat_bold))
-                )
+            .shadow(
+                elevation = shadowElevation,
+                shape = CircleShape,
+                spotColor = PrimaryAccent,
+                ambientColor = PrimaryAccent
             )
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            Icon(
-                imageVector = Icons.AutoMirrored.Rounded.ArrowForwardIos,
-                contentDescription = null,
-                tint = Color.Gray,
-                modifier = Modifier.size(14.dp)
+            .onSizeChanged { cardSize = it }
+            // 5. Attach the requester (MUST be before clickable/focusable)
+            .bringIntoViewRequester(bringIntoViewRequester)
+            .border(BorderStroke(borderWidth, borderBrush), CircleShape)
+            .clip(CircleShape)
+            .background(Color(0xFF111111))
+            .clickable(
+                interactionSource = interactionSource,
+                indication = null,
+                onClick = onClick
+            ),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
+//        Icon(Icons.Filled.PlayCircle, contentDescription = null, tint = PrimaryAccent)
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(
+            text = "AGENDA",
+            style = cardTitle.copy(
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 1.sp,
+                fontFamily = FontFamily(Font(Res.font.montserrat_bold))
             )
-        }
+        )
     }
 }
