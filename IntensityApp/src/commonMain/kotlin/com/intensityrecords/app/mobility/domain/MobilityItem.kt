@@ -1,10 +1,10 @@
 package com.intensityrecords.app.mobility.domain
 
-import com.intensityrecord.resources.Res
-import com.intensityrecord.resources._2
-import com.intensityrecord.resources._1
-import com.intensityrecord.resources._3
-import com.intensityrecord.resources._4
+import intensityrecordapp.intensityapp.generated.resources.Res
+import intensityrecordapp.intensityapp.generated.resources._1
+import intensityrecordapp.intensityapp.generated.resources._2
+import intensityrecordapp.intensityapp.generated.resources._3
+import intensityrecordapp.intensityapp.generated.resources._4
 import org.jetbrains.compose.resources.DrawableResource
 
 data class MobilityItem(

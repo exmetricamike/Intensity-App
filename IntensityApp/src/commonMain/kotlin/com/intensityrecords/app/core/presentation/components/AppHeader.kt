@@ -25,9 +25,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.intensityrecord.core.presentation.TextWhite
-import com.intensityrecord.resources.Res
-import com.intensityrecord.resources.montserrat_bold
-import com.intensityrecord.resources.montserrat_regular
+import intensityrecordapp.intensityapp.generated.resources.Res
+import intensityrecordapp.intensityapp.generated.resources.montserrat_bold
 import org.jetbrains.compose.resources.Font
 
 @Composable
@@ -54,7 +53,7 @@ fun AppHeader(
                     fontWeight = FontWeight.Bold,
                     fontSize = 12.sp,
                     letterSpacing = 1.sp,
-                    fontFamily = FontFamily(Font(Res.font.montserrat_regular))
+                    fontFamily = FontFamily(Font(Res.font.montserrat_bold))
                 ),
                 color = Color.Gray
             )

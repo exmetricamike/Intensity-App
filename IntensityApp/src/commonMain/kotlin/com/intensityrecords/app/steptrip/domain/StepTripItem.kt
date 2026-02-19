@@ -1,9 +1,9 @@
 package com.intensityrecords.app.steptrip.domain
 
-import com.intensityrecord.resources.Res
-import com.intensityrecord.resources.trip_1
-import com.intensityrecord.resources.trip_2
-import com.intensityrecord.resources.trip_3
+import intensityrecordapp.intensityapp.generated.resources.Res
+import intensityrecordapp.intensityapp.generated.resources.trip_1
+import intensityrecordapp.intensityapp.generated.resources.trip_2
+import intensityrecordapp.intensityapp.generated.resources.trip_3
 import org.jetbrains.compose.resources.DrawableResource
 
 val trips = listOf(

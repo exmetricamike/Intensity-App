@@ -45,8 +45,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import com.intensityrecord.core.presentation.GlowBorderBrush
 import com.intensityrecord.core.presentation.PrimaryAccent
-import com.intensityrecord.resources.Res
-import com.intensityrecord.resources.montserrat_bold
+import intensityrecordapp.intensityapp.generated.resources.Res
+import intensityrecordapp.intensityapp.generated.resources.montserrat_bold
 import org.jetbrains.compose.resources.Font
 
 

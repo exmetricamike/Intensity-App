@@ -42,12 +42,11 @@ import com.intensityrecord.app.Route
 import com.intensityrecord.core.presentation.CardBackground
 import com.intensityrecord.core.presentation.GlowBorderBrush
 import com.intensityrecord.core.presentation.PrimaryAccent
-import com.intensityrecord.core.presentation.TextWhite
-import com.intensityrecord.resources.Res
-import com.intensityrecord.resources.montserrat_bold
 import com.intensityrecords.app.core.domain.AppDimens
 import com.intensityrecords.app.core.presentation.buttonText
-import com.intensityrecords.app.home.domain.HomeItem
+import intensityrecordapp.intensityapp.generated.resources.Res
+import intensityrecordapp.intensityapp.generated.resources.montserrat_bold
+import intensityrecordapp.intensityapp.generateds.app.home.domain.HomeItem
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.painterResource
 

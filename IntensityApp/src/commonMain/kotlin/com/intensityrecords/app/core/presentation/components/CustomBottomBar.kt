@@ -141,8 +141,8 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.intensityrecord.app.Route
 import com.intensityrecord.core.presentation.PrimaryAccent
 import com.intensityrecord.core.presentation.TextWhite
-import com.intensityrecord.resources.Res
-import com.intensityrecord.resources.montserrat_regular
+import intensityrecordapp.intensityapp.generated.resources.Res
+import intensityrecordapp.intensityapp.generated.resources.montserrat_regular
 import org.jetbrains.compose.resources.Font
 
 @Composable

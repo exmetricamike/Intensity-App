@@ -23,13 +23,13 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.intensityrecord.core.presentation.DarkGradient
 import com.intensityrecord.core.presentation.FitnessAppTheme
-import com.intensityrecord.resources.Res
-import com.intensityrecord.resources.montserrat_bold
 import com.intensityrecords.app.core.presentation.Title
 import com.intensityrecords.app.core.presentation.captions
 import com.intensityrecords.app.core.presentation.utils.LocalAppDimens
 import com.intensityrecords.app.mobility.domain.mobilityCategories
 import com.intensityrecords.app.mobility.presentation.mobility_screen.component.MobilityCard
+import intensityrecordapp.intensityapp.generated.resources.Res
+import intensityrecordapp.intensityapp.generated.resources.montserrat_bold
 import org.jetbrains.compose.resources.Font
 import org.koin.compose.viewmodel.koinViewModel
 

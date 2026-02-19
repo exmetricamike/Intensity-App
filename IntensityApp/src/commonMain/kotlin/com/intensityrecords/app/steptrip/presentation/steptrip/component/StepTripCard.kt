@@ -48,11 +48,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.intensityrecord.core.presentation.CardBackground
 import com.intensityrecord.core.presentation.PrimaryAccent
-import com.intensityrecord.resources.Res
-import com.intensityrecord.resources._4
-import com.intensityrecord.resources.montserrat_bold
-import com.intensityrecord.resources.montserrat_regular
 import com.intensityrecords.app.steptrip.domain.TripData
+import intensityrecordapp.intensityapp.generated.resources.Res
+import intensityrecordapp.intensityapp.generated.resources.montserrat_bold
+import intensityrecordapp.intensityapp.generated.resources.montserrat_regular
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.painterResource
 
