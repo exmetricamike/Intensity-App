@@ -1,5 +1,6 @@
 package com.intensityrecord
 
+import com.intensityrecords.app.Platform
 import platform.UIKit.UIDevice
 
 class IOSPlatform: Platform {

@@ -1,11 +1,12 @@
-package com.intensityrecords.app.home.domain
+package intensityrecordapp.intensityapp.generateds.app.home.domain
 
+import intensityrecordapp.intensityapp.generated.resources.Res
+import intensityrecordapp.intensityapp.generated.resources._2
+import intensityrecordapp.intensityapp.generated.resources._3
+import intensityrecordapp.intensityapp.generated.resources._4
+import intensityrecordapp.intensityapp.generated.resources._5
 import org.jetbrains.compose.resources.DrawableResource
-import com.intensityrecord.resources.Res
-import com.intensityrecord.resources._2
-import com.intensityrecord.resources._3
-import com.intensityrecord.resources._4
-import com.intensityrecord.resources._5
+
 
 data class HomeItem(
     val title: String,

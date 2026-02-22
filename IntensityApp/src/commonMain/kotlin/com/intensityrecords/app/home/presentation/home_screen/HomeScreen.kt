@@ -22,10 +22,10 @@ import androidx.navigation.NavController
 import com.intensityrecord.core.presentation.DarkGradient
 import com.intensityrecord.core.presentation.FitnessAppTheme
 import com.intensityrecords.app.core.presentation.utils.LocalAppDimens
-import com.intensityrecords.app.home.domain.sampleItems
 import com.intensityrecords.app.home.presentation.home_screen.component.ContentCard
 import com.intensityrecords.app.home.presentation.home_screen.component.IntroVideoButton
 import com.intensityrecords.app.home.presentation.home_screen.component.VideoOfTheDayCard
+import intensityrecordapp.intensityapp.generateds.app.home.domain.sampleItems
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable

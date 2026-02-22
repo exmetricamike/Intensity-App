@@ -1,10 +1,9 @@
-package com.intensityrecord
+package com.testdroid.sample.androidapp
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import com.intensityrecords.app.app.App
-
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -16,9 +15,3 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
-//@Preview
-//@Composable
-//fun AppAndroidPreview() {
-//    App( engine = remember {OkHttp.create()})})
-//}

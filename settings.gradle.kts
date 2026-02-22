@@ -29,3 +29,4 @@ dependencyResolutionManagement {
 }
 
 include(":intensityApp")
+include(":androidApp")

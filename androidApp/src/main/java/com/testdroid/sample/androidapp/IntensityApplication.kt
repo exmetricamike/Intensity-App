@@ -1,14 +1,14 @@
-package com.intensityrecord
+package com.testdroid.sample.androidapp
 
 import android.app.Application
 import com.intensityrecord.di.initKoin
 import org.koin.android.ext.koin.androidContext
 
-class BookApplication: Application() {
+class IntensityApplication: Application() {
     override fun onCreate() {
         super.onCreate()
         initKoin {
-            androidContext(this@BookApplication)
+            androidContext(this@IntensityApplication)
         }
     }
 }
