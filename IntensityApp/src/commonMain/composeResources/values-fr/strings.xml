@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <resources>
-    <string name="home">Home</string>
-    <string name="live">Live</string>
-    <string name="workouts">Workouts</string>
-    <string name="mobility">Mobility</string>
+    <string name="home">Accueil</string>
+    <string name="live">En direct</string>
+    <string name="workouts">Entraînements</string>
+    <string name="mobility">Mobilité</string>
     <string name="app_header">VAN DER VALK</string>
     <string name="app_header_1">HOTEL WATERLOO</string>
     <string name="live_tag">LIVE</string>
@@ -19,6 +19,5 @@
     <string name="programs_recovery_relaxation">Programs designed for recovery and relaxation</string>
     <string name="close">CLOSE</string>
     <string name="choose_workout_focus">Choose your workout focus</string>
-
 
 </resources>

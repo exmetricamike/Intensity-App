@@ -70,7 +70,7 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun HeroSection(item: WorkoutItem, isWideScreen: Boolean) {
 
-    val height = if (isWideScreen) 380.dp else 450.dp
+    val height = if (isWideScreen) 330.dp else 450.dp
 
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
@@ -278,6 +278,8 @@ fun HeroSection(item: WorkoutItem, isWideScreen: Boolean) {
 
                 Text(
                     text = "Surprise workout selected by your coach",
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(horizontal = if (isWideScreen) 16.dp else 0.dp),
                     style = captions,
                     fontFamily = FontFamily(Font(Res.font.montserrat_regular))
                 )

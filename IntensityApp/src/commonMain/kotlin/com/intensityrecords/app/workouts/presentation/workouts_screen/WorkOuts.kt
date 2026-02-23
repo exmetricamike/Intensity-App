@@ -19,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -32,7 +33,10 @@ import com.intensityrecords.app.core.presentation.utils.LocalAppDimens
 import com.intensityrecords.app.workouts.presentation.workouts_screen.component.WorkoutCard
 import intensityrecordapp.intensityapp.generated.resources.Res
 import intensityrecordapp.intensityapp.generated.resources.montserrat_bold
+import intensityrecordapp.intensityapp.generated.resources.workout
+import intensityrecordapp.intensityapp.generated.resources.choose_workout_focus
 import org.jetbrains.compose.resources.Font
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 
@@ -85,7 +89,7 @@ fun WorkoutScreen(
                 Spacer(modifier = Modifier.height(10.dp))
 
                 Text(
-                    text = "WORKOUT",
+                    text = stringResource(Res.string.workout).uppercase(),
                     style = Title,
                     fontFamily = FontFamily(Font(Res.font.montserrat_bold))
                 )
@@ -93,7 +97,7 @@ fun WorkoutScreen(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = "Choose your workout focus",
+                    text = stringResource(Res.string.choose_workout_focus),
                     style = captions.copy(letterSpacing = 0.1.sp),
                     fontFamily = FontFamily(Font(Res.font.montserrat_bold))
                 )

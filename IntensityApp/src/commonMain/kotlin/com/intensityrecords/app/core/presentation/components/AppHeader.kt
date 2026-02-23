@@ -27,7 +27,10 @@ import androidx.navigation.NavHostController
 import com.intensityrecord.core.presentation.TextWhite
 import intensityrecordapp.intensityapp.generated.resources.Res
 import intensityrecordapp.intensityapp.generated.resources.montserrat_bold
+import intensityrecordapp.intensityapp.generated.resources.app_header
+import intensityrecordapp.intensityapp.generated.resources.app_header_1
 import org.jetbrains.compose.resources.Font
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun AppHeader(
@@ -35,8 +38,10 @@ fun AppHeader(
     isWideScreen: Boolean
 ) {
     Row(
-        modifier = if (isWideScreen) modifier else Modifier.fillMaxWidth(),
-        horizontalArrangement = if (isWideScreen) Arrangement.Start else Arrangement.Center,
+        modifier = Modifier.fillMaxWidth(),
+//        modifier = if (isWideScreen) modifier else Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center,
+//        horizontalArrangement = if (isWideScreen) Arrangement.Start else Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
@@ -46,9 +51,10 @@ fun AppHeader(
             modifier = Modifier.size(24.dp)
         )
         Spacer(modifier = Modifier.width(12.dp))
-        Column(horizontalAlignment = if (isWideScreen) Alignment.Start else Alignment.CenterHorizontally) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+//        Column(horizontalAlignment = if (isWideScreen) Alignment.Start else Alignment.CenterHorizontally) {
             Text(
-                text = "VAN DER VALK",
+                text = stringResource(Res.string.app_header),
                 style = TextStyle(
                     fontWeight = FontWeight.Bold,
                     fontSize = 12.sp,
@@ -58,7 +64,7 @@ fun AppHeader(
                 color = Color.Gray
             )
             Text(
-                text = "HOTEL WATERLOO",
+                text = stringResource(Res.string.app_header_1),
                 style = TextStyle(
                     fontWeight = FontWeight.Normal,
                     fontSize = 14.sp,
@@ -89,11 +95,11 @@ fun TopNavigationLayout(
         Box(
             modifier = Modifier.align(Alignment.Center)
         ) {
-            CustomBottomBar(
-                isWideScreen = isWideScreen,
-                currentTab = currentTab,
-                navController = navController
-            )
+//            CustomBottomBar(
+//                isWideScreen = isWideScreen,
+//                currentTab = currentTab,
+//                navController = navController
+//            )
         }
 
         // 2. The App Header (Right Side)

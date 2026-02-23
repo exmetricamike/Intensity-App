@@ -46,9 +46,15 @@ import com.intensityrecords.app.core.domain.AppDimens
 import com.intensityrecords.app.core.presentation.buttonText
 import intensityrecordapp.intensityapp.generated.resources.Res
 import intensityrecordapp.intensityapp.generated.resources.montserrat_bold
+import intensityrecordapp.intensityapp.generated.resources.step_trip
+import intensityrecordapp.intensityapp.generated.resources.mobility
+import intensityrecordapp.intensityapp.generated.resources.live_class
+import intensityrecordapp.intensityapp.generated.resources.workout
+import intensityrecordapp.intensityapp.generated.resources.live_tag
 import intensityrecordapp.intensityapp.generateds.app.home.domain.HomeItem
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun ContentCard(
@@ -67,13 +73,13 @@ fun ContentCard(
     val isActive = isFocused || isHovered
 
     val scale by animateFloatAsState(
-        targetValue = if (isFocused) 1.08f else 1f,
+        targetValue = if (isFocused) 1.20f else 1f,
         animationSpec = tween(300),
         label = "scale"
     )
 
     val shadowElevation by animateDpAsState(
-        targetValue = if (isFocused) 6.dp else 0.dp,
+        targetValue = if (isFocused) 12.dp else 0.dp,
         animationSpec = tween(300),
         label = "elevation"
     )
@@ -83,13 +89,11 @@ fun ContentCard(
     val borderBrush = if (isActive) {
         Brush.horizontalGradient(
             colorStops = arrayOf(
-                0.0f to Color.Transparent,
-                0.3f to Color.Transparent,       // Start fading in
-                0.45f to PrimaryAccent.copy(alpha = 0.5f), // Outer Glow
+                0.0f to PrimaryAccent.copy(alpha = 0.4f),
+                0.2f to PrimaryAccent.copy(alpha = 0.8f),
                 0.5f to PrimaryAccent,           // Center Bright Core
-                0.55f to PrimaryAccent.copy(alpha = 0.5f), // Outer Glow
-                0.7f to Color.Transparent,       // Fade out
-                1.0f to Color.Transparent
+                0.8f to PrimaryAccent.copy(alpha = 0.8f),
+                1.0f to PrimaryAccent.copy(alpha = 0.4f)
             )
         )
     } else {
@@ -97,6 +101,12 @@ fun ContentCard(
     }
 
     val elevationState = if (isActive) 12.dp else 4.dp
+
+    val mobility = stringResource(Res.string.mobility)
+    val live = stringResource(Res.string.live_class)
+    val workouts = stringResource(Res.string.workout)
+    val step_trip = stringResource(Res.string.step_trip)
+
 
     Card(
         modifier = Modifier
@@ -119,19 +129,19 @@ fun ContentCard(
             )
             .clickable(interactionSource = interactionSource, indication = null) {
                 when (item.title) {
-                    "Workout" -> {
+                    workouts -> {
                         navController.navigate(Route.WorkOuts)
                     }
 
-                    "Mobility" -> {
+                    mobility -> {
                         navController.navigate(Route.Mobility)
                     }
 
-                    "Live Class" -> {
+                    live -> {
                         navController.navigate(Route.Live)
                     }
 
-                    "Step Trip" -> {
+                    step_trip -> {
                         if (!isWideScreen) navController.navigate(Route.StepTrip)
                     }
                 }
@@ -176,7 +186,7 @@ fun ContentCard(
                         .padding(horizontal = 6.dp, vertical = 2.dp)
                 ) {
                     Text(
-                        "LIVE",
+                        stringResource(Res.string.live_tag),
                         style = buttonText.copy(fontSize = dimens.live),
                         fontFamily = FontFamily(Font(Res.font.montserrat_bold))
                     )

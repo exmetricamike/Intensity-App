@@ -65,7 +65,9 @@ import com.intensityrecords.app.live.domain.mockSchedule
 import intensityrecordapp.intensityapp.generated.resources.Res
 import intensityrecordapp.intensityapp.generated.resources.montserrat_bold
 import intensityrecordapp.intensityapp.generated.resources.montserrat_regular
+import intensityrecordapp.intensityapp.generated.resources.back
 import org.jetbrains.compose.resources.Font
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun TimeTableScreen(navController: NavController, isWideScreen: Boolean)    {
@@ -103,7 +105,7 @@ fun TimeTableScreen(navController: NavController, isWideScreen: Boolean)    {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(top = 40.dp, bottom = 20.dp),
+                    .padding(top = 15.dp, bottom = 5.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
@@ -113,7 +115,7 @@ fun TimeTableScreen(navController: NavController, isWideScreen: Boolean)    {
                     fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
                     style = Title.copy(color = Color.White)
                 )
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(6.dp))
                 Text(
                     text = "LIVE",
                     style = TextStyle(
@@ -124,7 +126,7 @@ fun TimeTableScreen(navController: NavController, isWideScreen: Boolean)    {
                     )
                 )
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(20.dp))
 
                 // The Schedule Grid Container
                 // We use a Box with a border to mimic the large golden frame in the image
@@ -136,13 +138,13 @@ fun TimeTableScreen(navController: NavController, isWideScreen: Boolean)    {
                         .border(
                             BorderStroke(2.5.dp, glowingLaserBrush),
                             RoundedCornerShape(20.dp)
-                        ).padding(if (isWideScreen) 24.dp else 12.dp),
+                        ).padding(if (isWideScreen) 18.dp else 12.dp),
                 ) {
                     // Horizontal List of Days
                     LazyRow(
                         modifier = Modifier.fillMaxHeight(),
                         horizontalArrangement = Arrangement.spacedBy(16.dp),
-                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp),
+                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
 //                        itemsIndexed(mockSchedule) { index, day ->
@@ -172,7 +174,7 @@ fun TimeTableScreen(navController: NavController, isWideScreen: Boolean)    {
                     }
                 }
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
                 // Bottom Buttons (Play Live & Back)
                 LazyRow(
@@ -197,7 +199,7 @@ fun TimeTableScreen(navController: NavController, isWideScreen: Boolean)    {
                     item {
                         // Back Button
                         TimeTableButton(
-                            text = "BACK",
+                            text = stringResource(Res.string.back),
                             icon = null,
                             isPrimary = false,
                             onClick = { navController.popBackStack() },
@@ -312,7 +314,7 @@ fun SlotItem(slot: ScheduleSlot) {
                     )
                     Spacer(modifier = Modifier.width(2.5.dp))
                     Text(
-                        text = "LIVE",
+                        text = "NEXT LIVE",
                         style = captions.copy(
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Bold

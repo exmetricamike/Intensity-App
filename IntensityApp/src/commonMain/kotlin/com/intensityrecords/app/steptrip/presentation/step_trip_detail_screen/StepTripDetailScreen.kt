@@ -47,9 +47,11 @@ import com.intensityrecord.core.presentation.PrimaryAccent
 import com.intensityrecords.app.steptrip.presentation.step_trip_detail_screen.component.DetailStatItem
 import intensityrecordapp.intensityapp.generated.resources.Res
 import intensityrecordapp.intensityapp.generated.resources.montserrat_bold
+import intensityrecordapp.intensityapp.generated.resources.close
 import intensityrecordapp.intensityapp.generated.resources.montserrat_regular
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -268,7 +270,7 @@ fun StepTripDetailScreen(
                     .height(50.dp)
             ) {
                 Text(
-                    text = "CLOSE",
+                    text = stringResource(Res.string.close),
                     color = Color.White,
                     fontSize = 16.sp,
                     fontFamily = FontFamily(Font(Res.font.montserrat_bold)),

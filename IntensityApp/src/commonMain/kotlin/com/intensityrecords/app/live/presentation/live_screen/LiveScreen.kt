@@ -28,7 +28,9 @@ import com.intensityrecords.app.live.presentation.live_screen.component.LargePla
 import com.intensityrecords.app.live.presentation.live_screen.component.MainVideoPlayerCard
 import intensityrecordapp.intensityapp.generated.resources.Res
 import intensityrecordapp.intensityapp.generated.resources.montserrat_bold
+import intensityrecordapp.intensityapp.generated.resources.live_tag
 import org.jetbrains.compose.resources.Font
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -66,7 +68,7 @@ fun LiveScreen(navController: NavController, isWideScreen: Boolean) {
 
                 item {
                     Text(
-                        text = "LIVE",
+                        text = stringResource(Res.string.live_tag),
                         fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
                         style = Title
                     )

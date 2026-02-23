@@ -52,7 +52,9 @@ import com.intensityrecord.core.presentation.GlowBorderBrush
 import com.intensityrecord.core.presentation.PrimaryAccent
 import intensityrecordapp.intensityapp.generated.resources.Res
 import intensityrecordapp.intensityapp.generated.resources.montserrat_bold
+import intensityrecordapp.intensityapp.generated.resources.intro_video
 import org.jetbrains.compose.resources.Font
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun IntroVideoButton() {
@@ -60,19 +62,19 @@ fun IntroVideoButton() {
     val isFocused by interactionSource.collectIsFocusedAsState()
 
     val scale by animateFloatAsState(
-        targetValue = if (isFocused) 1.05f else 1f,
+        targetValue = if (isFocused) 1.15f else 1f,
         animationSpec = tween(300),
         label = "scale"
     )
 
     val shadowElevation by animateDpAsState(
-        targetValue = if (isFocused) 6.dp else 0.dp,
+        targetValue = if (isFocused) 16.dp else 0.dp,
         animationSpec = tween(300),
         label = "elevation"
     )
 
     val borderBrush = if (isFocused) SolidColor(PrimaryAccent) else GlowBorderBrush
-    val borderWidth = if (isFocused) 2.dp else 1.dp
+    val borderWidth = if (isFocused) 3.dp else 1.dp
 
     // 1. Create the requester and scope
     val bringIntoViewRequester = remember { BringIntoViewRequester() }
@@ -145,7 +147,7 @@ fun IntroVideoButton() {
             Spacer(modifier = Modifier.width(16.dp))
 
             Text(
-                text = "Intro Video",
+                text = stringResource(Res.string.intro_video),
                 style = TextStyle(
                     fontWeight = FontWeight.Medium,
                     fontSize = 16.sp,

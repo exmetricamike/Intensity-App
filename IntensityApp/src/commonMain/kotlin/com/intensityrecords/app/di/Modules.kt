@@ -1,5 +1,6 @@
 package com.intensityrecord.di
 
+import com.intensityrecords.app.core.presentation.LanguageViewModel
 import com.intensityrecords.app.home.presentation.home_screen.HomeScreenViewModel
 import com.intensityrecords.app.live.presentation.live_screen.LiveScreenViewModel
 import com.intensityrecords.app.mobility.presentation.mobility_screen.MobilityScreenViewModel
@@ -22,4 +23,5 @@ val sharedModule = module {
     viewModelOf(::WorkOutsDetailScreenViewModel)
     viewModelOf(::StepTripScreenViewModel)
     viewModelOf(::StepTripsDetailScreenViewModel)
+    viewModelOf(::LanguageViewModel)
 }

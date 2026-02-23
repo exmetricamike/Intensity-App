@@ -44,7 +44,9 @@ import com.intensityrecord.core.presentation.PrimaryAccent
 import com.intensityrecords.app.core.presentation.cardTitle
 import intensityrecordapp.intensityapp.generated.resources.Res
 import intensityrecordapp.intensityapp.generated.resources.montserrat_bold
+import intensityrecordapp.intensityapp.generated.resources.agenda
 import org.jetbrains.compose.resources.Font
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun AgendaButton(onClick: () -> Unit, isWideScreen: Boolean) {
@@ -122,7 +124,7 @@ fun AgendaButton(onClick: () -> Unit, isWideScreen: Boolean) {
 //        Icon(Icons.Filled.PlayCircle, contentDescription = null, tint = PrimaryAccent)
         Spacer(modifier = Modifier.width(8.dp))
         Text(
-            text = "AGENDA",
+            text = stringResource(Res.string.agenda),
             style = cardTitle.copy(
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,

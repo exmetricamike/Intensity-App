@@ -55,8 +55,8 @@ import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun MainVideoPlayerCard(isWideScreen: Boolean) {
-    val cardHeight = if (isWideScreen) 400.dp else 250.dp
-    val cardWidth = if (isWideScreen) 700.dp else 350.dp
+    val cardHeight = if (isWideScreen) 300.dp else 250.dp
+    val cardWidth = if (isWideScreen) 600.dp else 350.dp
 
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
@@ -103,20 +103,20 @@ fun MainVideoPlayerCard(isWideScreen: Boolean) {
         modifier = Modifier
             .width(cardWidth)
             .height(cardHeight)
-            .graphicsLayer {
-                scaleX = scale
-                scaleY = scale
-            }
-            .shadow(
-                elevation = shadowElevation,
-                shape = RoundedCornerShape(24.dp),
-                spotColor = PrimaryAccent,
-                ambientColor = PrimaryAccent
-            )
+//            .graphicsLayer {
+//                scaleX = scale
+//                scaleY = scale
+//            }
+//            .shadow(
+//                elevation = shadowElevation,
+//                shape = RoundedCornerShape(24.dp),
+//                spotColor = PrimaryAccent,
+//                ambientColor = PrimaryAccent
+//            )
             .clip(RoundedCornerShape(24.dp))
             .background(CardBackground)
             .border(BorderStroke(borderWidth, borderBrush), RoundedCornerShape(24.dp))
-            .focusable(interactionSource = interactionSource)
+//            .focusable(interactionSource = interactionSource)
             .clickable(
                 interactionSource = interactionSource,
                 indication = null

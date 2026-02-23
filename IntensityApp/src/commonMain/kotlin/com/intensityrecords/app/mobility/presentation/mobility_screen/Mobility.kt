@@ -30,7 +30,10 @@ import com.intensityrecords.app.mobility.domain.mobilityCategories
 import com.intensityrecords.app.mobility.presentation.mobility_screen.component.MobilityCard
 import intensityrecordapp.intensityapp.generated.resources.Res
 import intensityrecordapp.intensityapp.generated.resources.montserrat_bold
+import intensityrecordapp.intensityapp.generated.resources.mobility_recovery
+import intensityrecordapp.intensityapp.generated.resources.programs_recovery_relaxation
 import org.jetbrains.compose.resources.Font
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 
@@ -68,7 +71,7 @@ fun MobilityScreen(navController: NavController, isWideScreen: Boolean) {
                 Spacer(modifier = Modifier.height(10.dp))
 
                 Text(
-                    text = "MOBILITY & RECOVERY",
+                    text = stringResource(Res.string.mobility_recovery),
                     fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
                     style = Title
                 )
@@ -76,7 +79,7 @@ fun MobilityScreen(navController: NavController, isWideScreen: Boolean) {
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = "Programs designed for recovery and relaxation",
+                    text = stringResource(Res.string.programs_recovery_relaxation),
                     style = captions.copy(letterSpacing = 0.1.sp),
                     fontFamily = FontFamily(Font(Res.font.montserrat_bold))
                 )
