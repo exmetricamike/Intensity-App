@@ -53,7 +53,7 @@ import org.jetbrains.compose.resources.stringResource
 
 
 @Composable
-fun LargePlayButton(isWideScreen: Boolean) {
+fun LargePlayButton(isWideScreen: Boolean,modifier: Modifier = Modifier) {
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
 
@@ -99,7 +99,7 @@ fun LargePlayButton(isWideScreen: Boolean) {
 
 
     Row(
-        modifier = Modifier
+        modifier = modifier
             .width(if (isWideScreen) 200.dp else 150.dp)
             .height(56.dp)
             .graphicsLayer {

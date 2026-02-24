@@ -181,7 +181,22 @@ fun CustomBottomBar(
     val spacerWidth = if (isWideScreen) 8.dp else 4.dp
 
     var showLanguageMenu by remember { mutableStateOf(false) }
-    var selectedLanguage by remember { mutableStateOf("🇬🇧") } // Default English flag
+
+    // Read the current language code from the ViewModel
+// (Use .collectAsState() if languageCode is a StateFlow in your ViewModel)
+    val currentLangCode = viewModel.languageCode.value
+
+// Automatically map the code to the correct flag whenever the code changes
+    val selectedLanguage = remember(currentLangCode) {
+        when (currentLangCode) {
+            "fr" -> "🇫🇷"
+            "nl" -> "🇳🇱"
+            "en" -> "🇬🇧"
+            else -> "🇬🇧" // Fallback default
+        }
+    }
+
+//    var selectedLanguage by remember { mutableStateOf("🇬🇧") } // Default English flag
 
     println(viewModel.languageCode.value)
 
@@ -404,7 +419,7 @@ fun CustomBottomBar(
                     DropdownMenuItem(
                         text = { Text("🇬🇧 English", color = TextWhite) },
                         onClick = {
-                            selectedLanguage = "🇬🇧"
+//                            selectedLanguage = "🇬🇧"
                             showLanguageMenu = false
                             viewModel.switchLanguage("en")
                         }
@@ -412,7 +427,7 @@ fun CustomBottomBar(
                     DropdownMenuItem(
                         text = { Text("🇫🇷 Français", color = TextWhite) },
                         onClick = {
-                            selectedLanguage = "🇫🇷"
+//                            selectedLanguage = "🇫🇷"
                             showLanguageMenu = false
                             viewModel.switchLanguage("fr")
                         }
@@ -420,7 +435,7 @@ fun CustomBottomBar(
                     DropdownMenuItem(
                         text = { Text("🇳🇱 Nederlands", color = TextWhite) },
                         onClick = {
-                            selectedLanguage = "🇳🇱"
+//                            selectedLanguage = "🇳🇱"
                             showLanguageMenu = false
                             viewModel.switchLanguage("nl")
                         }

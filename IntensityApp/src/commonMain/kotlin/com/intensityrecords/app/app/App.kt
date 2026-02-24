@@ -39,7 +39,6 @@ import com.intensityrecord.core.presentation.FitnessAppTheme
 import com.intensityrecords.app.core.presentation.LanguageViewModel
 import com.intensityrecords.app.core.presentation.components.AppHeader
 import com.intensityrecords.app.core.presentation.components.CustomBottomBar
-import com.intensityrecords.app.core.presentation.components.TopNavigationLayout
 import com.intensityrecords.app.core.presentation.utils.CompactDimens
 import com.intensityrecords.app.core.presentation.utils.ExpandedDimens
 import com.intensityrecords.app.core.presentation.utils.LocalAppDimens
@@ -47,13 +46,11 @@ import com.intensityrecords.app.core.presentation.utils.LocalAppLocale
 import com.intensityrecords.app.core.presentation.utils.currentDeviceConfiguration
 import com.intensityrecords.app.core.presentation.utils.rememberDataStore
 import com.intensityrecords.app.home.presentation.home_screen.HomeScreenRoot
-import com.intensityrecords.app.home.presentation.home_screen.HomeScreenViewModel
 import com.intensityrecords.app.home.presentation.video_detail_screen.VideoDetailScreen
 import com.intensityrecords.app.live.presentation.live_screen.LiveScreenRoot
 import com.intensityrecords.app.live.presentation.timetable_screen.TimeTableScreen
 import com.intensityrecords.app.mobility.presentation.mobility_screen.MobilityScreenRoot
 import com.intensityrecords.app.steptrip.domain.trips
-import com.intensityrecords.app.steptrip.presentation.step_trip_detail_screen.StepTripDetailScreen
 import com.intensityrecords.app.steptrip.presentation.step_trip_detail_screen.StepTripDetailScreenRoot
 import com.intensityrecords.app.steptrip.presentation.steptrip.StepTripScreenRoot
 import com.intensityrecords.app.workouts.domain.workoutCategories

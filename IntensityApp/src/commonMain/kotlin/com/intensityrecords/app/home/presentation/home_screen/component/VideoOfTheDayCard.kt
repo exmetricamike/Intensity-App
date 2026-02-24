@@ -265,7 +265,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun VideoOfTheDayCard(navController: NavController, isWideScreen: Boolean, dynamicHeight: Dp) {
+fun VideoOfTheDayCard(navController: NavController, isWideScreen: Boolean, dynamicHeight: Dp, modifier: Modifier = Modifier) {
     val dimens = LocalAppDimens.current
 
     // State to trigger full-screen video overlay
@@ -306,7 +306,7 @@ fun VideoOfTheDayCard(navController: NavController, isWideScreen: Boolean, dynam
     }
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(dynamicHeight)
             .graphicsLayer {

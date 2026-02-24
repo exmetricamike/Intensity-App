@@ -16,27 +16,37 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.relocation.BringIntoViewRequester
+import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.toSize
+import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import com.intensityrecord.app.Route
 import com.intensityrecord.core.presentation.CardBackground
@@ -48,6 +58,7 @@ import intensityrecordapp.intensityapp.generated.resources.Res
 import intensityrecordapp.intensityapp.generated.resources.montserrat_bold
 import intensityrecordapp.intensityapp.generated.resources.step_trip
 import intensityrecordapp.intensityapp.generated.resources.mobility
+import intensityrecordapp.intensityapp.generated.resources.mobility_home_card
 import intensityrecordapp.intensityapp.generated.resources.live_class
 import intensityrecordapp.intensityapp.generated.resources.workout
 import intensityrecordapp.intensityapp.generated.resources.live_tag
@@ -63,7 +74,8 @@ fun ContentCard(
     aspectRatio: Float,
     navController: NavController,
     dimens: AppDimens,
-    isWideScreen: Boolean
+    isWideScreen: Boolean,
+    modifier: Modifier = Modifier
 ) {
 
     val interactionSource = remember { MutableInteractionSource() }
@@ -100,22 +112,51 @@ fun ContentCard(
         GlowBorderBrush
     }
 
+    // 1. Create the requester and scope
+    val bringIntoViewRequester = remember { BringIntoViewRequester() }
+
+    // 2. Track the size of the card so we know how much to expand
+    var cardSize by remember { mutableStateOf(IntSize.Zero) }
+
+    // 3. Trigger the scroll request when focus changes
+    LaunchedEffect(isFocused) {
+        if (isFocused) {
+            // We calculate a rect that is taller than the actual card.
+            // This forces the grid to scroll up enough to show the "phantom" bottom area.
+            val size = cardSize.toSize()
+            val extraBottomSpace = size.height * 0.2f // Add 20% buffer to the bottom
+
+            val expandedRect = Rect(
+                left = 0f,
+                top = 0f,
+                right = size.width,
+                bottom = size.height + extraBottomSpace
+            )
+
+            bringIntoViewRequester.bringIntoView(expandedRect)
+        }
+    }
+
     val elevationState = if (isActive) 12.dp else 4.dp
 
-    val mobility = stringResource(Res.string.mobility)
+    val mobility = stringResource(Res.string.mobility_home_card)
     val live = stringResource(Res.string.live_class)
     val workouts = stringResource(Res.string.workout)
     val step_trip = stringResource(Res.string.step_trip)
 
 
     Card(
-        modifier = Modifier
+        modifier = modifier
+            .zIndex(if (isActive) 1f else 0f)
             .width(width)
             .aspectRatio(aspectRatio)
             .graphicsLayer {
                 scaleX = scale
                 scaleY = scale
             }
+            .onSizeChanged { cardSize = it }
+            // 5. Attach the requester (MUST be before clickable/focusable)
+            .bringIntoViewRequester(bringIntoViewRequester)
             .shadow(
                 elevation = shadowElevation,
                 shape = RoundedCornerShape(dimens.cardCornerRadius),

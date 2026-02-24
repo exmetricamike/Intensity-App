@@ -15,9 +15,13 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
@@ -69,6 +73,16 @@ fun WorkoutScreen(
     isWideScreen: Boolean,
     onAction: (WorkOutsAction) -> Unit
 ) {
+    // 1. Create a FocusRequester
+    val firstItemFocusRequester = remember { FocusRequester() }
+
+    // 2. Trigger focus request when screen loads or when list is ready
+    LaunchedEffect(state.workouts) {
+        if (state.workouts.isNotEmpty()) {
+            firstItemFocusRequester.requestFocus()
+        }
+    }
+
     FitnessAppTheme {
         BoxWithConstraints(
             modifier = Modifier
@@ -120,12 +134,18 @@ fun WorkoutScreen(
                         .fillMaxWidth()
                         .fillMaxSize()
                 ) {
-                    items(state.workouts) { workout ->
+                    items(state.workouts.size) { index ->
+                        val workout = state.workouts[index]
                         WorkoutCard(
                             item = workout,
                             isWideScreen = isWideScreen,
                             onClick = { onAction(WorkOutsAction.OnWorkoutClick(workout = workout)) },
-                            dimens = dimens
+                            dimens = dimens,
+                            modifier = if (index == 0) {
+                                Modifier.focusRequester(firstItemFocusRequester)
+                            } else {
+                                Modifier
+                            }
                         )
                     }
                 }

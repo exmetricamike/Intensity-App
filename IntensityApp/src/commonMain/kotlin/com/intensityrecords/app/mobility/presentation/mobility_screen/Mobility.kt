@@ -15,8 +15,12 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -51,6 +55,13 @@ fun MobilityScreenRoot(
 
 @Composable
 fun MobilityScreen(navController: NavController, isWideScreen: Boolean) {
+
+    val firstItemFocusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(Unit) {
+        firstItemFocusRequester.requestFocus()
+    }
+
     FitnessAppTheme {
         BoxWithConstraints(
             modifier = Modifier
@@ -91,7 +102,7 @@ fun MobilityScreen(navController: NavController, isWideScreen: Boolean) {
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(2),
                     horizontalArrangement = Arrangement.spacedBy(if (isWideScreen) 25.dp else 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(if(isWideScreen) 45.dp else 24.dp),
+                    verticalArrangement = Arrangement.spacedBy(if (isWideScreen) 45.dp else 24.dp),
                     modifier = Modifier.fillMaxWidth(gridWidth).weight(1f),
                     contentPadding = PaddingValues(
                         top = 16.dp,
@@ -100,8 +111,18 @@ fun MobilityScreen(navController: NavController, isWideScreen: Boolean) {
                         end = 4.dp
                     )
                 ) {
-                    items(mobilityCategories) { item ->
-                        MobilityCard(item = item, isWideScreen = isWideScreen, dimens = dimens)
+                    items(mobilityCategories.size) { item ->
+                        val mobilityItem = mobilityCategories[item]
+                        MobilityCard(
+                            item = mobilityItem,
+                            isWideScreen = isWideScreen,
+                            dimens = dimens,
+                            modifier = if (item == 0) {
+                                Modifier.focusRequester(firstItemFocusRequester)
+                            } else {
+                                Modifier
+                            }
+                        )
                         Spacer(modifier = Modifier.height(40.dp))
                     }
                     // Add a transparent spacer item at the end of the grid list
