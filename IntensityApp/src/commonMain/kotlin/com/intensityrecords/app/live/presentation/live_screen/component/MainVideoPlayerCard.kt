@@ -9,7 +9,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.focusable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
@@ -29,16 +28,17 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
@@ -47,9 +47,11 @@ import com.intensityrecord.core.presentation.CardBackground
 import com.intensityrecord.core.presentation.GlowBorderBrush
 import com.intensityrecord.core.presentation.PrimaryAccent
 import com.intensityrecords.app.core.presentation.chipButtonText
+import com.intensityrecords.app.home.presentation.home_screen.component.VideoPlayerAutoPlayPlaceholder
 import intensityrecordapp.intensityapp.generated.resources.Res
 import intensityrecordapp.intensityapp.generated.resources._4
 import intensityrecordapp.intensityapp.generated.resources.montserrat_bold
+import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.painterResource
 
@@ -98,6 +100,22 @@ fun MainVideoPlayerCard(isWideScreen: Boolean) {
     val textSize = if (isWideScreen) 14.sp else 10.sp
     val surfaceHeight = if (isWideScreen) 45.dp else 30.dp
 
+    var timeLeftInSeconds by remember { mutableStateOf(600) } // 10 minutes = 600 seconds
+    var isTimerFinished by remember { mutableStateOf(false) }
+
+    // This effect runs every time the screen is opened (enters composition)
+    LaunchedEffect(Unit) {
+        while (timeLeftInSeconds > 0) {
+            delay(1000L) // Wait 1 second
+            timeLeftInSeconds--
+        }
+        isTimerFinished = true
+    }
+
+    // Format time to MM:SS safely for Kotlin Multiplatform
+    val minutes = (timeLeftInSeconds / 60).toString().padStart(2, '0')
+    val seconds = (timeLeftInSeconds % 60).toString().padStart(2, '0')
+    val timeString = "$minutes:$seconds"
 
     Box(
         modifier = Modifier
@@ -123,51 +141,58 @@ fun MainVideoPlayerCard(isWideScreen: Boolean) {
             ) { /* Play Video */ }
     ) {
 
-        Image(
-            painter = painterResource(Res.drawable._4),
-            contentDescription = "Live Class Preview",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize().alpha(0.8f)
-        )
+        if (isTimerFinished) {
+            // Show YouTube Video
+            VideoPlayerAutoPlayPlaceholder(
+                modifier = Modifier.fillMaxSize()
+            )
+        } else {
 
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.4f))
-        )
+            Image(
+                painter = painterResource(Res.drawable._4),
+                contentDescription = "Live Class Preview",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize().alpha(0.8f)
+            )
 
-        Row(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 24.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Surface(
-                color = PrimaryAccent.copy(alpha = 0.2f),
-                shape = RoundedCornerShape(50),
-                border = BorderStroke(1.dp, PrimaryAccent),
-                modifier = Modifier.height(surfaceHeight)
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.4f))
+            )
+
+            Row(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 24.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center,
-                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 2.dp)
+                Surface(
+                    color = PrimaryAccent.copy(alpha = 0.2f),
+                    shape = RoundedCornerShape(50),
+                    border = BorderStroke(1.dp, PrimaryAccent),
+                    modifier = Modifier.height(surfaceHeight)
                 ) {
-                    Icon(
-                        imageVector = Icons.Rounded.AccessTime,
-                        contentDescription = null,
-                        tint = PrimaryAccent,
-                        modifier = Modifier.size(18.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = "15-20 MIN",
-                        fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
-                        style = chipButtonText.copy(fontSize = textSize)
-                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center,
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 2.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.AccessTime,
+                            contentDescription = null,
+                            tint = PrimaryAccent,
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = timeString, // Updated text
+                            fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
+                            style = chipButtonText.copy(fontSize = textSize)
+                        )
+                    }
                 }
             }
         }
-
     }
 }

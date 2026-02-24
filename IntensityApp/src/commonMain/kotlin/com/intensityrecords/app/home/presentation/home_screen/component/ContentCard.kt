@@ -218,7 +218,7 @@ fun ContentCard(
                     letterSpacing = 0.1.sp
                 ),
                 color = Color.White,
-                modifier = Modifier.align(Alignment.BottomStart).padding(16.dp)
+                modifier = Modifier.align(Alignment.BottomCenter).padding(16.dp)
             )
             if (item.isLive) {
                 Box(

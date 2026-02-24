@@ -193,7 +193,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.focusable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
@@ -208,7 +207,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -219,7 +217,6 @@ import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -248,7 +245,6 @@ import androidx.navigation.NavController
 import com.intensityrecord.core.presentation.CardBackground
 import com.intensityrecord.core.presentation.GlowBorderBrush
 import com.intensityrecord.core.presentation.PrimaryAccent
-import com.intensityrecords.app.core.domain.AppDimens
 import com.intensityrecords.app.core.presentation.buttonText
 import com.intensityrecords.app.core.presentation.cardTitle
 import com.intensityrecords.app.core.presentation.utils.LocalAppDimens
@@ -440,7 +436,7 @@ fun VideoOfTheDayCard(navController: NavController, isWideScreen: Boolean, dynam
 
                 // 1. Insert your actual Video Player Composable here.
                 // Make sure your player is configured to autoplay upon composition.
-                VideoPlayerAutoPlayPlaceholder(modifier = Modifier.fillMaxSize(), dimens = dimens)
+                VideoPlayerAutoPlayPlaceholder(modifier = Modifier.fillMaxSize())
 
                 Box(
                     modifier = Modifier
@@ -488,7 +484,7 @@ fun VideoOfTheDayCard(navController: NavController, isWideScreen: Boolean, dynam
 }
 
 @Composable
-fun VideoPlayerAutoPlayPlaceholder(modifier: Modifier = Modifier, dimens: AppDimens) {
+fun VideoPlayerAutoPlayPlaceholder(modifier: Modifier = Modifier) {
 
     var isPlaying by remember { mutableStateOf(true) }
 
