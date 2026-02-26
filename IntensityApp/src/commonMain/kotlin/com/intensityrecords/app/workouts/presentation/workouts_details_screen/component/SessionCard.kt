@@ -197,50 +197,53 @@ fun SessionCard(
 //                        }
 //                    }
 
-                    Surface(
-                        color = PrimaryAccent.copy(alpha = 0.2f),
-                        shape = RoundedCornerShape(50),
-                        border = BorderStroke(1.dp, PrimaryAccent),
+//                    Surface(
+//                        color = PrimaryAccent.copy(alpha = 0.2f),
+//                        shape = RoundedCornerShape(50),
+//                        border = BorderStroke(1.dp, PrimaryAccent),
+//                        modifier = Modifier
+//                            .padding(bottom = 8.dp, start = 2.dp, end = 2.dp)
+//                            .height(surfaceHeight)
+//                            .wrapContentWidth()
+//                    ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center,
                         modifier = Modifier
                             .padding(bottom = 8.dp, start = 2.dp, end = 2.dp)
                             .height(surfaceHeight)
                             .wrapContentWidth()
                     ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center,
-                            modifier = Modifier.padding(horizontal = surfacePaddingH)
-                        ) {
 
-                            StatBadge(
-                                icon = Icons.Default.Timer,
-                                text = session.duration.uppercase(),
-                                iconSize = badgeIconSize,
-                                textStyle = badgeTextStyle,
-                                spacing = badgeInternalSpacing
-                            )
+                        StatBadge(
+                            icon = Icons.Default.Timer,
+                            text = session.duration.uppercase(),
+                            iconSize = badgeIconSize,
+                            textStyle = badgeTextStyle,
+                            spacing = badgeInternalSpacing
+                        )
 
-                            Spacer(modifier = Modifier.width(badgeGroupSpacing))
+//                        Spacer(modifier = Modifier.width(badgeGroupSpacing))
+//
+//                        Box(
+//                            modifier = Modifier
+//                                .width(1.dp)
+//                                .height(12.dp)
+//                                .background(PrimaryAccent.copy(0.5f))
+//                        )
 
-                            Box(modifier = Modifier
-                                .width(1.dp)
-                                .height(12.dp)
-                                .background(PrimaryAccent.copy(0.5f))
-                            )
+                        Spacer(modifier = Modifier.width(badgeGroupSpacing))
 
-                            Spacer(modifier = Modifier.width(badgeGroupSpacing))
+                        StatBadge(
+                            icon = Icons.Default.LocalFireDepartment,
+                            text = "180 KCAL",
+                            iconSize = badgeIconSize,
+                            textStyle = badgeTextStyle,
+                            spacing = badgeInternalSpacing
+                        )
 
-                            StatBadge(
-                                icon = Icons.Default.LocalFireDepartment,
-                                text = "180 KCAL",
-                                iconSize = badgeIconSize,
-                                textStyle = badgeTextStyle,
-                                spacing = badgeInternalSpacing
-                            )
-
-                        }
                     }
-
+//                    }
                 }
             }
 

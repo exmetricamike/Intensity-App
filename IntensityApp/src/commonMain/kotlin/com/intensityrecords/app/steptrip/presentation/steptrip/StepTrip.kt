@@ -39,7 +39,9 @@ import com.intensityrecords.app.steptrip.domain.trips
 import com.intensityrecords.app.steptrip.presentation.steptrip.component.StepTripCard
 import intensityrecordapp.intensityapp.generated.resources.Res
 import intensityrecordapp.intensityapp.generated.resources.montserrat_bold
+import intensityrecordapp.intensityapp.generated.resources.step_trip
 import org.jetbrains.compose.resources.Font
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -89,7 +91,7 @@ fun StepTripScreen(
                 Spacer(modifier = Modifier.height(20.dp))
 
                 Text(
-                    text = "STEP STRIP",
+                    text = stringResource(Res.string.step_trip),
                     fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
                     style = Title,
                     color = Color.White

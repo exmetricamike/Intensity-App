@@ -15,8 +15,12 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.intensityrecord.core.presentation.DarkGradient
@@ -42,6 +46,14 @@ fun HomeScreenRoot(
 
 @Composable
 fun HomeScreen(navController: NavController, isWideScreen: Boolean) {
+
+    val firstItemFocusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(Unit) {
+        firstItemFocusRequester.requestFocus()
+    }
+
+
     FitnessAppTheme {
         BoxWithConstraints(
             modifier = Modifier
@@ -50,21 +62,38 @@ fun HomeScreen(navController: NavController, isWideScreen: Boolean) {
         ) {
             val dimens = LocalAppDimens.current
 
+            // 1. Grab the exact dimensions of the current screen
             val screenWidth = maxWidth
+            val screenHeight = maxHeight
+
+            // 2. Calculate dynamic sizes based on percentages
+            // E.g., Card width is 22% of the screen width (fits ~4 cards comfortably + hinting the next one)
+            val dynamicCardWidth = if (isWideScreen) screenWidth * 0.22f else screenWidth - 32.dp
+
+            // Hero card height takes up 45% of the screen height on TV
+            val dynamicHeroHeight = if (isWideScreen) screenHeight * 0.60f else 250.dp
 
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
-                    .padding(horizontal = dimens.horizontalContentPadding, vertical = dimens.verticalContentPadding),
+                    .padding(
+                        horizontal = dimens.horizontalContentPadding,
+                        vertical = dimens.verticalContentPadding
+                    ),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(screenHeight * 0.02f)) // 2% dynamic spacer
 
-                VideoOfTheDayCard(navController = navController, isWideScreen = isWideScreen)
+                VideoOfTheDayCard(
+                    navController = navController,
+                    isWideScreen = isWideScreen,
+                    dynamicHeight = dynamicHeroHeight,
+                    modifier = Modifier.focusRequester(firstItemFocusRequester)
+                )
 
-                Spacer(modifier = Modifier.height(40.dp))
+                Spacer(modifier = Modifier.height(screenHeight * 0.05f)) // 5% dynamic spacer
 
                 if (isWideScreen) {
                     LazyRow(
@@ -72,16 +101,17 @@ fun HomeScreen(navController: NavController, isWideScreen: Boolean) {
                         contentPadding = PaddingValues(horizontal = 36.dp, vertical = 16.dp)
                     ) {
                         items(items = sampleItems) { item ->
-                            Box(modifier = Modifier.padding(12.dp)) {
-                                ContentCard(
-                                    item = item,
-                                    width = 230.dp,
-                                    aspectRatio = 1.3f,
-                                    navController = navController,
-                                    dimens = dimens,
-                                    isWideScreen = isWideScreen
-                                )
-                            }
+//                            Box(modifier = Modifier.padding(12.dp)) {
+                            ContentCard(
+                                item = item,
+                                width = dynamicCardWidth,
+                                aspectRatio = 1.3f,
+                                navController = navController,
+                                dimens = dimens,
+                                isWideScreen = isWideScreen,
+                                modifier = Modifier.padding(12.dp)
+                            )
+//                            }
                         }
                     }
                 } else {
@@ -89,7 +119,7 @@ fun HomeScreen(navController: NavController, isWideScreen: Boolean) {
                         sampleItems.forEach { item ->
                             ContentCard(
                                 item = item,
-                                width = screenWidth - 32.dp,
+                                width = dynamicCardWidth,
                                 aspectRatio = 3.3f,
                                 navController = navController,
                                 dimens = dimens,
@@ -103,9 +133,8 @@ fun HomeScreen(navController: NavController, isWideScreen: Boolean) {
 
                 IntroVideoButton()
 
-                Spacer(modifier = Modifier.height(120.dp))
+                Spacer(modifier = Modifier.height(screenHeight * 0.15f))
             }
-
         }
     }
 }

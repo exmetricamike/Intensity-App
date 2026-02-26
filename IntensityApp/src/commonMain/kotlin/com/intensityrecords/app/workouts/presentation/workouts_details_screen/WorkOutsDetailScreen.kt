@@ -108,18 +108,18 @@ fun WorkoutDetailScreen(
             }
 
             Spacer(modifier = Modifier.height(32.dp))
-
-            Text(
-                text = "This month sessions",
-                color = Color.White,
-                fontSize = 20.sp,
-                fontFamily = FontFamily(Font(Res.font.montserrat_regular)),
-                modifier = Modifier
-                    .align(Alignment.Start)
-                    .padding(horizontal = dimens.horizontalContentPadding)
-            )
-
-            Spacer(modifier = Modifier.height(20.dp))
+//
+//            Text(
+//                text = "This month sessions",
+//                color = Color.White,
+//                fontSize = 20.sp,
+//                fontFamily = FontFamily(Font(Res.font.montserrat_regular)),
+//                modifier = Modifier
+//                    .align(Alignment.Start)
+//                    .padding(horizontal = dimens.horizontalContentPadding)
+//            )
+//
+//            Spacer(modifier = Modifier.height(20.dp))
 
             HorizontalPager(
                 state = pagerState,

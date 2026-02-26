@@ -33,6 +33,7 @@ material3Android = "1.4.0"
 adaptive = "1.2.0-alpha04"
 composeBom = "2026.01.00"
 androidx-compose-bom = "2026.02.00"
+datastore = "1.2.0"
 
 
 [libraries]
@@ -98,6 +99,10 @@ androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-toolin
 androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+
+androidx-datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
+
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

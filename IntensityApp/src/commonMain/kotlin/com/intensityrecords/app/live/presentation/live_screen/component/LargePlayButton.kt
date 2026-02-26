@@ -47,11 +47,13 @@ import com.intensityrecord.core.presentation.GlowBorderBrush
 import com.intensityrecord.core.presentation.PrimaryAccent
 import intensityrecordapp.intensityapp.generated.resources.Res
 import intensityrecordapp.intensityapp.generated.resources.montserrat_bold
+import intensityrecordapp.intensityapp.generated.resources.play
 import org.jetbrains.compose.resources.Font
+import org.jetbrains.compose.resources.stringResource
 
 
 @Composable
-fun LargePlayButton(isWideScreen: Boolean) {
+fun LargePlayButton(isWideScreen: Boolean,modifier: Modifier = Modifier) {
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
 
@@ -97,7 +99,7 @@ fun LargePlayButton(isWideScreen: Boolean) {
 
 
     Row(
-        modifier = Modifier
+        modifier = modifier
             .width(if (isWideScreen) 200.dp else 150.dp)
             .height(56.dp)
             .graphicsLayer {
@@ -123,7 +125,7 @@ fun LargePlayButton(isWideScreen: Boolean) {
         Icon(Icons.Filled.PlayArrow, contentDescription = null, tint = PrimaryAccent)
         Spacer(modifier = Modifier.width(8.dp))
         Text(
-            text = "PLAY",
+            text = stringResource(Res.string.play),
             style = TextStyle(
                 color = Color.White,
                 fontWeight = FontWeight.Bold,
