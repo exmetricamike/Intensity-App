@@ -11,7 +11,7 @@
     <string name="start_now">START NOW</string>
     <string name="agenda">AGENDA</string>
     <string name="play">PLAY</string>
-    <string name="go_live">GO LIVE</string>
+    <string name="re_play">RE PLAY</string>
     <string name="mobility_home_card">Mobility</string>
     <string name="live_class">Live Class</string>
     <string name="workout">Workout</string>
@@ -21,5 +21,12 @@
     <string name="programs_recovery_relaxation">Programs designed for recovery and relaxation</string>
     <string name="close">CLOSE</string>
     <string name="choose_workout_focus">Choose your workout focus</string>
+    <string name="monday">Monday</string>
+    <string name="tuesday">Tuesday</string>
+    <string name="wednesday">Wednesday</string>
+    <string name="thursday">Thursday</string>
+    <string name="friday">Friday</string>
+    <string name="saturday">Saturday</string>
+    <string name="sunday">Sunday</string>
 
 </resources>

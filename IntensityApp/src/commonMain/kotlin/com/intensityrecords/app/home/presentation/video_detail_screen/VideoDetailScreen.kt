@@ -1,6 +1,5 @@
 package com.intensityrecords.app.home.presentation.video_detail_screen
 
-
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -33,6 +32,7 @@ import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material.icons.rounded.FitnessCenter
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -67,8 +67,7 @@ import com.intensityrecord.core.presentation.GlowBorderBrush
 import com.intensityrecord.core.presentation.PrimaryAccent
 import com.intensityrecord.core.presentation.TextWhite
 import com.intensityrecords.app.core.domain.AppDimens
-import com.intensityrecords.app.core.presentation.captions
-import com.intensityrecords.app.core.presentation.utils.LocalAppDimens
+import com.intensityrecords.app.core.presentation.LocalAppDimens
 import com.intensityrecords.app.workouts.presentation.workouts_details_screen.component.StatBadge
 import com.multiplatform.webview.web.WebView
 import com.multiplatform.webview.web.rememberWebViewStateWithHTMLData
@@ -77,7 +76,6 @@ import intensityrecordapp.intensityapp.generated.resources._1
 import intensityrecordapp.intensityapp.generated.resources.montserrat_bold
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.painterResource
-
 
 @Composable
 fun VideoDetailScreen(navController: NavController, isWideScreen: Boolean) {
@@ -103,7 +101,7 @@ fun VideoDetailScreen(navController: NavController, isWideScreen: Boolean) {
             val badgeGroupSpacing = if (isWideScreen) 10.dp else 6.dp
             val surfaceHeight = if (isWideScreen) 45.dp else 30.dp
             val surfacePaddingH = if (isWideScreen) 10.dp else 6.dp
-            val badgeTextStyle = captions.copy(fontSize = badgeTextSize)
+            val badgeTextStyle = MaterialTheme.typography.labelSmall.copy(fontSize = badgeTextSize)
 
             // 1. Set up Focus Requester for the Video Area
             val videoFocusRequester = remember { FocusRequester() }

@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import com.intensityrecords.app.core.presentation.Typography
 
 // Book feature colors (kept for reference)
 val DarkBlue = Color(0xFF0B405E)
@@ -68,6 +69,7 @@ fun FitnessAppTheme(
             onBackground = TextWhite,
             onSurface = TextWhite
         ),
+        typography = Typography,
         content = content
     )
 }

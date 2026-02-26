@@ -1,9 +1,6 @@
 package com.intensityrecords.app.live.presentation.live_screen.component
 
 
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -40,13 +37,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.intensityrecord.core.presentation.CardBackground
 import com.intensityrecord.core.presentation.GlowBorderBrush
 import com.intensityrecord.core.presentation.PrimaryAccent
-import com.intensityrecords.app.core.presentation.chipButtonText
 import com.intensityrecords.app.home.presentation.home_screen.component.VideoPlayerAutoPlayPlaceholder
 import intensityrecordapp.intensityapp.generated.resources.Res
 import intensityrecordapp.intensityapp.generated.resources._4
@@ -65,21 +63,7 @@ fun MainVideoPlayerCard(isWideScreen: Boolean) {
     val isHovered by interactionSource.collectIsHoveredAsState()
     val isActive = isFocused || isHovered
 
-    val scale by animateFloatAsState(
-        targetValue = if (isFocused) 1.08f else 1f,
-        animationSpec = tween(300),
-        label = "scale"
-    )
-
-    val shadowElevation by animateDpAsState(
-        targetValue = if (isFocused) 8.dp else 0.dp,
-        animationSpec = tween(300),
-        label = "elevation"
-    )
-
     val borderWidth = if (isFocused) 3.dp else 1.dp
-    val elevation by animateDpAsState(if (isFocused) 24.dp else 8.dp)
-    val elevationState by animateDpAsState(if (isActive) 9.dp else 4.dp)
 
     val borderBrush = if (isActive) {
         Brush.horizontalGradient(
@@ -100,7 +84,7 @@ fun MainVideoPlayerCard(isWideScreen: Boolean) {
     val textSize = if (isWideScreen) 14.sp else 10.sp
     val surfaceHeight = if (isWideScreen) 45.dp else 30.dp
 
-    var timeLeftInSeconds by remember { mutableStateOf(600) } // 10 minutes = 600 seconds
+    var timeLeftInSeconds by remember { mutableStateOf(300) } // 5 minutes = 300 seconds
     var isTimerFinished by remember { mutableStateOf(false) }
 
     // This effect runs every time the screen is opened (enters composition)
@@ -115,34 +99,22 @@ fun MainVideoPlayerCard(isWideScreen: Boolean) {
     // Format time to MM:SS safely for Kotlin Multiplatform
     val minutes = (timeLeftInSeconds / 60).toString().padStart(2, '0')
     val seconds = (timeLeftInSeconds % 60).toString().padStart(2, '0')
-    val timeString = "$minutes:$seconds"
+    val timeString = "$minutes : $seconds"
 
     Box(
         modifier = Modifier
             .width(cardWidth)
             .height(cardHeight)
-//            .graphicsLayer {
-//                scaleX = scale
-//                scaleY = scale
-//            }
-//            .shadow(
-//                elevation = shadowElevation,
-//                shape = RoundedCornerShape(24.dp),
-//                spotColor = PrimaryAccent,
-//                ambientColor = PrimaryAccent
-//            )
             .clip(RoundedCornerShape(24.dp))
             .background(CardBackground)
             .border(BorderStroke(borderWidth, borderBrush), RoundedCornerShape(24.dp))
-//            .focusable(interactionSource = interactionSource)
             .clickable(
                 interactionSource = interactionSource,
                 indication = null
-            ) { /* Play Video */ }
+            ) {  }
     ) {
 
         if (isTimerFinished) {
-            // Show YouTube Video
             VideoPlayerAutoPlayPlaceholder(
                 modifier = Modifier.fillMaxSize()
             )
@@ -186,9 +158,13 @@ fun MainVideoPlayerCard(isWideScreen: Boolean) {
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = timeString, // Updated text
+                            text = timeString,
                             fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
-                            style = chipButtonText.copy(fontSize = textSize)
+                            style = TextStyle(
+                                fontSize = textSize,
+                                color = PrimaryAccent,
+                                fontWeight = FontWeight.Bold
+                            )
                         )
                     }
                 }

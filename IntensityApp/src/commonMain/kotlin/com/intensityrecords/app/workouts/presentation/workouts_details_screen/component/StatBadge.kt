@@ -5,29 +5,24 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.intensityrecord.core.presentation.PrimaryAccent
-import com.intensityrecords.app.core.presentation.captions
-import intensityrecordapp.intensityapp.generated.resources.Res
-import intensityrecordapp.intensityapp.generated.resources.montserrat_regular
-import org.jetbrains.compose.resources.Font
-
 
 @Composable
 fun StatBadge(
     icon: ImageVector,
     text: String,
     iconSize: Dp = 20.dp,
-    textStyle: TextStyle = captions,
+    textStyle: TextStyle = MaterialTheme.typography.displaySmall,
     spacing: Dp = 8.dp
 ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -41,7 +36,6 @@ fun StatBadge(
         Text(
             text = text,
             style = textStyle,
-            fontFamily = FontFamily(Font(Res.font.montserrat_regular)),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )

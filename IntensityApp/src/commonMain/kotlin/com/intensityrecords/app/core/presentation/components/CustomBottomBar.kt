@@ -1,100 +1,5 @@
 package com.intensityrecords.app.core.presentation.components
 
-//@Composable
-//fun CustomBottomBar(
-//    isWideScreen: Boolean,
-//    currentTab: String = "Home",
-//    navController: NavController
-//) {
-//    // Width & Background Color adjustment
-//    val barWidth = if (isWideScreen) 500.dp else 380.dp
-//
-//    Box(
-//        modifier = Modifier
-//            .width(barWidth)
-//            .height(60.dp)
-//            .shadow(20.dp, CircleShape)
-//            .clip(CircleShape)
-//            .background(Color(0xFF050505).copy(alpha = 0.95f)) // Very Dark, matching image
-//    ) {
-//        Row(
-//            modifier = Modifier.fillMaxSize(),
-//            horizontalArrangement = Arrangement.SpaceEvenly,
-//            verticalAlignment = Alignment.CenterVertically
-//        ) {
-//            val navItems = listOf(
-//                Triple("Home", Icons.Rounded.Home, true),
-//                Triple("Live", Icons.Rounded.FiberManualRecord, false),
-//                Triple("Workouts", Icons.Rounded.FitnessCenter, false),
-//                Triple("Mobility", Icons.Rounded.SelfImprovement, false)
-//            )
-//
-//            navItems.forEach { (label, icon, _) ->
-//                val interactionSource = remember { MutableInteractionSource() }
-//                val isFocused by interactionSource.collectIsFocusedAsState()
-//
-//                // Logic: Is this item active (Selected OR Focused)?
-//                val isActive = (currentTab == label) || isFocused
-//
-//                // Colors:
-//                // 1. Icon: Green if active, Gray if inactive
-//                // 2. Text: White if active, Gray if inactive (so unselected text doesn't distract)
-//                val iconColor = if (isActive) PrimaryAccent else Color.Gray
-//                val textColor = if (isActive) TextWhite else Color.Gray
-//
-//                Row(
-//                    modifier = Modifier
-//                        .clip(CircleShape)
-//                        .clickable(
-//                            interactionSource = interactionSource,
-//                            indication = null
-//                        ) {
-//                            val route = when (label) {
-//                                "Live" -> Screen.Live.route
-//                                "Home" -> Screen.Home.route
-//                                "Workouts" -> Screen.WorkOuts.route
-//                                "Mobility" -> Screen.Mobility.route
-//                                else -> Screen.Home.route
-//                            }
-//                            navController.navigate(route) {
-//                                popUpTo(navController.graph.findStartDestination().id) {
-//                                    saveState = true
-//                                }
-//                                launchSingleTop = true
-//                                restoreState = false
-//                            }
-//                        }
-//                        .focusable(interactionSource = interactionSource)
-//                        .padding(horizontal = 12.dp, vertical = 8.dp),
-//                    verticalAlignment = Alignment.CenterVertically,
-//                    horizontalArrangement = Arrangement.Center
-//                ) {
-//                    Icon(
-//                        imageVector = icon,
-//                        contentDescription = label,
-//                        tint = iconColor,
-//                        modifier = Modifier.size(20.dp)
-//                    )
-//
-//                    // Spacer and Text are now OUTSIDE the 'if' block, so they always show.
-//                    Spacer(modifier = Modifier.width(8.dp))
-//
-//                    Text(
-//                        text = label,
-//                        style = TextStyle(
-//                            fontSize = 12.sp,
-//                            fontWeight = if (isActive) FontWeight.Bold else FontWeight.Medium,
-//                            color = textColor // Applies White if selected, Gray if not
-//                            ,
-//                            fontFamily = FontFamily(Font(Res.font.montserrat_regular))
-//                        )
-//                    )
-//                }
-//            }
-//        }
-//    }
-//}
-
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -170,33 +75,23 @@ fun CustomBottomBar(
     navController: NavController,
     viewModel: LanguageViewModel
 ) {
-    val barWidth = if (isWideScreen) 650.dp else 380.dp
     val barModifier = if (isWideScreen) Modifier.fillMaxWidth(0.90f) else Modifier.fillMaxWidth(0.98f)
     val textSize = if (isWideScreen) 18.sp else 10.sp
     val iconSize = if (isWideScreen) 35.dp else 16.dp
     val barHeight = if (isWideScreen) 80.dp else 60.dp
 
-    // Dynamically adjust internal paddings to save space on mobile
-    val itemHorizontalPadding = if (isWideScreen) 12.dp else 4.dp
-    val spacerWidth = if (isWideScreen) 8.dp else 4.dp
-
     var showLanguageMenu by remember { mutableStateOf(false) }
 
-    // Read the current language code from the ViewModel
-// (Use .collectAsState() if languageCode is a StateFlow in your ViewModel)
     val currentLangCode = viewModel.languageCode.value
 
-// Automatically map the code to the correct flag whenever the code changes
     val selectedLanguage = remember(currentLangCode) {
         when (currentLangCode) {
             "fr" -> "🇫🇷"
             "nl" -> "🇳🇱"
             "en" -> "🇬🇧"
-            else -> "🇬🇧" // Fallback default
+            else -> "🇬🇧"
         }
     }
-
-//    var selectedLanguage by remember { mutableStateOf("🇬🇧") } // Default English flag
 
     println(viewModel.languageCode.value)
 
@@ -224,9 +119,6 @@ fun CustomBottomBar(
                 val isFocused by interactionSource.collectIsFocusedAsState()
 
                 val isActive = (currentTab == label) || isFocused
-
-//                val iconColor = if (isActive) PrimaryAccent else Color.LightGray
-//                val textColor = if (isActive) TextWhite else Color.LightGray
 
                 val isSelected = currentTab == label
 
@@ -379,7 +271,6 @@ fun CustomBottomBar(
                 Color.Transparent
             }
 
-            // --- NEW: Language Selector Flag ---
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
@@ -419,7 +310,6 @@ fun CustomBottomBar(
                     DropdownMenuItem(
                         text = { Text("🇬🇧 English", color = TextWhite) },
                         onClick = {
-//                            selectedLanguage = "🇬🇧"
                             showLanguageMenu = false
                             viewModel.switchLanguage("en")
                         }
@@ -427,7 +317,6 @@ fun CustomBottomBar(
                     DropdownMenuItem(
                         text = { Text("🇫🇷 Français", color = TextWhite) },
                         onClick = {
-//                            selectedLanguage = "🇫🇷"
                             showLanguageMenu = false
                             viewModel.switchLanguage("fr")
                         }
@@ -435,7 +324,6 @@ fun CustomBottomBar(
                     DropdownMenuItem(
                         text = { Text("🇳🇱 Nederlands", color = TextWhite) },
                         onClick = {
-//                            selectedLanguage = "🇳🇱"
                             showLanguageMenu = false
                             viewModel.switchLanguage("nl")
                         }

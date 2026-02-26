@@ -32,7 +32,7 @@ import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Surface
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -45,15 +45,15 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.intensityrecord.core.presentation.GlowBorderBrush
 import com.intensityrecord.core.presentation.PrimaryAccent
 import com.intensityrecords.app.core.domain.AppDimens
-import com.intensityrecords.app.core.presentation.captions
-import com.intensityrecords.app.core.presentation.sessionText
 import com.intensityrecords.app.workouts.domain.Session
 import intensityrecordapp.intensityapp.generated.resources.Res
 import intensityrecordapp.intensityapp.generated.resources.montserrat_bold
@@ -111,8 +111,6 @@ fun SessionCard(
     val badgeInternalSpacing = if (isWideScreen) 8.dp else 2.dp
     val badgeGroupSpacing = if (isWideScreen) 10.dp else 4.dp
     val surfaceHeight = if (isWideScreen) 45.dp else 35.dp
-    val surfacePaddingH = if (isWideScreen) 10.dp else 4.dp
-    val badgeTextStyle = captions.copy(fontSize = badgeTextSize)
 
     Card(
         modifier = Modifier
@@ -165,7 +163,12 @@ fun SessionCard(
                         fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
-                        style = sessionText.copy(fontSize = dimens.sessionTitle)
+                        style = TextStyle(
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = dimens.sessionTitle,
+                            letterSpacing = 1.5.sp,
+                            color = Color.White
+                        )
                     )
 
                     Spacer(modifier = Modifier.height(4.dp))
@@ -219,7 +222,7 @@ fun SessionCard(
                             icon = Icons.Default.Timer,
                             text = session.duration.uppercase(),
                             iconSize = badgeIconSize,
-                            textStyle = badgeTextStyle,
+                            textStyle = MaterialTheme.typography.displaySmall.copy(fontSize = badgeTextSize),
                             spacing = badgeInternalSpacing
                         )
 
@@ -238,7 +241,7 @@ fun SessionCard(
                             icon = Icons.Default.LocalFireDepartment,
                             text = "180 KCAL",
                             iconSize = badgeIconSize,
-                            textStyle = badgeTextStyle,
+                            textStyle = MaterialTheme.typography.displaySmall.copy(fontSize = badgeTextSize),
                             spacing = badgeInternalSpacing
                         )
 

@@ -29,6 +29,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -49,6 +50,7 @@ import androidx.compose.ui.unit.sp
 import com.intensityrecord.core.presentation.CardBackground
 import com.intensityrecord.core.presentation.PrimaryAccent
 import com.intensityrecords.app.steptrip.domain.TripData
+import com.intensityrecords.app.workouts.presentation.workouts_details_screen.component.StatBadge
 import intensityrecordapp.intensityapp.generated.resources.Res
 import intensityrecordapp.intensityapp.generated.resources.montserrat_bold
 import intensityrecordapp.intensityapp.generated.resources.montserrat_regular
@@ -85,7 +87,9 @@ fun StepTripCard(
             .shadow(shadowElevation, RoundedCornerShape(20.dp), spotColor = PrimaryAccent)
             .clip(RoundedCornerShape(20.dp))
             .border(BorderStroke(1.dp, borderBrush), RoundedCornerShape(20.dp))
-            .clickable(interactionSource = interactionSource, indication = null, onClick = onClick),
+            .clickable(interactionSource = interactionSource, indication = null) {
+
+            },
         colors = CardDefaults.cardColors(containerColor = CardBackground),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
@@ -115,12 +119,11 @@ fun StepTripCard(
 
                 Text(
                     text = item.title,
-                    color = Color.White,
-                    fontSize = 20.sp,
-                    textAlign = TextAlign.Center,
-                    fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
-                    lineHeight = 22.sp,
-                    maxLines = 2
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        fontSize = 20.sp,
+                        textAlign = TextAlign.Center,
+                        lineHeight = 22.sp,
+                    ),
                 )
 
                 Spacer(modifier = Modifier.height(10.dp))
@@ -132,10 +135,10 @@ fun StepTripCard(
                 ) {
                     Text(
                         text = item.category.uppercase(),
-                        color = PrimaryAccent,
-                        fontFamily = FontFamily(Font(Res.font.montserrat_regular)),
-                        fontSize = 11.sp,
-                        fontWeight = FontWeight.Bold
+                        style = MaterialTheme.typography.displaySmall.copy(
+                            color = PrimaryAccent,
+                            fontSize = 11.sp
+                        ),
                     )
                 }
 
@@ -151,34 +154,25 @@ fun StepTripCard(
                 ) {
                     Text(
                         text = "LET'S GO",
-                        color = Color.Black,
-                        fontSize = 13.sp,
-                        fontFamily = FontFamily(Font(Res.font.montserrat_bold))
+                        style = MaterialTheme.typography.labelMedium.copy(
+                            color = Color.Black,
+                            fontSize = 13.sp,
+                        ),
                     )
                 }
 
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(14.dp))
 
-                Surface(
-                    color = PrimaryAccent.copy(alpha = 0.2f),
-                    shape = RoundedCornerShape(50),
-                    border = BorderStroke(1.dp, PrimaryAccent),
-                    modifier = Modifier
-                        .height(45.dp)
-                        .fillMaxWidth()
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 4.dp),
-                        horizontalArrangement = Arrangement.SpaceEvenly,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        StatItem(Icons.Default.DirectionsRun, item.duration)
-                        StatItem(Icons.Default.Schedule, item.distance)
-                        StatItem(Icons.Default.LocalFireDepartment, item.calories)
-                    }
+                    StatItem(Icons.Default.DirectionsRun, item.duration)
+                    StatItem(Icons.Default.Schedule, item.distance)
+                    StatItem(Icons.Default.LocalFireDepartment, item.calories)
                 }
+
             }
         }
     }

@@ -12,7 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -22,8 +22,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -31,15 +29,11 @@ import androidx.navigation.NavController
 import com.intensityrecord.app.Route
 import com.intensityrecord.core.presentation.DarkGradient
 import com.intensityrecord.core.presentation.FitnessAppTheme
-import com.intensityrecords.app.core.presentation.Title
-import com.intensityrecords.app.core.presentation.captions
-import com.intensityrecords.app.core.presentation.utils.LocalAppDimens
+import com.intensityrecords.app.core.presentation.LocalAppDimens
 import com.intensityrecords.app.workouts.presentation.workouts_screen.component.WorkoutCard
 import intensityrecordapp.intensityapp.generated.resources.Res
-import intensityrecordapp.intensityapp.generated.resources.montserrat_bold
-import intensityrecordapp.intensityapp.generated.resources.workout
 import intensityrecordapp.intensityapp.generated.resources.choose_workout_focus
-import org.jetbrains.compose.resources.Font
+import intensityrecordapp.intensityapp.generated.resources.workout
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -104,16 +98,14 @@ fun WorkoutScreen(
 
                 Text(
                     text = stringResource(Res.string.workout).uppercase(),
-                    style = Title,
-                    fontFamily = FontFamily(Font(Res.font.montserrat_bold))
+                    style = MaterialTheme.typography.titleLarge
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
                     text = stringResource(Res.string.choose_workout_focus),
-                    style = captions.copy(letterSpacing = 0.1.sp),
-                    fontFamily = FontFamily(Font(Res.font.montserrat_bold))
+                    style = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp),
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))

@@ -36,12 +36,12 @@ import androidx.navigation.toRoute
 import com.intensityrecord.app.Route
 import com.intensityrecord.core.presentation.DarkGradient
 import com.intensityrecord.core.presentation.FitnessAppTheme
+import com.intensityrecords.app.core.presentation.CompactDimens
+import com.intensityrecords.app.core.presentation.ExpandedDimens
 import com.intensityrecords.app.core.presentation.LanguageViewModel
+import com.intensityrecords.app.core.presentation.LocalAppDimens
 import com.intensityrecords.app.core.presentation.components.AppHeader
 import com.intensityrecords.app.core.presentation.components.CustomBottomBar
-import com.intensityrecords.app.core.presentation.utils.CompactDimens
-import com.intensityrecords.app.core.presentation.utils.ExpandedDimens
-import com.intensityrecords.app.core.presentation.utils.LocalAppDimens
 import com.intensityrecords.app.core.presentation.utils.LocalAppLocale
 import com.intensityrecords.app.core.presentation.utils.currentDeviceConfiguration
 import com.intensityrecords.app.core.presentation.utils.rememberDataStore
@@ -109,23 +109,8 @@ fun App() {
                         modifier = Modifier.windowInsetsPadding(WindowInsets.safeDrawing),
                         topBar = {
                             AppHeader(isWideScreen = isWideScreen)
-//                        if (!isWideScreen) AppHeader(isWideScreen = isWideScreen) else
-//                            Box(
-//                                modifier = Modifier
-//                                    .fillMaxWidth()
-//                                    .navigationBarsPadding()
-//                                    .padding(top = 10.dp),
-//                                contentAlignment = Alignment.TopCenter
-//                            ) {
-//                                TopNavigationLayout(
-//                                    isWideScreen = isWideScreen,
-//                                    currentTab = currentTab,
-//                                    navController = navController
-//                                )
-//                            }
                         },
                         bottomBar = {
-//                        if (!isWideScreen) {
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -140,7 +125,6 @@ fun App() {
                                     viewModel = viewModel
                                 )
                             }
-//                        }
                         }
                     ) { innerPadding ->
                         NavHost(
@@ -320,7 +304,6 @@ fun App() {
                             composable<Route.StepTripDetailScreen> { backStackEntry ->
                                 val args = backStackEntry.toRoute<Route.StepTripDetailScreen>()
 
-                                // Find the actual object using the ID from the Route
                                 val selectedItem = trips.find { it.title == args.id }
 
                                 if (selectedItem != null) {

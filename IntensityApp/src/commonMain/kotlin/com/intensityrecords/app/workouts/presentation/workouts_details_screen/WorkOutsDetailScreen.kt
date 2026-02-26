@@ -3,12 +3,16 @@ package com.intensityrecords.app.workouts.presentation.workouts_details_screen
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
+import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -17,6 +21,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.relocation.BringIntoViewRequester
+import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -24,20 +30,27 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.util.lerp
+import androidx.compose.ui.unit.toSize
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.intensityrecord.core.presentation.PrimaryAccent
-import com.intensityrecords.app.core.presentation.utils.LocalAppDimens
+import com.intensityrecords.app.core.presentation.LocalAppDimens
 import com.intensityrecords.app.workouts.presentation.workouts_details_screen.component.HeroSection
 import com.intensityrecords.app.workouts.presentation.workouts_details_screen.component.SessionCard
 import intensityrecordapp.intensityapp.generated.resources.Res
@@ -45,7 +58,6 @@ import intensityrecordapp.intensityapp.generated.resources.montserrat_regular
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.Font
 import org.koin.compose.viewmodel.koinViewModel
-import kotlin.math.absoluteValue
 
 @Composable
 fun WorkoutDetailScreenRoot(
@@ -84,10 +96,40 @@ fun WorkoutDetailScreen(
 ) {
     val dimens = LocalAppDimens.current
 
+    val interactionSource = remember { MutableInteractionSource() }
+    val isFocused by interactionSource.collectIsFocusedAsState()
+
+    val isHovered by interactionSource.collectIsHoveredAsState()
+    val isActive = isFocused || isHovered
+
     val pagerState = rememberPagerState(pageCount = { state.sessions.size })
     val scope = rememberCoroutineScope()
 
     val cardWidth = if (isWideScreen) 280.dp else 170.dp
+
+    val bringIntoViewRequester = remember { BringIntoViewRequester() }
+
+    // 2. Track the size of the card so we know how much to expand
+    var cardSize by remember { mutableStateOf(IntSize.Zero) }
+
+    // 3. Trigger the scroll request when focus changes
+    LaunchedEffect(isFocused) {
+        if (isFocused) {
+            // We calculate a rect that is taller than the actual card.
+            // This forces the grid to scroll up enough to show the "phantom" bottom area.
+            val size = cardSize.toSize()
+            val extraBottomSpace = size.height * 0.2f // Add 20% buffer to the bottom
+
+            val expandedRect = Rect(
+                left = 0f,
+                top = 0f,
+                right = size.width,
+                bottom = size.height + extraBottomSpace
+            )
+
+            bringIntoViewRequester.bringIntoView(expandedRect)
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -108,34 +150,52 @@ fun WorkoutDetailScreen(
             }
 
             Spacer(modifier = Modifier.height(32.dp))
-//
-//            Text(
-//                text = "This month sessions",
-//                color = Color.White,
-//                fontSize = 20.sp,
-//                fontFamily = FontFamily(Font(Res.font.montserrat_regular)),
-//                modifier = Modifier
-//                    .align(Alignment.Start)
-//                    .padding(horizontal = dimens.horizontalContentPadding)
-//            )
-//
-//            Spacer(modifier = Modifier.height(20.dp))
+
+            if (!isWideScreen) {
+                Text(
+                    text = "This month sessions",
+                    color = Color.White,
+                    fontSize = 20.sp,
+                    fontFamily = FontFamily(Font(Res.font.montserrat_regular)),
+                    modifier = Modifier
+                        .align(Alignment.Start)
+                        .padding(horizontal = dimens.horizontalContentPadding)
+                )
+
+                Spacer(modifier = Modifier.height(20.dp))
+            }
 
             HorizontalPager(
                 state = pagerState,
                 pageSize = PageSize.Fixed(cardWidth),
-                contentPadding = PaddingValues(horizontal = if(isWideScreen) 100.dp else 60.dp),
-                pageSpacing = 16.dp,
+                contentPadding = PaddingValues(horizontal = if(isWideScreen) 180.dp else 120.dp),
+                pageSpacing = if (isWideScreen) 16.dp else 20.dp,
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
+                    .height(if (isWideScreen) 280.dp else 200.dp)
             ) { pageIndex ->
                 val session = state.sessions[pageIndex]
-                val pageOffset = ((pagerState.currentPage - pageIndex) + pagerState.currentPageOffsetFraction).absoluteValue
-                val scale = lerp(start = 0.9f, stop = 1f, fraction = 1f - pageOffset.coerceIn(0f, 1f))
+
+                val pageOffset = (pagerState.currentPage - pageIndex) + pagerState.currentPageOffsetFraction
+                val scaleFactor = 1f - (0.15f * kotlin.math.abs(pageOffset)).coerceIn(0f, 0.3f)
+                val alphaFactor = 1f - (0.3f * kotlin.math.abs(pageOffset)).coerceIn(0f, 0.5f)
 
                 Box(modifier = Modifier.graphicsLayer {
-                    scaleX = scale
-                    scaleY = scale
-                }) {
+                    scaleX = scaleFactor
+                    scaleY = scaleFactor
+                    alpha = alphaFactor
+                }.fillMaxHeight()
+                    .onSizeChanged { cardSize = it }
+                    .bringIntoViewRequester(bringIntoViewRequester)
+                    .onFocusChanged { focusState ->
+                        if (focusState.hasFocus) {
+                            scope.launch {
+                                pagerState.animateScrollToPage(pageIndex)
+                            }
+                        }
+                    },
+                    contentAlignment = Alignment.Center
+                ) {
                     SessionCard(
                         session = session,
                         isWideScreen = isWideScreen,
@@ -181,7 +241,11 @@ fun ScrollIndicator(
             val isSelected = index == activeIndex
             // Smoothly animate the color and width
             val width by animateDpAsState(if (isSelected) 18.dp else 6.dp)
-            val color by animateColorAsState(if (isSelected) PrimaryAccent else Color.White.copy(alpha = 0.3f))
+            val color by animateColorAsState(
+                if (isSelected) PrimaryAccent else Color.White.copy(
+                    alpha = 0.3f
+                )
+            )
 
             Box(
                 modifier = Modifier

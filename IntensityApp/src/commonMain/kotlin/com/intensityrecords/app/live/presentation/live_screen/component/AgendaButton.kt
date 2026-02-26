@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -33,23 +34,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import com.intensityrecord.core.presentation.GlowBorderBrush
 import com.intensityrecord.core.presentation.PrimaryAccent
-import com.intensityrecords.app.core.presentation.cardTitle
+import com.intensityrecords.app.core.domain.AppDimens
 import intensityrecordapp.intensityapp.generated.resources.Res
-import intensityrecordapp.intensityapp.generated.resources.montserrat_bold
 import intensityrecordapp.intensityapp.generated.resources.agenda
-import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun AgendaButton(onClick: () -> Unit, isWideScreen: Boolean) {
+fun AgendaButton(onClick: () -> Unit, isWideScreen: Boolean,dimens: AppDimens) {
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
 
@@ -95,8 +92,8 @@ fun AgendaButton(onClick: () -> Unit, isWideScreen: Boolean) {
 
     Row(
         modifier = Modifier
-            .width(if (isWideScreen) 200.dp else 150.dp)
-            .height(56.dp)
+            .width(if (isWideScreen) 200.dp else 100.dp)
+            .height(if (isWideScreen) 56.dp else 50.dp)
             .graphicsLayer {
                 scaleX = scale
                 scaleY = scale
@@ -125,11 +122,9 @@ fun AgendaButton(onClick: () -> Unit, isWideScreen: Boolean) {
         Spacer(modifier = Modifier.width(8.dp))
         Text(
             text = stringResource(Res.string.agenda),
-            style = cardTitle.copy(
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.labelMedium.copy(
+                fontSize = dimens.agendaButton,
                 letterSpacing = 1.sp,
-                fontFamily = FontFamily(Font(Res.font.montserrat_bold))
             )
         )
     }

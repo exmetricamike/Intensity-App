@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.intensityrecord.core.presentation.PrimaryAccent
 import intensityrecordapp.intensityapp.generated.resources.Res
 import intensityrecordapp.intensityapp.generated.resources.montserrat_regular
 import org.jetbrains.compose.resources.Font
@@ -29,7 +30,7 @@ fun StatItem(icon: ImageVector, text: String) {
         Icon(
             imageVector = icon,
             contentDescription = null,
-            tint = Color.White,
+            tint = PrimaryAccent,
             modifier = Modifier.size(14.dp)
         )
         Spacer(modifier = Modifier.height(2.dp))
