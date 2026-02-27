@@ -55,8 +55,15 @@ import com.intensityrecords.app.steptrip.presentation.steptrip.StepTripScreenRoo
 import com.intensityrecords.app.workouts.domain.workoutCategories
 import com.intensityrecords.app.workouts.presentation.workouts_details_screen.WorkoutDetailScreenRoot
 import com.intensityrecords.app.workouts.presentation.workouts_screen.WorkoutScreenRoot
+import intensityrecordapp.intensityapp.generated.resources.Res
+import intensityrecordapp.intensityapp.generated.resources.home
+import intensityrecordapp.intensityapp.generated.resources.live
+import intensityrecordapp.intensityapp.generated.resources.mobility
+import intensityrecordapp.intensityapp.generated.resources.workouts
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
+
 
 @Composable
 @Preview
@@ -87,18 +94,18 @@ fun App() {
                     val currentDestination = currentBackStackEntry?.destination
 
                     val currentTab = when {
-                        currentDestination?.hasRoute<Route.Home>() == true -> "Home"
+                        currentDestination?.hasRoute<Route.Home>() == true -> stringResource(Res.string.home)
 
                         currentDestination?.hasRoute<Route.Live>() == true ||
-                                currentDestination?.hasRoute<Route.TimeTable>() == true -> "Live"
+                                currentDestination?.hasRoute<Route.TimeTable>() == true -> stringResource(Res.string.live)
 
                         currentDestination?.hasRoute<Route.WorkOuts>() == true ||
-                                currentDestination?.hasRoute<Route.WorkOutsDetailsScreen>() == true -> "Workouts"
+                                currentDestination?.hasRoute<Route.WorkOutsDetailsScreen>() == true -> stringResource(Res.string.workouts)
 
-                        currentDestination?.hasRoute<Route.Mobility>() == true -> "Mobility"
+                        currentDestination?.hasRoute<Route.Mobility>() == true -> stringResource(Res.string.mobility)
 
                         currentDestination?.hasRoute<Route.StepTrip>() == true ||
-                                currentDestination?.hasRoute<Route.StepTripDetailScreen>() == true -> "Home"
+                                currentDestination?.hasRoute<Route.StepTripDetailScreen>() == true -> stringResource(Res.string.home)
 
                         else -> "Home"
                     }

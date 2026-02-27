@@ -202,7 +202,7 @@ fun ContentCard(
             Text(
                 text = item.title.uppercase(),
                 style = MaterialTheme.typography.bodyLarge.copy(fontSize = dimens.cardTitle),
-                modifier = Modifier.align(if (isWideScreen) Alignment.BottomCenter else Alignment.Center).padding(16.dp)
+                modifier = Modifier.align(if (isWideScreen) Alignment.Center else Alignment.Center).padding(16.dp)
             )
             if (item.isLive) {
                 Box(
