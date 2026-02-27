@@ -377,7 +377,7 @@ fun TimeTableButton(
             .background(containerColor)
             .border(BorderStroke(2.dp, borderBrush), CircleShape)
             .clickable(interactionSource = interactionSource, indication = null, onClick = onClick)
-            .padding(horizontal = 24.dp),
+            .padding(horizontal = if (isWideScreen) 24.dp else 4.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {

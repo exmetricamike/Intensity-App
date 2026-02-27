@@ -1,6 +1,9 @@
 package com.intensityrecords.app.live.presentation.live_screen.component
 
 
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -11,17 +14,26 @@ import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.relocation.bringIntoViewRequester
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.rounded.AccessTime
+import androidx.compose.material.icons.rounded.CalendarMonth
+import androidx.compose.material.icons.rounded.LocalFireDepartment
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,28 +46,43 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.intensityrecord.app.Route
 import com.intensityrecord.core.presentation.CardBackground
 import com.intensityrecord.core.presentation.GlowBorderBrush
 import com.intensityrecord.core.presentation.PrimaryAccent
+import com.intensityrecords.app.core.domain.AppDimens
 import com.intensityrecords.app.home.presentation.home_screen.component.VideoPlayerAutoPlayPlaceholder
 import intensityrecordapp.intensityapp.generated.resources.Res
 import intensityrecordapp.intensityapp.generated.resources._4
+import intensityrecordapp.intensityapp.generated.resources.live_tag
 import intensityrecordapp.intensityapp.generated.resources.montserrat_bold
+import intensityrecordapp.intensityapp.generated.resources.agenda
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun MainVideoPlayerCard(isWideScreen: Boolean) {
-    val cardHeight = if (isWideScreen) 300.dp else 250.dp
+fun MainVideoPlayerCard(
+    isWideScreen: Boolean,
+    dimens: AppDimens,
+    navController: NavController,
+    modifier: Modifier = Modifier
+) {
+    val cardHeight = if (isWideScreen) 280.dp else 210.dp
     val cardWidth = if (isWideScreen) 600.dp else 350.dp
 
     val interactionSource = remember { MutableInteractionSource() }
@@ -81,8 +108,20 @@ fun MainVideoPlayerCard(isWideScreen: Boolean) {
         GlowBorderBrush
     }
 
-    val textSize = if (isWideScreen) 14.sp else 10.sp
-    val surfaceHeight = if (isWideScreen) 45.dp else 30.dp
+    val scale by animateFloatAsState(
+        targetValue = if (isFocused) 1.05f else 1f,
+        animationSpec = tween(300),
+        label = "scale"
+    )
+
+    val shadowElevation by animateDpAsState(
+        targetValue = if (isFocused) 6.dp else 0.dp,
+        animationSpec = tween(300),
+        label = "elevation"
+    )
+
+    val textSize = if (isWideScreen) 20.sp else 12.sp
+    val surfaceHeight = if (isWideScreen) 60.dp else 40.dp
 
     var timeLeftInSeconds by remember { mutableStateOf(300) } // 5 minutes = 300 seconds
     var isTimerFinished by remember { mutableStateOf(false) }
@@ -102,16 +141,19 @@ fun MainVideoPlayerCard(isWideScreen: Boolean) {
     val timeString = "$minutes : $seconds"
 
     Box(
-        modifier = Modifier
-            .width(cardWidth)
+        modifier = modifier
+            .fillMaxWidth()
             .height(cardHeight)
+            .padding(horizontal = if (isWideScreen) 10.dp else 4.dp)
             .clip(RoundedCornerShape(24.dp))
             .background(CardBackground)
             .border(BorderStroke(borderWidth, borderBrush), RoundedCornerShape(24.dp))
             .clickable(
                 interactionSource = interactionSource,
                 indication = null
-            ) {  }
+            ) {
+                navController.navigate(Route.TimeTable)
+            }
     ) {
 
         if (isTimerFinished) {
@@ -133,40 +175,175 @@ fun MainVideoPlayerCard(isWideScreen: Boolean) {
                     .background(Color.Black.copy(alpha = 0.4f))
             )
 
-            Row(
+//            Row(
+//                modifier = Modifier
+//                    .align(Alignment.BottomCenter)
+//                    .padding(bottom = 24.dp),
+//                verticalAlignment = Alignment.CenterVertically
+//            )
+//            {
+//                Surface(
+//                    color = PrimaryAccent.copy(alpha = 0.2f),
+//                    shape = RoundedCornerShape(50),
+//                    border = BorderStroke(1.dp, PrimaryAccent),
+//                    modifier = Modifier.height(surfaceHeight)
+//                ) {
+//                    Row(
+//                        verticalAlignment = Alignment.CenterVertically,
+//                        horizontalArrangement = Arrangement.Center,
+//                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 2.dp)
+//                    ) {
+//                        Icon(
+//                            imageVector = Icons.Rounded.AccessTime,
+//                            contentDescription = null,
+//                            tint = PrimaryAccent,
+//                            modifier = Modifier.size(18.dp)
+//                        )
+//                        Spacer(modifier = Modifier.width(8.dp))
+//                        Text(
+//                            text = timeString,
+//                            fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
+//                            style = TextStyle(
+//                                fontSize = textSize,
+//                                color = PrimaryAccent,
+//                                fontWeight = FontWeight.Bold
+//                            )
+//                        )
+//                    }
+//                }
+//            }
+
+            Column(
                 modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = 24.dp),
-                verticalAlignment = Alignment.CenterVertically
+                    .fillMaxSize()
+                    .padding(horizontal = 24.dp, vertical = if (isWideScreen) 20.dp else 15.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Surface(
-                    color = PrimaryAccent.copy(alpha = 0.2f),
-                    shape = RoundedCornerShape(50),
-                    border = BorderStroke(1.dp, PrimaryAccent),
-                    modifier = Modifier.height(surfaceHeight)
+
+
+                Text(
+                    text = stringResource(Res.string.live_tag),
+                    style = MaterialTheme.typography.titleLarge.copy(fontSize = if (isWideScreen) 34.sp else 24.sp)
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = "Next session starts in",
+                    style = MaterialTheme.typography.bodyMedium.copy(fontSize = if (isWideScreen) 20.sp else 14.sp),
+                )
+
+                Row(
+                    modifier = Modifier
+                        .padding(top = if (isWideScreen) 8.dp else 4.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                )
+                {
+                    Surface(
+                        color = PrimaryAccent.copy(alpha = 0.2f),
+                        shape = RoundedCornerShape(50),
+                        border = BorderStroke(1.dp, PrimaryAccent),
+                        modifier = Modifier.height(surfaceHeight)
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center,
+                            modifier = Modifier.padding(
+                                horizontal = if (isWideScreen) 40.dp else 24.dp,
+                                vertical = 2.dp
+                            )
+                        ) {
+                            Icon(
+                                imageVector = Icons.Rounded.AccessTime,
+                                contentDescription = null,
+                                tint = PrimaryAccent,
+                                modifier = Modifier.size(if (isWideScreen) 26.dp else 16.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = timeString,
+                                fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
+                                style = TextStyle(
+                                    fontSize = textSize,
+                                    color = PrimaryAccent,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            )
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(if (isWideScreen) 30.dp else 22.dp))
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 2.dp)
                 ) {
+//                    Icon(
+//                        imageVector = Icons.Rounded.CalendarMonth,
+//                        contentDescription = null,
+//                        tint = PrimaryAccent,
+//                        modifier = Modifier.size(if (isWideScreen) 22.dp else 14.dp)
+//                    )
+//                    Spacer(modifier = Modifier.width(if (isWideScreen) 10.dp else 8.dp))
+//                    Text(
+//                        text = "AGENDA",
+//                        fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
+//                        style = TextStyle(
+//                            fontSize = textSize,
+//                            color = Color.White,
+//                            fontWeight = FontWeight.Bold
+//                        )
+//                    )
+
                     Row(
+                        modifier = modifier
+                            .width(if (isWideScreen) 200.dp else 130.dp)
+                            .height(if (isWideScreen) 56.dp else 45.dp)
+                            .graphicsLayer {
+                                scaleX = scale
+                                scaleY = scale
+                            }
+                            .shadow(
+                                elevation = shadowElevation,
+                                shape = CircleShape,
+                                spotColor = PrimaryAccent,
+                                ambientColor = PrimaryAccent
+                            )
+                            .border(BorderStroke(borderWidth, if (isFocused) SolidColor(PrimaryAccent) else GlowBorderBrush), CircleShape)
+                            .clip(CircleShape)
+                            .background(Color(0xFF111111))
+                            .clickable(
+                                interactionSource = interactionSource,
+                                indication = null,
+                                onClick = {navController.navigate(Route.TimeTable)}
+                            ),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center,
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 2.dp)
+                        horizontalArrangement = Arrangement.Center
                     ) {
                         Icon(
-                            imageVector = Icons.Rounded.AccessTime,
+                            imageVector = Icons.Rounded.CalendarMonth,
                             contentDescription = null,
                             tint = PrimaryAccent,
-                            modifier = Modifier.size(18.dp)
+                            modifier = Modifier.size(if (isWideScreen) 26.dp else 16.dp)
                         )
-                        Spacer(modifier = Modifier.width(8.dp))
+                        Spacer(modifier = Modifier.width(10.dp))
                         Text(
-                            text = timeString,
-                            fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
-                            style = TextStyle(
-                                fontSize = textSize,
-                                color = PrimaryAccent,
-                                fontWeight = FontWeight.Bold
+                            text = stringResource(Res.string.agenda),
+                            style = MaterialTheme.typography.labelMedium.copy(
+                                fontSize = dimens.agendaButton,
+                                letterSpacing = 1.sp,
                             )
                         )
                     }
+
+//                    AgendaButton(
+//                        onClick = { navController.navigate(Route.TimeTable) },
+//                        isWideScreen = isWideScreen,
+//                        dimens = dimens,
+//                        modifier = modifier
+//                    )
                 }
             }
         }
