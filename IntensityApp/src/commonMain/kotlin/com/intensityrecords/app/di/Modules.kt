@@ -1,4 +1,4 @@
-package com.intensityrecord.di
+package com.intensityrecords.app.di
 
 import com.intensityrecords.app.core.presentation.LanguageViewModel
 import com.intensityrecords.app.home.presentation.home_screen.HomeScreenViewModel
@@ -8,11 +8,9 @@ import com.intensityrecords.app.steptrip.presentation.steptrip.StepTripScreenVie
 import com.intensityrecords.app.steptrip.presentation.step_trip_detail_screen.StepTripsDetailScreenViewModel
 import com.intensityrecords.app.workouts.presentation.workouts_details_screen.WorkOutsDetailScreenViewModel
 import com.intensityrecords.app.workouts.presentation.workouts_screen.WorkOutsScreenViewModel
-import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
-expect val platformModule: Module
 
 val sharedModule = module {
 

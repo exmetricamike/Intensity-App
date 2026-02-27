@@ -1,4 +1,4 @@
-package com.intensityrecord.app
+package com.intensityrecords.app.app
 
 import kotlinx.serialization.Serializable
 

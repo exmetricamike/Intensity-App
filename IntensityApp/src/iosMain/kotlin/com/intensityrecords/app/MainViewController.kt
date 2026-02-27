@@ -5,7 +5,7 @@ import com.intensityrecords.app.app.App
 
 //fun MainViewController() = ComposeUIViewController { App(engine = remember { Darwin.create() }) }
 
-import com.intensityrecord.di.initKoin
+import com.intensityrecords.app.di.initKoin
 
 fun MainViewController() = ComposeUIViewController(
     configure = {

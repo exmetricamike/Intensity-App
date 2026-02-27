@@ -54,7 +54,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import com.intensityrecord.app.Route
+import com.intensityrecords.app.app.Route
 import com.intensityrecord.core.presentation.CardBackground
 import com.intensityrecord.core.presentation.PrimaryAccent
 import com.intensityrecord.core.presentation.TextWhite
