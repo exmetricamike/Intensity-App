@@ -126,7 +126,7 @@ val CompactDimens = AppDimens(
 
     titleLarge = 20.sp,
     bodyMedium = 14.sp,
-    buttonText = 12.sp,
+    buttonText = 14.sp,
 
     horizontalContentPadding = 16.dp,
     verticalContentPadding = 24.dp,

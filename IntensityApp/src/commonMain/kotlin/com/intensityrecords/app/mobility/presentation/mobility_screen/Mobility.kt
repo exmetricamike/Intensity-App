@@ -96,13 +96,13 @@ fun MobilityScreen(navController: NavController, isWideScreen: Boolean) {
                 val gridWidth = if (isWideScreen) 0.85f else 1f
 
                 LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
+                    columns = GridCells.Fixed(if (isWideScreen) 2 else 1),
                     horizontalArrangement = Arrangement.spacedBy(if (isWideScreen) 25.dp else 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(if (isWideScreen) 45.dp else 24.dp),
+                    verticalArrangement = Arrangement.spacedBy(if (isWideScreen) 45.dp else 25.dp),
                     modifier = Modifier.fillMaxWidth(gridWidth).weight(1f),
                     contentPadding = PaddingValues(
                         top = 16.dp,
-                        bottom = 120.dp, // This replaces the external Spacer
+                        bottom = if (isWideScreen) 120.dp else 20.dp, // This replaces the external Spacer
                         start = 4.dp,
                         end = 4.dp
                     )
@@ -119,11 +119,6 @@ fun MobilityScreen(navController: NavController, isWideScreen: Boolean) {
                                 Modifier
                             }
                         )
-                        Spacer(modifier = Modifier.height(40.dp))
-                    }
-                    // Add a transparent spacer item at the end of the grid list
-                    item {
-                        Spacer(modifier = Modifier.height(50.dp))
                     }
                 }
             }

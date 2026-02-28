@@ -85,7 +85,7 @@ fun WorkoutScreen(
         ) {
             val dimens = LocalAppDimens.current
 
-            val columnsCount = if (isWideScreen) 3 else 2
+            val columnsCount = if (isWideScreen) 3 else 1
 
             Column(
                 modifier = Modifier
@@ -114,11 +114,11 @@ fun WorkoutScreen(
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(columnsCount),
                     horizontalArrangement = Arrangement.spacedBy(25.dp),
-                    verticalArrangement = Arrangement.spacedBy(45.dp),
+                    verticalArrangement = Arrangement.spacedBy(if (isWideScreen) 45.dp else 25.dp),
                     // Add bottom padding here so last items aren't cut off
                     contentPadding = PaddingValues(
                         top = 16.dp,
-                        bottom = 120.dp, // This replaces the external Spacer
+                        bottom = if (isWideScreen) 120.dp else 20.dp, // This replaces the external Spacer
                         start = 4.dp,
                         end = 4.dp
                     ),

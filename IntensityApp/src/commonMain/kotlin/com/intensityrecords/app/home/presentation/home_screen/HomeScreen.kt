@@ -114,12 +114,12 @@ fun HomeScreen(navController: NavController, isWideScreen: Boolean) {
                         }
                     }
                 } else {
-                    Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
+                    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                         sampleItems.forEach { item ->
                             ContentCard(
                                 item = item,
                                 width = dynamicCardWidth,
-                                aspectRatio = 3.8f,
+                                aspectRatio = 3.2f,
                                 navController = navController,
                                 dimens = dimens,
                                 isWideScreen = isWideScreen
@@ -132,7 +132,7 @@ fun HomeScreen(navController: NavController, isWideScreen: Boolean) {
 
                 IntroVideoButton(isWideScreen = isWideScreen,dimens = dimens)
 
-                Spacer(modifier = Modifier.height(screenHeight * 0.15f))
+                Spacer(modifier = Modifier.height(if (isWideScreen) screenHeight * 0.15f else screenHeight * 0.01f))
             }
         }
     }

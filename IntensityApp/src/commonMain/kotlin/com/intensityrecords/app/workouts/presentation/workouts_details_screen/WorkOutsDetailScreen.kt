@@ -143,13 +143,16 @@ fun WorkoutDetailScreen(
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally // Centers the indicator
         ) {
+
+            Spacer(modifier = Modifier.height(if (isWideScreen) 0.dp else 35.dp))
+
             Box(modifier = Modifier.padding(horizontal = dimens.horizontalContentPadding)) {
                 state.item?.let {
                     HeroSection(item = it, isWideScreen = isWideScreen)
                 }
             }
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(35.dp))
 
             if (!isWideScreen) {
                 Text(
@@ -162,7 +165,7 @@ fun WorkoutDetailScreen(
                         .padding(horizontal = dimens.horizontalContentPadding)
                 )
 
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(if (isWideScreen) 0.dp else 34.dp))
             }
 
             HorizontalPager(
@@ -213,6 +216,7 @@ fun WorkoutDetailScreen(
             }
 
             if (state.sessions.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(if (isWideScreen) 0.dp else 12.dp))
                 ScrollIndicator(
                     count = state.sessions.size,
                     activeIndex = pagerState.currentPage,
@@ -220,7 +224,7 @@ fun WorkoutDetailScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(120.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
         }
     }

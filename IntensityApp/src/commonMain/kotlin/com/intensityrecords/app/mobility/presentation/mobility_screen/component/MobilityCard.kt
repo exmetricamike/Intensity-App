@@ -5,6 +5,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -14,19 +15,26 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -42,6 +50,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
@@ -115,8 +124,8 @@ fun MobilityCard(
 
     val borderWidth = if (isActive) dimens.borderWidthActive else dimens.borderWidthNormal
 
-    val badgeTextSize = if (isWideScreen) 14.sp else 10.sp
-    val badgeIconSize = if (isWideScreen) 20.dp else 14.dp
+    val badgeTextSize = if (isWideScreen) 14.sp else 13.sp
+    val badgeIconSize = if (isWideScreen) 20.dp else 15.dp
     val badgeInternalSpacing = if (isWideScreen) 8.dp else 4.dp
     val surfaceHeight = if (isWideScreen) 45.dp else 30.dp
 
@@ -136,11 +145,8 @@ fun MobilityCard(
         GlowBorderBrush
     }
 
-    val aspectRatioForCard = if (isWideScreen) 1.5f else 0.7f
-    val titleFontSize = if (isWideScreen) 26.sp else 16.sp
-
-    val elevationState by animateDpAsState(if (isActive) dimens.elevationStateActive else dimens.elevationStateNormal)
-    val textSize = if (isWideScreen) 14.sp else 10.sp
+    val aspectRatioForCard = if (isWideScreen) 1.5f else 2.2f
+    val titleFontSize = if (isWideScreen) 26.sp else 21.sp
 
     Card(
         modifier = modifier
@@ -165,50 +171,118 @@ fun MobilityCard(
         colors = CardDefaults.cardColors(containerColor = CardBackground),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            Image(
-                painter = painterResource(item.image),
-                contentDescription = item.title,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize().alpha(0.6f)
+        Box(
+            modifier = Modifier.fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.6f))
+        ) {
+            if (!isWideScreen) {
+                Row(modifier = Modifier.fillMaxSize())
+                {
+                    Spacer(modifier = Modifier.weight(1f))
+                    Box(modifier = Modifier.weight(2.0f).fillMaxHeight()) {
+                        Image(
+                            painter = painterResource(item.image),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(
+                                    Brush.horizontalGradient(
+                                        colors = listOf(Color.Black, Color.Transparent),
+                                        startX = 0f,
+                                        endX = 500f
+                                    )
+                                )
+                        )
+                    }
+                }
+            } else {
+                Image(
+                    painter = painterResource(item.image),
+                    contentDescription = item.title,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize().alpha(0.7f)
+                )
+            }
+
+            // Gradient Overlay (Scrim) - Crucial for text readability
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(
+                                Color.Black.copy(alpha = 0.3f), // Top slightly dark
+                                Color.Transparent,              // Middle clear
+                                Color.Black.copy(alpha = 0.9f)  // Bottom dark for text
+                            )
+                        )
+                    )
             )
 
             Text(
                 text = item.title,
                 style = MaterialTheme.typography.bodyLarge.copy(
                     fontSize = titleFontSize,
-                    fontWeight = FontWeight.ExtraBold,
-                    letterSpacing = if (isWideScreen) 1.5.sp else 0.5.sp,
-                    textAlign = TextAlign.Center
+                    textAlign = if (isWideScreen) TextAlign.Center else TextAlign.Start
                 ),
-                modifier = Modifier.align(Alignment.Center)
-                    .padding(if (isWideScreen) 8.dp else 2.dp)
+
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(if (isWideScreen) Alignment.Center else Alignment.TopCenter) // Places text in the dead center
+                    .padding(
+                        horizontal = if (isWideScreen) 8.dp else 15.dp,
+                        vertical = if (isWideScreen) 8.dp else 55.dp
+                    )
             )
 
-            Column(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = 12.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
+            Spacer(modifier = Modifier.height(14.dp))
+
+            if (!isWideScreen) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center,
+                    horizontalArrangement = Arrangement.End,
                     modifier = Modifier
-                        .padding(bottom = 12.dp, start = 8.dp, end = 8.dp)
-                        .height(surfaceHeight)
-                        .wrapContentWidth()
+                        .fillMaxWidth()
+                        .padding(
+                            end = 15.dp,
+                            top = if (isWideScreen) 0.dp else 65.dp
+                        )
                 ) {
-
-                    StatBadge(
-                        icon = Icons.Default.Timer,
-                        text = "10 MIN",
-                        iconSize = badgeIconSize,
-                        textStyle = MaterialTheme.typography.displaySmall.copy(fontSize = badgeTextSize),
-                        spacing = badgeInternalSpacing
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                        contentDescription = null,
+                        tint = PrimaryAccent,
+                        modifier = Modifier.size(40.dp)
                     )
                 }
             }
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = if (isWideScreen) Arrangement.Center else Arrangement.Start,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        bottom = 12.dp,
+                        start = if (isWideScreen) 8.dp else 15.dp,
+                        end = 8.dp,
+                        top = if (isWideScreen) 0.dp else 45.dp
+                    ).align(if (isWideScreen) Alignment.BottomCenter else Alignment.Center)
+                    .height(surfaceHeight)
+            ) {
+                StatBadge(
+                    icon = Icons.Default.Timer,
+                    text = "10 MIN",
+                    iconSize = badgeIconSize,
+                    textStyle = MaterialTheme.typography.displaySmall.copy(fontSize = badgeTextSize),
+                    spacing = badgeInternalSpacing
+                )
+            }
+
         }
     }
 }

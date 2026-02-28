@@ -16,19 +16,29 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowCircleRight
+import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.KeyboardDoubleArrowRight
 import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -114,8 +124,8 @@ fun WorkoutCard(
 
     val borderWidth = if (isFocused) dimens.borderWidthActive else dimens.borderWidthNormal
 
-    val badgeTextSize = if (isWideScreen) 14.sp else 10.sp
-    val badgeIconSize = if (isWideScreen) 20.dp else 14.dp
+    val badgeTextSize = if (isWideScreen) 14.sp else 13.sp
+    val badgeIconSize = if (isWideScreen) 20.dp else 15.dp
     val badgeInternalSpacing = if (isWideScreen) 8.dp else 4.dp
     val badgeGroupSpacing = if (isWideScreen) 10.dp else 6.dp
     val surfaceHeight = if (isWideScreen) 45.dp else 30.dp
@@ -136,7 +146,7 @@ fun WorkoutCard(
         GlowBorderBrush
     }
 
-    val aspectRatioForCard = if (isWideScreen) 1.2f else 0.8f
+    val aspectRatioForCard = if (isWideScreen) 1.2f else 2.2f
 
     Card(
         modifier = modifier
@@ -162,16 +172,43 @@ fun WorkoutCard(
     ) {
         Box(
             modifier = Modifier.fillMaxSize()
-                .background(Color(0xFF1A1A1A))
+                .background(Color.Black.copy(alpha = 0.6f))
         ) {
-            Image(
-                painter = painterResource(item.image),
-                contentDescription = item.title,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize().alpha(0.7f)
-            )
 
-            // 2. Gradient Overlay (Scrim) - Crucial for text readability
+            if (!isWideScreen) {
+                Row(modifier = Modifier.fillMaxSize())
+                {
+                    Spacer(modifier = Modifier.weight(1f))
+                    Box(modifier = Modifier.weight(2.0f).fillMaxHeight()) {
+                        Image(
+                            painter = painterResource(item.image),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(
+                                    Brush.horizontalGradient(
+                                        colors = listOf(Color.Black, Color.Transparent),
+                                        startX = 0f,
+                                        endX = 500f
+                                    )
+                                )
+                        )
+                    }
+                }
+            } else {
+                Image(
+                    painter = painterResource(item.image),
+                    contentDescription = item.title,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize().alpha(0.7f)
+                )
+            }
+
+            // Gradient Overlay (Scrim) - Crucial for text readability
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -188,14 +225,38 @@ fun WorkoutCard(
 
             Text(
                 text = item.title,
-                style = MaterialTheme.typography.bodyLarge.copy(fontSize = if (isWideScreen) 26.sp else 20.sp),
-                textAlign = TextAlign.Center, // Handles multi-line titles gracefully
+                style = MaterialTheme.typography.bodyLarge.copy(fontSize = if (isWideScreen) 26.sp else 21.sp),
+                textAlign = if (isWideScreen) TextAlign.Center else TextAlign.Start, // Handles multi-line titles gracefully
                 modifier = Modifier
-                    .align(Alignment.Center) // Places text in the dead center
-                    .padding(horizontal = if (isWideScreen) 16.dp else 2.dp) // Prevents text touching edges
+                    .fillMaxWidth()
+                    .align(if (isWideScreen) Alignment.Center else Alignment.TopCenter) // Places text in the dead center
+                    .padding(
+                        horizontal = if (isWideScreen) 16.dp else 15.dp,
+                        vertical = if (isWideScreen) 0.dp else 55.dp
+                    ) // Prevents text touching edges
             )
 
             Spacer(modifier = Modifier.height(14.dp))
+
+            if (!isWideScreen) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.End,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            end = 15.dp,
+                            top = if (isWideScreen) 0.dp else 65.dp
+                        )
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                        contentDescription = null,
+                        tint = PrimaryAccent,
+                        modifier = Modifier.size(40.dp)
+                    )
+                }
+            }
 
 //            Surface(
 //                color = PrimaryAccent.copy(alpha = 0.2f),
@@ -209,13 +270,16 @@ fun WorkoutCard(
 //            ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center,
+                horizontalArrangement = if (isWideScreen) Arrangement.Center else Arrangement.Start,
                 modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = 12.dp, start = 8.dp, end = 8.dp)
+                    .fillMaxWidth()
+                    .padding(
+                        bottom = 12.dp,
+                        start = if (isWideScreen) 8.dp else 15.dp,
+                        end = 8.dp,
+                        top = if (isWideScreen) 0.dp else 45.dp
+                    ).align(if (isWideScreen) Alignment.BottomCenter else Alignment.Center)
                     .height(surfaceHeight)
-                    .wrapContentWidth()
-
             ) {
 
                 StatBadge(

@@ -103,8 +103,8 @@ fun IntroVideoButton(isWideScreen: Boolean,dimens: AppDimens) {
         }
     }
 
-    val minWidth = if (isWideScreen) 250.dp else 200.dp
-    val maxWidth = if (isWideScreen) 300.dp else 200.dp
+    val minWidth = if (isWideScreen) 250.dp else 220.dp
+    val maxWidth = if (isWideScreen) 300.dp else 250.dp
 
     Box(
         modifier = Modifier.fillMaxWidth(),
@@ -129,7 +129,7 @@ fun IntroVideoButton(isWideScreen: Boolean,dimens: AppDimens) {
                 .border(BorderStroke(borderWidth, borderBrush), CircleShape)
                 .clip(CircleShape)
                 .background(Color(0xFF111111))
-                .height(if (isWideScreen) 64.dp else 54.dp)
+                .height(if (isWideScreen) 64.dp else 58.dp)
                 .clickable(
                     interactionSource = interactionSource,
                     indication = null

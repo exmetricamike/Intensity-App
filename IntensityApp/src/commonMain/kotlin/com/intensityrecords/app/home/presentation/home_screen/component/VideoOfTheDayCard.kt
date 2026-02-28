@@ -117,7 +117,7 @@ fun VideoOfTheDayCard(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(dynamicHeight)
+            .height(dimens.videoCardHeight)
             .graphicsLayer {
                 scaleX = scale
                 scaleY = scale
@@ -212,9 +212,9 @@ fun VideoOfTheDayCard(
                     horizontalAlignment = Alignment.Start,
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-//                    StatBadge(icon = Icons.Default.Timer, text = "Average 15-20 min")
-//                    StatBadge(icon = Icons.Default.LocalFireDepartment, text = "Bodyweight")
-//                    StatBadge(icon = Icons.Default.CenterFocusStrong, text = "Focus glutes + legs")
+                    StatBadge(icon = Icons.Default.Timer, text = "Average 15-20 min")
+                    StatBadge(icon = Icons.Default.LocalFireDepartment, text = "Bodyweight")
+                    StatBadge(icon = Icons.Default.CenterFocusStrong, text = "Focus glutes + legs")
                 }
             }
         }

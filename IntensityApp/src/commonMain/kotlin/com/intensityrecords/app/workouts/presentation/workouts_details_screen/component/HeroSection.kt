@@ -63,7 +63,7 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun HeroSection(item: WorkoutItem, isWideScreen: Boolean) {
 
-    val height = if (isWideScreen) 330.dp else 300.dp
+    val height = if (isWideScreen) 330.dp else 305.dp
 
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()

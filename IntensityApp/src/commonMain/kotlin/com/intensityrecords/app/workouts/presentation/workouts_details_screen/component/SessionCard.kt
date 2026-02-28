@@ -103,7 +103,7 @@ fun SessionCard(
 
     val elevationState by animateDpAsState(if (isActive) 8.5.dp else 2.dp)
     val cardWidth = if (isWideScreen) 280.dp else 170.dp
-    val cardAspectRatio = if (isWideScreen) 1.2f else 0.85f
+    val cardAspectRatio = if (isWideScreen) 1.2f else 0.75f
     val textSize = if (isWideScreen) 14.sp else 10.sp
 
     val badgeTextSize = if (isWideScreen) 14.sp else 8.sp
