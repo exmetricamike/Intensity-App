@@ -35,6 +35,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -48,7 +49,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -56,21 +56,14 @@ import com.intensityrecord.core.presentation.CardBackground
 import com.intensityrecord.core.presentation.GlowBorderBrush
 import com.intensityrecord.core.presentation.OffWhite
 import com.intensityrecord.core.presentation.PrimaryAccent
-import com.intensityrecords.app.core.presentation.Title
-import com.intensityrecords.app.core.presentation.buttonText
-import com.intensityrecords.app.core.presentation.captions
 import com.intensityrecords.app.workouts.domain.WorkoutItem
-import intensityrecordapp.intensityapp.generated.resources.Res
-import intensityrecordapp.intensityapp.generated.resources.montserrat_bold
-import intensityrecordapp.intensityapp.generated.resources.montserrat_regular
-import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.painterResource
 
 
 @Composable
 fun HeroSection(item: WorkoutItem, isWideScreen: Boolean) {
 
-    val height = if (isWideScreen) 330.dp else 450.dp
+    val height = if (isWideScreen) 330.dp else 305.dp
 
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
@@ -114,7 +107,10 @@ fun HeroSection(item: WorkoutItem, isWideScreen: Boolean) {
                 scaleX = scale
                 scaleY = scale
             }
-            .padding(horizontal = if (isWideScreen) 10.dp else 0.dp, vertical = if (isWideScreen) 20.dp else 0.dp)
+            .padding(
+                horizontal = if (isWideScreen) 10.dp else 0.dp,
+                vertical = if (isWideScreen) 20.dp else 0.dp
+            )
             .shadow(
                 elevation = shadowElevation,
                 shape = RoundedCornerShape(24.dp),
@@ -163,7 +159,7 @@ fun HeroSection(item: WorkoutItem, isWideScreen: Boolean) {
             Column(
                 modifier = Modifier
                     .fillMaxHeight()
-                    .padding(25.dp),
+                    .padding(horizontal = 25.dp, vertical = if (isWideScreen) 25.dp else 10.dp),
                 verticalArrangement = Arrangement.Center
             ) {
 
@@ -171,8 +167,7 @@ fun HeroSection(item: WorkoutItem, isWideScreen: Boolean) {
 
                 Text(
                     text = item.title.uppercase(),
-                    fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
-                    style = Title.copy(
+                    style = MaterialTheme.typography.titleLarge.copy(
                         fontSize = customFontSize,
                         fontWeight = FontWeight.ExtraBold,
                         letterSpacing = 1.sp,
@@ -201,7 +196,7 @@ fun HeroSection(item: WorkoutItem, isWideScreen: Boolean) {
 //                    }
 //                }
 
-                Spacer(modifier = Modifier.height(30.dp))
+                Spacer(modifier = Modifier.height(if (isWideScreen) 30.dp else 20.dp))
 
                 if (isWideScreen) {
                     // CTA Button
@@ -234,8 +229,9 @@ fun HeroSection(item: WorkoutItem, isWideScreen: Boolean) {
                         Spacer(modifier = Modifier.width(10.dp))
                         Text(
                             text = "LET THE COACH CHOOSE",
-                            fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
-                            style = buttonText
+                            style = MaterialTheme.typography.labelMedium.copy(
+                                color = Color.Black
+                            )
                         )
                     }
                 } else {
@@ -247,7 +243,7 @@ fun HeroSection(item: WorkoutItem, isWideScreen: Boolean) {
                     ) {
                         Card(
                             modifier = Modifier
-                                .height(25.dp)
+                                .height(20.dp)
                                 .width(30.dp)
                                 .clip(RectangleShape),
                             colors = CardDefaults.cardColors(containerColor = CardBackground),
@@ -261,15 +257,17 @@ fun HeroSection(item: WorkoutItem, isWideScreen: Boolean) {
                                     imageVector = Icons.Rounded.PlayArrow,
                                     contentDescription = null,
                                     tint = PrimaryAccent,
-                                    modifier = Modifier.size(14.dp)
+                                    modifier = Modifier.size(12.dp)
                                 )
                             }
                         }
-                        Spacer(modifier = Modifier.width(10.dp))
+                        Spacer(modifier = Modifier.width(8.dp))
                         Text(
                             text = "LET THE COACH CHOOSE",
-                            fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
-                            style = buttonText
+                            style = MaterialTheme.typography.labelMedium.copy(
+                                color = Color.Black,
+                                fontSize = 14.sp
+                            )
                         )
                     }
                 }
@@ -280,8 +278,7 @@ fun HeroSection(item: WorkoutItem, isWideScreen: Boolean) {
                     text = "Surprise workout selected by your coach",
                     modifier = Modifier.fillMaxWidth()
                         .padding(horizontal = if (isWideScreen) 16.dp else 0.dp),
-                    style = captions,
-                    fontFamily = FontFamily(Font(Res.font.montserrat_regular))
+                    style = MaterialTheme.typography.bodyMedium.copy(fontSize = if (isWideScreen) 16.sp else 14.sp),
                 )
 
                 Spacer(modifier = Modifier.height(30.dp))
@@ -302,20 +299,23 @@ fun HeroSection(item: WorkoutItem, isWideScreen: Boolean) {
                         )
                     }
                 } else {
-                    Column(
-                        horizontalAlignment = Alignment.Start,
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        StatBadge(icon = Icons.Default.Timer, text = "Average ${item.duration}")
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        StatBadge(
+                            icon = Icons.Default.Timer,
+                            text = "Average ${item.duration}",
+                            iconSize = 18.dp
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
                         StatBadge(
                             icon = Icons.Default.LocalFireDepartment,
-                            text = "High calorie burn"
-                        )
-                        StatBadge(
-                            icon = Icons.Default.CenterFocusStrong,
-                            text = "Focus glutes + legs"
+                            text = "High calorie burn", iconSize = 18.dp
                         )
                     }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    StatBadge(
+                        icon = Icons.Default.CenterFocusStrong,
+                        text = "Focus glutes + legs", iconSize = 18.dp
+                    )
                 }
             }
         }

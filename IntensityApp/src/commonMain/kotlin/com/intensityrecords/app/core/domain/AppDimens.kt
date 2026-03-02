@@ -16,8 +16,12 @@ data class AppDimens(
     val borderWidthActive: Dp,
     val borderWidthNormal: Dp,
     val cardCornerRadius: Dp,
-    val title: TextUnit,
+    val cardTitle: TextUnit,
     val live: TextUnit,
+    val introVideo: TextUnit,
+    val rePlayButton: TextUnit,
+    val agendaButton: TextUnit,
+    val largePlayButton: TextUnit,
 
     // HOME SCREEN VIDEO OF THE DAY CARD
     val videoCardHeight: Dp,

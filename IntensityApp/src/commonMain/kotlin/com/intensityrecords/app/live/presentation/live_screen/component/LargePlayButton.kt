@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -45,6 +46,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import com.intensityrecord.core.presentation.GlowBorderBrush
 import com.intensityrecord.core.presentation.PrimaryAccent
+import com.intensityrecords.app.core.domain.AppDimens
 import intensityrecordapp.intensityapp.generated.resources.Res
 import intensityrecordapp.intensityapp.generated.resources.montserrat_bold
 import intensityrecordapp.intensityapp.generated.resources.play
@@ -53,7 +55,7 @@ import org.jetbrains.compose.resources.stringResource
 
 
 @Composable
-fun LargePlayButton(isWideScreen: Boolean,modifier: Modifier = Modifier) {
+fun LargePlayButton(isWideScreen: Boolean, modifier: Modifier = Modifier, dimens: AppDimens) {
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
 
@@ -100,8 +102,8 @@ fun LargePlayButton(isWideScreen: Boolean,modifier: Modifier = Modifier) {
 
     Row(
         modifier = modifier
-            .width(if (isWideScreen) 200.dp else 150.dp)
-            .height(56.dp)
+            .width(if (isWideScreen) 200.dp else 100.dp)
+            .height(if (isWideScreen) 56.dp else 50.dp)
             .graphicsLayer {
                 scaleX = scale
                 scaleY = scale
@@ -126,12 +128,9 @@ fun LargePlayButton(isWideScreen: Boolean,modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.width(8.dp))
         Text(
             text = stringResource(Res.string.play),
-            style = TextStyle(
-                color = Color.White,
-                fontWeight = FontWeight.Bold,
-                fontSize = 18.sp,
+            style = MaterialTheme.typography.labelMedium.copy(
+                fontSize = dimens.largePlayButton,
                 letterSpacing = 1.sp,
-                fontFamily = FontFamily(Font(Res.font.montserrat_bold))
             )
         )
     }

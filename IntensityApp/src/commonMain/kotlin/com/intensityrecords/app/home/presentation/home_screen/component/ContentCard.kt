@@ -21,6 +21,7 @@ import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -38,13 +39,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
@@ -53,17 +50,13 @@ import com.intensityrecord.core.presentation.CardBackground
 import com.intensityrecord.core.presentation.GlowBorderBrush
 import com.intensityrecord.core.presentation.PrimaryAccent
 import com.intensityrecords.app.core.domain.AppDimens
-import com.intensityrecords.app.core.presentation.buttonText
 import intensityrecordapp.intensityapp.generated.resources.Res
-import intensityrecordapp.intensityapp.generated.resources.montserrat_bold
 import intensityrecordapp.intensityapp.generated.resources.step_trip
-import intensityrecordapp.intensityapp.generated.resources.mobility
 import intensityrecordapp.intensityapp.generated.resources.mobility_home_card
 import intensityrecordapp.intensityapp.generated.resources.live_class
 import intensityrecordapp.intensityapp.generated.resources.workout
 import intensityrecordapp.intensityapp.generated.resources.live_tag
 import intensityrecordapp.intensityapp.generateds.app.home.domain.HomeItem
-import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -137,13 +130,10 @@ fun ContentCard(
         }
     }
 
-    val elevationState = if (isActive) 12.dp else 4.dp
-
     val mobility = stringResource(Res.string.mobility_home_card)
     val live = stringResource(Res.string.live_class)
     val workouts = stringResource(Res.string.workout)
-    val step_trip = stringResource(Res.string.step_trip)
-
+    val stepTrip = stringResource(Res.string.step_trip)
 
     Card(
         modifier = modifier
@@ -155,7 +145,7 @@ fun ContentCard(
                 scaleY = scale
             }
             .onSizeChanged { cardSize = it }
-            // 5. Attach the requester (MUST be before clickable/focusable)
+            // Attach the requester (MUST be before clickable/focusable)
             .bringIntoViewRequester(bringIntoViewRequester)
             .shadow(
                 elevation = shadowElevation,
@@ -182,7 +172,7 @@ fun ContentCard(
                         navController.navigate(Route.Live)
                     }
 
-                    step_trip -> {
+                    stepTrip -> {
                         if (!isWideScreen) navController.navigate(Route.StepTrip)
                     }
                 }
@@ -211,14 +201,8 @@ fun ContentCard(
             )
             Text(
                 text = item.title.uppercase(),
-                style = TextStyle(
-                    fontWeight = FontWeight.Bold,
-                    fontSize = dimens.title,
-                    fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
-                    letterSpacing = 0.1.sp
-                ),
-                color = Color.White,
-                modifier = Modifier.align(Alignment.BottomCenter).padding(16.dp)
+                style = MaterialTheme.typography.bodyLarge.copy(fontSize = dimens.cardTitle),
+                modifier = Modifier.align(if (isWideScreen) Alignment.Center else Alignment.Center).padding(16.dp)
             )
             if (item.isLive) {
                 Box(
@@ -228,8 +212,7 @@ fun ContentCard(
                 ) {
                     Text(
                         stringResource(Res.string.live_tag),
-                        style = buttonText.copy(fontSize = dimens.live),
-                        fontFamily = FontFamily(Font(Res.font.montserrat_bold))
+                        style = MaterialTheme.typography.labelSmall,
                     )
                 }
             }

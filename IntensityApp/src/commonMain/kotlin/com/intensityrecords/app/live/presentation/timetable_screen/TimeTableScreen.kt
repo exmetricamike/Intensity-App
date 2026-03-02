@@ -29,6 +29,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.PlayCircleFilled
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -56,21 +57,18 @@ import com.intensityrecord.core.presentation.DarkGradient
 import com.intensityrecord.core.presentation.FitnessAppTheme
 import com.intensityrecord.core.presentation.GlowBorderBrush
 import com.intensityrecord.core.presentation.PrimaryAccent
-import com.intensityrecords.app.core.presentation.Title
-import com.intensityrecords.app.core.presentation.buttonText
-import com.intensityrecords.app.core.presentation.captions
 import com.intensityrecords.app.live.domain.DaySchedule
 import com.intensityrecords.app.live.domain.ScheduleSlot
 import com.intensityrecords.app.live.domain.mockSchedule
 import intensityrecordapp.intensityapp.generated.resources.Res
+import intensityrecordapp.intensityapp.generated.resources.back
 import intensityrecordapp.intensityapp.generated.resources.montserrat_bold
 import intensityrecordapp.intensityapp.generated.resources.montserrat_regular
-import intensityrecordapp.intensityapp.generated.resources.back
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun TimeTableScreen(navController: NavController, isWideScreen: Boolean)    {
+fun TimeTableScreen(navController: NavController, isWideScreen: Boolean) {
 
     // State to track which day is currently selected (by Tap on mobile or Click on TV)
     var selectedDayIndex by remember { mutableStateOf(-1) }
@@ -112,17 +110,13 @@ fun TimeTableScreen(navController: NavController, isWideScreen: Boolean)    {
                 // Header
                 Text(
                     text = "TIME TABLE",
-                    fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
-                    style = Title.copy(color = Color.White)
+                    style = MaterialTheme.typography.titleLarge
                 )
                 Spacer(modifier = Modifier.height(6.dp))
                 Text(
                     text = "LIVE",
-                    style = TextStyle(
-                        color = Color.White,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        fontFamily = FontFamily(Font(Res.font.montserrat_bold))
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        fontSize = 20.sp
                     )
                 )
 
@@ -267,14 +261,15 @@ fun DayColumnItem(
             .background(Color.Black.copy(alpha = 0.6f))
             .padding(vertical = 12.dp)
             .clickable(interactionSource = interactionSource, indication = null, onClick = onClick)
-            .width(if (isWideScreen) 140.dp else 110.dp)
-        ,
+            .width(if (isWideScreen) 140.dp else 110.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // Day Name
         Text(
-            text = day.dayName,
-            style = captions.copy(
+            text = stringResource(day.dayName),
+            style = TextStyle(
+                fontSize = 14.sp,
+                color = Color.White,
                 fontFamily = FontFamily(Font(Res.font.montserrat_regular))
             ),
             modifier = Modifier.padding(bottom = 16.dp)
@@ -315,10 +310,11 @@ fun SlotItem(slot: ScheduleSlot) {
                     Spacer(modifier = Modifier.width(2.5.dp))
                     Text(
                         text = "NEXT LIVE",
-                        style = captions.copy(
+                        style = TextStyle(
                             fontSize = 14.sp,
-                            fontWeight = FontWeight.Bold
-                        )
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
+                        ),
                     )
                 }
             }
@@ -329,7 +325,9 @@ fun SlotItem(slot: ScheduleSlot) {
         if (slot.time != null) {
             Text(
                 text = slot.time,
-                style = buttonText.copy(
+                style = TextStyle(
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp,
                     color = if (slot.isLive) PrimaryAccent else Color.White,
                     fontFamily = FontFamily(Font(Res.font.montserrat_bold))
                 )
@@ -379,7 +377,7 @@ fun TimeTableButton(
             .background(containerColor)
             .border(BorderStroke(2.dp, borderBrush), CircleShape)
             .clickable(interactionSource = interactionSource, indication = null, onClick = onClick)
-            .padding(horizontal = 24.dp),
+            .padding(horizontal = if (isWideScreen) 24.dp else 4.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
@@ -394,8 +392,10 @@ fun TimeTableButton(
         }
         Text(
             text = text,
-            style = buttonText.copy(
+            style = TextStyle(
                 color = Color.White,
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp,
                 fontFamily = FontFamily(Font(Res.font.montserrat_bold))
             ),
         )

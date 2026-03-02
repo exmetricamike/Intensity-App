@@ -17,22 +17,25 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.FiberManualRecord
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Surface
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -47,10 +50,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
@@ -60,8 +65,6 @@ import com.intensityrecord.core.presentation.CardBackground
 import com.intensityrecord.core.presentation.GlowBorderBrush
 import com.intensityrecord.core.presentation.PrimaryAccent
 import com.intensityrecords.app.core.domain.AppDimens
-import com.intensityrecords.app.core.presentation.captions
-import com.intensityrecords.app.core.presentation.cardTitle
 import com.intensityrecords.app.mobility.domain.MobilityItem
 import com.intensityrecords.app.workouts.presentation.workouts_details_screen.component.StatBadge
 import intensityrecordapp.intensityapp.generated.resources.Res
@@ -121,14 +124,10 @@ fun MobilityCard(
 
     val borderWidth = if (isActive) dimens.borderWidthActive else dimens.borderWidthNormal
 
-    val badgeTextSize = if (isWideScreen) 14.sp else 10.sp
-    val badgeIconSize = if (isWideScreen) 20.dp else 14.dp
+    val badgeTextSize = if (isWideScreen) 14.sp else 13.sp
+    val badgeIconSize = if (isWideScreen) 20.dp else 15.dp
     val badgeInternalSpacing = if (isWideScreen) 8.dp else 4.dp
-    val badgeGroupSpacing = if (isWideScreen) 10.dp else 6.dp
     val surfaceHeight = if (isWideScreen) 45.dp else 30.dp
-    val surfacePaddingH = if (isWideScreen) 10.dp else 6.dp
-    val badgeTextStyle = captions.copy(fontSize = badgeTextSize)
-
 
     val borderBrush = if (isActive) {
         Brush.horizontalGradient(
@@ -146,11 +145,8 @@ fun MobilityCard(
         GlowBorderBrush
     }
 
-    val aspectRatioForCard = if (isWideScreen) 1.5f else 0.7f
-    val titleFontSize = if (isWideScreen) 26.sp else 16.sp
-
-    val elevationState by animateDpAsState(if (isActive) dimens.elevationStateActive else dimens.elevationStateNormal)
-    val textSize = if (isWideScreen) 14.sp else 10.sp
+    val aspectRatioForCard = if (isWideScreen) 1.5f else 2.2f
+    val titleFontSize = if (isWideScreen) 26.sp else 21.sp
 
     Card(
         modifier = modifier
@@ -175,127 +171,118 @@ fun MobilityCard(
         colors = CardDefaults.cardColors(containerColor = CardBackground),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            Image(
-                painter = painterResource(item.image),
-                contentDescription = item.title,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize().alpha(0.6f)
+        Box(
+            modifier = Modifier.fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.6f))
+        ) {
+            if (!isWideScreen) {
+                Row(modifier = Modifier.fillMaxSize())
+                {
+                    Spacer(modifier = Modifier.weight(1f))
+                    Box(modifier = Modifier.weight(2.0f).fillMaxHeight()) {
+                        Image(
+                            painter = painterResource(item.image),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(
+                                    Brush.horizontalGradient(
+                                        colors = listOf(Color.Black, Color.Transparent),
+                                        startX = 0f,
+                                        endX = 500f
+                                    )
+                                )
+                        )
+                    }
+                }
+            } else {
+                Image(
+                    painter = painterResource(item.image),
+                    contentDescription = item.title,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize().alpha(0.7f)
+                )
+            }
+
+            // Gradient Overlay (Scrim) - Crucial for text readability
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(
+                                Color.Black.copy(alpha = 0.3f), // Top slightly dark
+                                Color.Transparent,              // Middle clear
+                                Color.Black.copy(alpha = 0.9f)  // Bottom dark for text
+                            )
+                        )
+                    )
             )
 
             Text(
                 text = item.title,
-                style = cardTitle.copy(
+                style = MaterialTheme.typography.bodyLarge.copy(
                     fontSize = titleFontSize,
-                    letterSpacing = if (isWideScreen) 1.5.sp else 0.5.sp,
-                    textAlign = TextAlign.Center,
+                    textAlign = if (isWideScreen) TextAlign.Center else TextAlign.Start
                 ),
-                modifier = Modifier.align(Alignment.Center).padding(8.dp), // Added padding
-                fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
+
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(if (isWideScreen) Alignment.Center else Alignment.TopCenter) // Places text in the dead center
+                    .padding(
+                        horizontal = if (isWideScreen) 8.dp else 15.dp,
+                        vertical = if (isWideScreen) 8.dp else 55.dp
+                    )
             )
 
-            Column(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = 12.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-//                Surface(
-//                    color = PrimaryAccent.copy(alpha = 0.2f),
-//                    shape = RoundedCornerShape(50),
-//                    border = BorderStroke(1.dp, PrimaryAccent),
-//                    modifier = Modifier.height(surfaceHeight)
-//                ) {
-//                    Row(
-//                        verticalAlignment = Alignment.CenterVertically,
-//                        horizontalArrangement = Arrangement.Center,
-//                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 2.dp)
-//                    ) {
-//                        Text(
-//                            text = "10 MIN",
-//                            fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
-//                            style = chipButtonText.copy(fontSize = textSize)
-//                        )
-//                        Text(
-//                            text = " | LIGHT | ",
-//                            fontFamily = FontFamily(Font(Res.font.montserrat_regular)),
-//                            style = chipButtonText.copy(fontSize = textSize, color = Color.White)
-//                        )
-//                        Text(
-//                            text = "180 KCAL",
-//                            fontFamily = FontFamily(Font(Res.font.montserrat_regular)),
-//                            style = chipButtonText.copy(fontSize = textSize, color = Color.White)
-//                        )
-//                    }
-//                }
+            Spacer(modifier = Modifier.height(14.dp))
 
-//                Surface(
-//                    color = PrimaryAccent.copy(alpha = 0.2f),
-//                    shape = RoundedCornerShape(50),
-//                    border = BorderStroke(1.dp, PrimaryAccent),
-//                    modifier = Modifier
-//                        .padding(bottom = 12.dp, start = 8.dp, end = 8.dp)
-//                        .height(surfaceHeight)
-//                        .wrapContentWidth()
-//                ) {
+            if (!isWideScreen) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center,
+                    horizontalArrangement = Arrangement.End,
                     modifier = Modifier
-                        .padding(bottom = 12.dp, start = 8.dp, end = 8.dp)
-                        .height(surfaceHeight)
-                        .wrapContentWidth()
+                        .fillMaxWidth()
+                        .padding(
+                            end = 15.dp,
+                            top = if (isWideScreen) 0.dp else 65.dp
+                        )
                 ) {
-
-                    StatBadge(
-                        icon = Icons.Default.Timer,
-                        text = "10 MIN",
-                        iconSize = badgeIconSize,
-                        textStyle = badgeTextStyle,
-                        spacing = badgeInternalSpacing
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                        contentDescription = null,
+                        tint = PrimaryAccent,
+                        modifier = Modifier.size(40.dp)
                     )
-
-//                    Spacer(modifier = Modifier.width(badgeGroupSpacing))
-
-//                    Box(
-//                        modifier = Modifier
-//                            .width(1.dp)
-//                            .height(12.dp)
-//                            .background(PrimaryAccent.copy(0.5f))
-//                    )
-//
-//                    Spacer(modifier = Modifier.width(badgeGroupSpacing))
-//
-//                    StatBadge(
-//                        icon = Icons.Default.FiberManualRecord,
-//                        text = "LIVE",
-//                        iconSize = badgeIconSize,
-//                        textStyle = badgeTextStyle,
-//                        spacing = badgeInternalSpacing
-//                    )
-//
-//                    Spacer(modifier = Modifier.width(badgeGroupSpacing))
-//
-//                    Box(
-//                        modifier = Modifier
-//                            .width(1.dp)
-//                            .height(12.dp)
-//                            .background(PrimaryAccent.copy(0.5f))
-//                    )
-//
-//                    Spacer(modifier = Modifier.width(badgeGroupSpacing))
-//
-//                    StatBadge(
-//                        icon = Icons.Default.LocalFireDepartment,
-//                        text = "180 KCAL",
-//                        iconSize = badgeIconSize,
-//                        textStyle = badgeTextStyle,
-//                        spacing = badgeInternalSpacing
-//                    )
-
                 }
-//                }
             }
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = if (isWideScreen) Arrangement.Center else Arrangement.Start,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        bottom = 12.dp,
+                        start = if (isWideScreen) 8.dp else 15.dp,
+                        end = 8.dp,
+                        top = if (isWideScreen) 0.dp else 45.dp
+                    ).align(if (isWideScreen) Alignment.BottomCenter else Alignment.Center)
+                    .height(surfaceHeight)
+            ) {
+                StatBadge(
+                    icon = Icons.Default.Timer,
+                    text = "10 MIN",
+                    iconSize = badgeIconSize,
+                    textStyle = MaterialTheme.typography.displaySmall.copy(fontSize = badgeTextSize),
+                    spacing = badgeInternalSpacing
+                )
+            }
+
         }
     }
 }

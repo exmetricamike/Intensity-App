@@ -25,6 +25,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowForwardIos
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -50,6 +51,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import com.intensityrecord.core.presentation.GlowBorderBrush
 import com.intensityrecord.core.presentation.PrimaryAccent
+import com.intensityrecords.app.core.domain.AppDimens
 import intensityrecordapp.intensityapp.generated.resources.Res
 import intensityrecordapp.intensityapp.generated.resources.montserrat_bold
 import intensityrecordapp.intensityapp.generated.resources.intro_video
@@ -57,7 +59,7 @@ import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun IntroVideoButton() {
+fun IntroVideoButton(isWideScreen: Boolean,dimens: AppDimens) {
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
 
@@ -101,13 +103,16 @@ fun IntroVideoButton() {
         }
     }
 
+    val minWidth = if (isWideScreen) 250.dp else 220.dp
+    val maxWidth = if (isWideScreen) 300.dp else 250.dp
+
     Box(
         modifier = Modifier.fillMaxWidth(),
         contentAlignment = Alignment.CenterStart
     ) {
         Row(
             modifier = Modifier
-                .widthIn(min = 250.dp, max = 300.dp) // Constrain width (Pill shape)
+                .widthIn(min = minWidth, max = maxWidth) // Constrain width (Pill shape)
                 .graphicsLayer {
                     scaleX = scale
                     scaleY = scale
@@ -124,7 +129,7 @@ fun IntroVideoButton() {
                 .border(BorderStroke(borderWidth, borderBrush), CircleShape)
                 .clip(CircleShape)
                 .background(Color(0xFF111111))
-                .height(64.dp)
+                .height(if (isWideScreen) 64.dp else 58.dp)
                 .clickable(
                     interactionSource = interactionSource,
                     indication = null
@@ -135,7 +140,7 @@ fun IntroVideoButton() {
             // Icon Circle
             Box(
                 modifier = Modifier
-                    .size(48.dp)
+                    .size(if (isWideScreen) 48.dp else 38.dp)
                     .background(if (isFocused) PrimaryAccent else PrimaryAccent.copy(alpha = 0.8f),
                         CircleShape)
                     .border(1.dp, PrimaryAccent, CircleShape),
@@ -148,12 +153,7 @@ fun IntroVideoButton() {
 
             Text(
                 text = stringResource(Res.string.intro_video),
-                style = TextStyle(
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 16.sp,
-                    color = Color.White,
-                    fontFamily = FontFamily(Font(Res.font.montserrat_bold))
-                )
+                style = MaterialTheme.typography.labelMedium.copy(fontSize = dimens.introVideo)
             )
 
             Spacer(modifier = Modifier.weight(1f))

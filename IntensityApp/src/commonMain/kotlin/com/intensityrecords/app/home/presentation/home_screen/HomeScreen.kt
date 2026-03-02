@@ -2,7 +2,6 @@ package com.intensityrecords.app.home.presentation.home_screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -25,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.intensityrecord.core.presentation.DarkGradient
 import com.intensityrecord.core.presentation.FitnessAppTheme
-import com.intensityrecords.app.core.presentation.utils.LocalAppDimens
+import com.intensityrecords.app.core.presentation.LocalAppDimens
 import com.intensityrecords.app.home.presentation.home_screen.component.ContentCard
 import com.intensityrecords.app.home.presentation.home_screen.component.IntroVideoButton
 import com.intensityrecords.app.home.presentation.home_screen.component.VideoOfTheDayCard
@@ -71,7 +70,7 @@ fun HomeScreen(navController: NavController, isWideScreen: Boolean) {
             val dynamicCardWidth = if (isWideScreen) screenWidth * 0.22f else screenWidth - 32.dp
 
             // Hero card height takes up 45% of the screen height on TV
-            val dynamicHeroHeight = if (isWideScreen) screenHeight * 0.60f else 250.dp
+            val dynamicHeroHeight = if (isWideScreen) screenHeight * 0.60f else 160.dp
 
             Column(
                 modifier = Modifier
@@ -84,7 +83,7 @@ fun HomeScreen(navController: NavController, isWideScreen: Boolean) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                Spacer(modifier = Modifier.height(screenHeight * 0.02f)) // 2% dynamic spacer
+                Spacer(modifier = Modifier.height(if (isWideScreen) screenHeight * 0.02f else screenHeight * 0.01f)) // 2% dynamic spacer
 
                 VideoOfTheDayCard(
                     navController = navController,
@@ -93,7 +92,7 @@ fun HomeScreen(navController: NavController, isWideScreen: Boolean) {
                     modifier = Modifier.focusRequester(firstItemFocusRequester)
                 )
 
-                Spacer(modifier = Modifier.height(screenHeight * 0.05f)) // 5% dynamic spacer
+                Spacer(modifier = Modifier.height(if (isWideScreen) screenHeight * 0.05f else screenHeight * 0.03f)) // 5% dynamic spacer
 
                 if (isWideScreen) {
                     LazyRow(
@@ -120,7 +119,7 @@ fun HomeScreen(navController: NavController, isWideScreen: Boolean) {
                             ContentCard(
                                 item = item,
                                 width = dynamicCardWidth,
-                                aspectRatio = 3.3f,
+                                aspectRatio = 3.2f,
                                 navController = navController,
                                 dimens = dimens,
                                 isWideScreen = isWideScreen
@@ -129,11 +128,11 @@ fun HomeScreen(navController: NavController, isWideScreen: Boolean) {
                     }
                 }
 
-                Spacer(modifier = Modifier.height(40.dp))
+                Spacer(modifier = Modifier.height(if (isWideScreen) 40.dp else 20.dp))
 
-                IntroVideoButton()
+                IntroVideoButton(isWideScreen = isWideScreen,dimens = dimens)
 
-                Spacer(modifier = Modifier.height(screenHeight * 0.15f))
+                Spacer(modifier = Modifier.height(if (isWideScreen) screenHeight * 0.15f else screenHeight * 0.01f))
             }
         }
     }

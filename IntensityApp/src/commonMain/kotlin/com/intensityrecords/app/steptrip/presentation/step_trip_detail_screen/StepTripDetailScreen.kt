@@ -24,6 +24,7 @@ import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,6 +36,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -108,19 +110,19 @@ fun StepTripDetailScreen(
             ) {
                 Text(
                     text = state.item!!.title,
-                    color = Color.White,
-                    fontSize = 32.sp,
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        fontSize = 32.sp,
+                        letterSpacing = 0.1.sp
+                    ),
                     // Fix: Line height should typically be 1.2x to 1.4x the font size
                     lineHeight = 38.sp,
-                    letterSpacing = 0.1.sp,
                     maxLines = 3,
                     overflow = TextOverflow.Ellipsis,
                     // Fix: textAlign handles the internal text centering
                     textAlign = TextAlign.Center,
                     modifier = Modifier
-                        .fillMaxWidth() // Required for TextAlign.Center to work properly
+                        .fillMaxWidth()
                         .padding(horizontal = 16.dp, vertical = 6.dp),
-                    fontFamily = FontFamily(Font(Res.font.montserrat_bold))
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -133,10 +135,11 @@ fun StepTripDetailScreen(
                 ) {
                     Text(
                         text = state.item.category,
-                        color = Color.Gray,
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            color = Color.Gray,
+                            fontSize = 12.sp
+                        ),
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp),
-                        fontSize = 12.sp,
-                        fontFamily = FontFamily(Font(Res.font.montserrat_regular))
                     )
                 }
             }
@@ -160,10 +163,11 @@ fun StepTripDetailScreen(
             ) {
                 Text(
                     text = "The Battle of Waterloo, on June 18, 1815, marked the end of the Napoleonic epic.",
-                    color = Color.White,
-                    fontSize = 18.sp,
-                    fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
-                    lineHeight = 26.sp
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontSize = 18.sp,
+                        lineHeight = 26.sp,
+                        fontWeight = FontWeight.Bold
+                    ),
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -171,10 +175,11 @@ fun StepTripDetailScreen(
                 // Body Paragraph 1
                 Text(
                     text = "After his return from the Island of Elba, Napoleon Bonaparte attempted to regain control of Europe. Near Wavre, south of Brussels, he faced the allied troops led by the Duke of Wellington, composed of Dutch, Belgian, and German forces, as well as those of the Prussian Marshal Blücher.",
-                    color = DetailTextSecondary,
-                    fontSize = 14.sp,
-                    fontFamily = FontFamily(Font(Res.font.montserrat_regular)),
-                    lineHeight = 22.sp
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontSize = 14.sp,
+                        lineHeight = 22.sp,
+                        color = DetailTextSecondary
+                    ),
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
@@ -182,10 +187,11 @@ fun StepTripDetailScreen(
                 // Body Paragraph 2
                 Text(
                     text = "From early morning, the French attacked the allied positions on the heights of Mont Saint-Jean. The farm of Hougoumont, the hamlet of La Haye Sainte, and Napoleon’s army became the most fiercely contested points.",
-                    color = DetailTextSecondary,
-                    fontSize = 14.sp,
-                    fontFamily = FontFamily(Font(Res.font.montserrat_regular)),
-                    lineHeight = 22.sp
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontSize = 14.sp,
+                        lineHeight = 22.sp,
+                        color = DetailTextSecondary
+                    ),
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
@@ -193,10 +199,11 @@ fun StepTripDetailScreen(
                 // Body Paragraph 3
                 Text(
                     text = "Despite the bravery of his troops and several breakthroughs, in the late afternoon the sudden arrival of the Prussian army pushed back the French — a symbolic event that sealed the defeat.",
-                    color = DetailTextSecondary,
-                    fontSize = 14.sp,
-                    fontFamily = FontFamily(Font(Res.font.montserrat_regular)),
-                    lineHeight = 22.sp
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontSize = 14.sp,
+                        lineHeight = 22.sp,
+                        color = DetailTextSecondary
+                    ),
                 )
             }
         }
@@ -271,10 +278,10 @@ fun StepTripDetailScreen(
             ) {
                 Text(
                     text = stringResource(Res.string.close),
-                    color = Color.White,
-                    fontSize = 16.sp,
-                    fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
-                    letterSpacing = 1.sp
+                    style = MaterialTheme.typography.labelMedium.copy(
+                        fontSize = 16.sp,
+                        letterSpacing = 1.sp
+                    ),
                 )
             }
         }

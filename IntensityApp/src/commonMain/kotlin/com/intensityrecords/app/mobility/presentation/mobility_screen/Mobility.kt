@@ -12,7 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -27,14 +27,12 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.intensityrecord.core.presentation.DarkGradient
 import com.intensityrecord.core.presentation.FitnessAppTheme
-import com.intensityrecords.app.core.presentation.Title
-import com.intensityrecords.app.core.presentation.captions
-import com.intensityrecords.app.core.presentation.utils.LocalAppDimens
+import com.intensityrecords.app.core.presentation.LocalAppDimens
 import com.intensityrecords.app.mobility.domain.mobilityCategories
 import com.intensityrecords.app.mobility.presentation.mobility_screen.component.MobilityCard
 import intensityrecordapp.intensityapp.generated.resources.Res
-import intensityrecordapp.intensityapp.generated.resources.montserrat_bold
 import intensityrecordapp.intensityapp.generated.resources.mobility_recovery
+import intensityrecordapp.intensityapp.generated.resources.montserrat_bold
 import intensityrecordapp.intensityapp.generated.resources.programs_recovery_relaxation
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.stringResource
@@ -83,16 +81,14 @@ fun MobilityScreen(navController: NavController, isWideScreen: Boolean) {
 
                 Text(
                     text = stringResource(Res.string.mobility_recovery),
-                    fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
-                    style = Title
+                    style = MaterialTheme.typography.titleLarge
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
                     text = stringResource(Res.string.programs_recovery_relaxation),
-                    style = captions.copy(letterSpacing = 0.1.sp),
-                    fontFamily = FontFamily(Font(Res.font.montserrat_bold))
+                    style = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp),
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))
@@ -100,13 +96,13 @@ fun MobilityScreen(navController: NavController, isWideScreen: Boolean) {
                 val gridWidth = if (isWideScreen) 0.85f else 1f
 
                 LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
+                    columns = GridCells.Fixed(if (isWideScreen) 2 else 1),
                     horizontalArrangement = Arrangement.spacedBy(if (isWideScreen) 25.dp else 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(if (isWideScreen) 45.dp else 24.dp),
+                    verticalArrangement = Arrangement.spacedBy(if (isWideScreen) 45.dp else 25.dp),
                     modifier = Modifier.fillMaxWidth(gridWidth).weight(1f),
                     contentPadding = PaddingValues(
                         top = 16.dp,
-                        bottom = 120.dp, // This replaces the external Spacer
+                        bottom = if (isWideScreen) 120.dp else 20.dp, // This replaces the external Spacer
                         start = 4.dp,
                         end = 4.dp
                     )
@@ -123,11 +119,6 @@ fun MobilityScreen(navController: NavController, isWideScreen: Boolean) {
                                 Modifier
                             }
                         )
-                        Spacer(modifier = Modifier.height(40.dp))
-                    }
-                    // Add a transparent spacer item at the end of the grid list
-                    item {
-                        Spacer(modifier = Modifier.height(50.dp))
                     }
                 }
             }

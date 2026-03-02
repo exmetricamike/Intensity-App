@@ -36,12 +36,12 @@ import androidx.navigation.toRoute
 import com.intensityrecord.app.Route
 import com.intensityrecord.core.presentation.DarkGradient
 import com.intensityrecord.core.presentation.FitnessAppTheme
+import com.intensityrecords.app.core.presentation.CompactDimens
+import com.intensityrecords.app.core.presentation.ExpandedDimens
 import com.intensityrecords.app.core.presentation.LanguageViewModel
+import com.intensityrecords.app.core.presentation.LocalAppDimens
 import com.intensityrecords.app.core.presentation.components.AppHeader
 import com.intensityrecords.app.core.presentation.components.CustomBottomBar
-import com.intensityrecords.app.core.presentation.utils.CompactDimens
-import com.intensityrecords.app.core.presentation.utils.ExpandedDimens
-import com.intensityrecords.app.core.presentation.utils.LocalAppDimens
 import com.intensityrecords.app.core.presentation.utils.LocalAppLocale
 import com.intensityrecords.app.core.presentation.utils.currentDeviceConfiguration
 import com.intensityrecords.app.core.presentation.utils.rememberDataStore
@@ -56,8 +56,15 @@ import com.intensityrecords.app.steptrip.presentation.steptrip.StepTripScreenRoo
 import com.intensityrecords.app.workouts.domain.workoutCategories
 import com.intensityrecords.app.workouts.presentation.workouts_details_screen.WorkoutDetailScreenRoot
 import com.intensityrecords.app.workouts.presentation.workouts_screen.WorkoutScreenRoot
+import intensityrecordapp.intensityapp.generated.resources.Res
+import intensityrecordapp.intensityapp.generated.resources.home
+import intensityrecordapp.intensityapp.generated.resources.live
+import intensityrecordapp.intensityapp.generated.resources.mobility
+import intensityrecordapp.intensityapp.generated.resources.workouts
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
+
 
 @Composable
 @Preview
@@ -88,18 +95,18 @@ fun App() {
                     val currentDestination = currentBackStackEntry?.destination
 
                     val currentTab = when {
-                        currentDestination?.hasRoute<Route.Home>() == true -> "Home"
+                        currentDestination?.hasRoute<Route.Home>() == true -> stringResource(Res.string.home)
 
                         currentDestination?.hasRoute<Route.Live>() == true ||
-                                currentDestination?.hasRoute<Route.TimeTable>() == true -> "Live"
+                                currentDestination?.hasRoute<Route.TimeTable>() == true -> stringResource(Res.string.live)
 
                         currentDestination?.hasRoute<Route.WorkOuts>() == true ||
-                                currentDestination?.hasRoute<Route.WorkOutsDetailsScreen>() == true -> "Workouts"
+                                currentDestination?.hasRoute<Route.WorkOutsDetailsScreen>() == true -> stringResource(Res.string.workouts)
 
-                        currentDestination?.hasRoute<Route.Mobility>() == true -> "Mobility"
+                        currentDestination?.hasRoute<Route.Mobility>() == true -> stringResource(Res.string.mobility)
 
                         currentDestination?.hasRoute<Route.StepTrip>() == true ||
-                                currentDestination?.hasRoute<Route.StepTripDetailScreen>() == true -> "Home"
+                                currentDestination?.hasRoute<Route.StepTripDetailScreen>() == true -> stringResource(Res.string.home)
 
                         else -> "Home"
                     }
@@ -109,23 +116,8 @@ fun App() {
                         modifier = Modifier.windowInsetsPadding(WindowInsets.safeDrawing),
                         topBar = {
                             AppHeader(isWideScreen = isWideScreen)
-//                        if (!isWideScreen) AppHeader(isWideScreen = isWideScreen) else
-//                            Box(
-//                                modifier = Modifier
-//                                    .fillMaxWidth()
-//                                    .navigationBarsPadding()
-//                                    .padding(top = 10.dp),
-//                                contentAlignment = Alignment.TopCenter
-//                            ) {
-//                                TopNavigationLayout(
-//                                    isWideScreen = isWideScreen,
-//                                    currentTab = currentTab,
-//                                    navController = navController
-//                                )
-//                            }
                         },
                         bottomBar = {
-//                        if (!isWideScreen) {
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -140,7 +132,6 @@ fun App() {
                                     viewModel = viewModel
                                 )
                             }
-//                        }
                         }
                     ) { innerPadding ->
                         NavHost(
@@ -320,7 +311,6 @@ fun App() {
                             composable<Route.StepTripDetailScreen> { backStackEntry ->
                                 val args = backStackEntry.toRoute<Route.StepTripDetailScreen>()
 
-                                // Find the actual object using the ID from the Route
                                 val selectedItem = trips.find { it.title == args.id }
 
                                 if (selectedItem != null) {

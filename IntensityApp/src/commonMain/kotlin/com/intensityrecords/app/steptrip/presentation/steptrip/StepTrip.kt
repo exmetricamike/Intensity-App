@@ -17,7 +17,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -26,7 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -34,13 +37,10 @@ import com.intensityrecord.app.Route
 import com.intensityrecord.core.presentation.DarkGradient
 import com.intensityrecord.core.presentation.FitnessAppTheme
 import com.intensityrecord.core.presentation.PrimaryAccent
-import com.intensityrecords.app.core.presentation.Title
 import com.intensityrecords.app.steptrip.domain.trips
 import com.intensityrecords.app.steptrip.presentation.steptrip.component.StepTripCard
 import intensityrecordapp.intensityapp.generated.resources.Res
-import intensityrecordapp.intensityapp.generated.resources.montserrat_bold
 import intensityrecordapp.intensityapp.generated.resources.step_trip
-import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -73,6 +73,9 @@ fun StepTripScreen(
     isWideScreen: Boolean,
     onAction: (StepTripAction) -> Unit
 ) {
+
+    val scrollState = rememberScrollState()
+
     FitnessAppTheme {
         BoxWithConstraints(
             modifier = Modifier
@@ -85,16 +88,15 @@ fun StepTripScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .verticalScroll(scrollState)
                     .padding(vertical = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Spacer(modifier = Modifier.height(20.dp))
 
                 Text(
-                    text = stringResource(Res.string.step_trip),
-                    fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
-                    style = Title,
-                    color = Color.White
+                    text = stringResource(Res.string.step_trip).uppercase(),
+                    style = MaterialTheme.typography.titleLarge
                 )
 
                 Spacer(modifier = Modifier.height(30.dp))
@@ -105,7 +107,7 @@ fun StepTripScreen(
                     pageSpacing = 16.dp,
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
-                        .height(400.dp)
+                        .height(520.dp)
                         .fillMaxWidth()
                 ) { page ->
 
