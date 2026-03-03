@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -19,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -46,10 +48,12 @@ fun HomeScreenRoot(
 @Composable
 fun HomeScreen(navController: NavController, isWideScreen: Boolean) {
 
-    val firstItemFocusRequester = remember { FocusRequester() }
+
+    val heroFocusRequester = remember { FocusRequester() }
+    val firstContentCardRequester = remember { FocusRequester() }
 
     LaunchedEffect(Unit) {
-        firstItemFocusRequester.requestFocus()
+        heroFocusRequester.requestFocus()
     }
 
 
@@ -89,7 +93,12 @@ fun HomeScreen(navController: NavController, isWideScreen: Boolean) {
                     navController = navController,
                     isWideScreen = isWideScreen,
                     dynamicHeight = dynamicHeroHeight,
-                    modifier = Modifier.focusRequester(firstItemFocusRequester)
+                    modifier = Modifier
+                        .focusRequester(heroFocusRequester)
+                        // Explicitly tell the focus engine where to go when "Down" is pressed
+                        .focusProperties {
+                            down = firstContentCardRequester
+                        }
                 )
 
                 Spacer(modifier = Modifier.height(if (isWideScreen) screenHeight * 0.05f else screenHeight * 0.03f)) // 5% dynamic spacer
@@ -99,7 +108,7 @@ fun HomeScreen(navController: NavController, isWideScreen: Boolean) {
                         horizontalArrangement = Arrangement.spacedBy(16.dp),
                         contentPadding = PaddingValues(horizontal = 36.dp, vertical = 16.dp)
                     ) {
-                        items(items = sampleItems) { item ->
+                        itemsIndexed(items = sampleItems) { index, item ->
 //                            Box(modifier = Modifier.padding(12.dp)) {
                             ContentCard(
                                 item = item,
@@ -109,6 +118,11 @@ fun HomeScreen(navController: NavController, isWideScreen: Boolean) {
                                 dimens = dimens,
                                 isWideScreen = isWideScreen,
                                 modifier = Modifier.padding(12.dp)
+                                    .then(
+                                        if (index == 0) Modifier.focusRequester(
+                                            firstContentCardRequester
+                                        ) else Modifier
+                                    )
                             )
 //                            }
                         }
@@ -130,7 +144,12 @@ fun HomeScreen(navController: NavController, isWideScreen: Boolean) {
 
                 Spacer(modifier = Modifier.height(if (isWideScreen) 40.dp else 20.dp))
 
-                IntroVideoButton(isWideScreen = isWideScreen,dimens = dimens)
+                IntroVideoButton(
+                    isWideScreen = isWideScreen,
+                    dimens = dimens,
+                    modifier = Modifier.focusProperties {
+                        up = firstContentCardRequester
+                    })
 
                 Spacer(modifier = Modifier.height(if (isWideScreen) screenHeight * 0.15f else screenHeight * 0.01f))
             }

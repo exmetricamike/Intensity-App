@@ -192,49 +192,11 @@ fun LiveScreen(navController: NavController, isWideScreen: Boolean) {
                 }
 
                 item {
-                    Spacer(modifier = Modifier.height(15.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
                 }
 
                 item {
-                    HorizontalPager(
-                        state = pagerState,
-                        pageSize = PageSize.Fixed(if (isWideScreen) 280.dp else 200.dp),
-                        contentPadding = PaddingValues(horizontal = if (isWideScreen) 180.dp else 90.dp),
-                        pageSpacing = if (isWideScreen) 16.dp else 20.dp,
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.fillMaxWidth()
-                            .height(if (isWideScreen) 280.dp else 250.dp)
-                    ) { pageIndex ->
-
-                        val pageOffset =
-                            (pagerState.currentPage - pageIndex) + pagerState.currentPageOffsetFraction
-                        val scaleFactor =
-                            1f - (0.15f * kotlin.math.abs(pageOffset)).coerceIn(0f, 0.3f)
-                        val alphaFactor =
-                            1f - (0.3f * kotlin.math.abs(pageOffset)).coerceIn(0f, 0.5f)
-
-                        Box(
-                            modifier = Modifier
-                                .graphicsLayer {
-                                    scaleX = scaleFactor
-                                    scaleY = scaleFactor
-                                    alpha = alphaFactor
-                                }
-                                .onSizeChanged { cardSize = it }
-                                .bringIntoViewRequester(bringIntoViewRequester)
-                                .onFocusChanged { focusState ->
-                                    if (focusState.hasFocus) {
-                                        scope.launch {
-                                            pagerState.animateScrollToPage(pageIndex)
-                                        }
-                                    }
-                                }
-                                .fillMaxHeight(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            LastReplayCard(isWideScreen)
-                        }
-                    }
+                    LastReplayCard(isWideScreen)
                 }
 
 //                item {

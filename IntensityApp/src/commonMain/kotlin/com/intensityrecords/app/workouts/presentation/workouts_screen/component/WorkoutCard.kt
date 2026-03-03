@@ -69,6 +69,7 @@ import com.intensityrecord.core.presentation.PrimaryAccent
 import com.intensityrecords.app.core.domain.AppDimens
 import com.intensityrecords.app.workouts.domain.WorkoutItem
 import com.intensityrecords.app.workouts.presentation.workouts_details_screen.component.StatBadge
+import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
@@ -105,7 +106,7 @@ fun WorkoutCard(
                 right = size.width,
                 bottom = size.height + extraBottomSpace
             )
-
+            delay(100)
             bringIntoViewRequester.bringIntoView(expandedRect)
         }
     }
@@ -151,13 +152,13 @@ fun WorkoutCard(
     Card(
         modifier = modifier
             .aspectRatio(aspectRatioForCard)
+            .onSizeChanged { cardSize = it }
+            // Attach the requester (MUST be before clickable/focusable)
+            .bringIntoViewRequester(bringIntoViewRequester)
             .graphicsLayer {
                 scaleX = scale
                 scaleY = scale
             }
-            .onSizeChanged { cardSize = it }
-            // 5. Attach the requester (MUST be before clickable/focusable)
-            .bringIntoViewRequester(bringIntoViewRequester)
             .shadow(
                 elevation = shadowElevation,
                 shape = RoundedCornerShape(dimens.cardCornerRadius),
