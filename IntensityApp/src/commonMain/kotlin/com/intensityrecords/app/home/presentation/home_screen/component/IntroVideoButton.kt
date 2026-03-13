@@ -59,7 +59,7 @@ import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun IntroVideoButton(isWideScreen: Boolean,dimens: AppDimens) {
+fun IntroVideoButton(isWideScreen: Boolean,dimens: AppDimens,modifier: Modifier = Modifier) {
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
 
@@ -107,7 +107,7 @@ fun IntroVideoButton(isWideScreen: Boolean,dimens: AppDimens) {
     val maxWidth = if (isWideScreen) 300.dp else 250.dp
 
     Box(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         contentAlignment = Alignment.CenterStart
     ) {
         Row(

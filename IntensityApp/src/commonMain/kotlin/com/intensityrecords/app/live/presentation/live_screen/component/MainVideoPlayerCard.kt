@@ -82,7 +82,7 @@ fun MainVideoPlayerCard(
     navController: NavController,
     modifier: Modifier = Modifier
 ) {
-    val cardHeight = if (isWideScreen) 280.dp else 210.dp
+    val cardHeight = if (isWideScreen) 250.dp else 210.dp
     val cardWidth = if (isWideScreen) 600.dp else 350.dp
 
     val interactionSource = remember { MutableInteractionSource() }
@@ -96,11 +96,9 @@ fun MainVideoPlayerCard(
         Brush.horizontalGradient(
             colorStops = arrayOf(
                 0.0f to Color.Transparent,
-                0.3f to Color.Transparent,       // Start fading in
-                0.45f to PrimaryAccent.copy(alpha = 0.5f), // Outer Glow
-                0.5f to PrimaryAccent,           // Center Bright Core
-                0.55f to PrimaryAccent.copy(alpha = 0.5f), // Outer Glow
-                0.7f to Color.Transparent,       // Fade out
+                0.35f to Color.Transparent,
+                0.5f to PrimaryAccent,
+                0.65f to Color.Transparent,
                 1.0f to Color.Transparent
             )
         )
@@ -135,16 +133,36 @@ fun MainVideoPlayerCard(
         isTimerFinished = true
     }
 
-    // Format time to MM:SS safely for Kotlin Multiplatform
-    val minutes = (timeLeftInSeconds / 60).toString().padStart(2, '0')
+//    // Format time to MM:SS safely for Kotlin Multiplatform
+//    val minutes = (timeLeftInSeconds / 60).toString().padStart(2, '0')
+//    val seconds = (timeLeftInSeconds % 60).toString().padStart(2, '0')
+    val days = (timeLeftInSeconds / 86400).toString().padStart(2, '0')
+    val hours = (timeLeftInSeconds / 3600).toString().padStart(2, '0')
+    val minutes = ((timeLeftInSeconds % 3600) / 60).toString().padStart(2, '0')
     val seconds = (timeLeftInSeconds % 60).toString().padStart(2, '0')
-    val timeString = "$minutes : $seconds"
+    val timeString =
+        if (days != "00") "$days : $hours : $minutes : $seconds"
+        else if (hours != "00") "$hours : $minutes : $seconds"
+        else "$minutes : $seconds"
 
     Box(
         modifier = modifier
             .fillMaxWidth()
             .height(cardHeight)
-            .padding(horizontal = if (isWideScreen) 10.dp else 4.dp)
+            .graphicsLayer {
+                scaleX = scale
+                scaleY = scale
+            }
+            .padding(
+                horizontal = if (isWideScreen) 10.dp else 4.dp,
+                vertical = if (isWideScreen) 10.dp else 0.dp
+            )
+            .shadow(
+                elevation = shadowElevation,
+                shape = RoundedCornerShape(24.dp),
+                spotColor = PrimaryAccent,
+                ambientColor = PrimaryAccent
+            )
             .clip(RoundedCornerShape(24.dp))
             .background(CardBackground)
             .border(BorderStroke(borderWidth, borderBrush), RoundedCornerShape(24.dp))
@@ -216,7 +234,7 @@ fun MainVideoPlayerCard(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 24.dp, vertical = if (isWideScreen) 20.dp else 15.dp),
+                    .padding(horizontal = 24.dp, vertical = if (isWideScreen) 15.dp else 15.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
@@ -273,7 +291,7 @@ fun MainVideoPlayerCard(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(if (isWideScreen) 30.dp else 22.dp))
+                Spacer(modifier = Modifier.height(if (isWideScreen) 26.dp else 22.dp))
 
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -300,24 +318,11 @@ fun MainVideoPlayerCard(
                     Row(
                         modifier = modifier
                             .width(if (isWideScreen) 200.dp else 130.dp)
-                            .height(if (isWideScreen) 56.dp else 45.dp)
-                            .graphicsLayer {
-                                scaleX = scale
-                                scaleY = scale
-                            }
-                            .shadow(
-                                elevation = shadowElevation,
-                                shape = CircleShape,
-                                spotColor = PrimaryAccent,
-                                ambientColor = PrimaryAccent
-                            )
-                            .border(BorderStroke(borderWidth, if (isFocused) SolidColor(PrimaryAccent) else GlowBorderBrush), CircleShape)
-                            .clip(CircleShape)
-                            .background(Color(0xFF111111))
+                            .height(if (isWideScreen) 50.dp else 45.dp)
                             .clickable(
                                 interactionSource = interactionSource,
                                 indication = null,
-                                onClick = {navController.navigate(Route.TimeTable)}
+                                onClick = { navController.navigate(Route.TimeTable) }
                             ),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center
