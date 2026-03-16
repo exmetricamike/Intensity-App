@@ -29,6 +29,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Timer
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -51,10 +52,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil3.compose.SubcomposeAsyncImage
 import com.intensityrecord.core.presentation.GlowBorderBrush
 import com.intensityrecord.core.presentation.PrimaryAccent
 import com.intensityrecords.app.core.domain.AppDimens
 import com.intensityrecords.app.workouts.domain.Session
+import com.intensityrecords.app.workouts.domain.WorkoutItem
+import com.intensityrecords.app.workouts.domain.WorkoutVideo
+import com.intensityrecords.app.workouts.presentation.workouts_screen.component.pulseAnimation
 import intensityrecordapp.intensityapp.generated.resources.Res
 import intensityrecordapp.intensityapp.generated.resources.montserrat_bold
 import org.jetbrains.compose.resources.Font
@@ -63,7 +68,7 @@ import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun SessionCard(
-    session: Session,
+    session: WorkoutVideo?,
     isWideScreen: Boolean,
     onClick: () -> Unit,
     dimens: AppDimens
@@ -142,11 +147,38 @@ fun SessionCard(
                         .padding(8.dp) // Creates that inner margin look
                         .clip(RoundedCornerShape(16.dp))
                 ) {
-                    Image(
-                        painter = painterResource(session.image),
+//                    Image(
+//                        painter = painterResource(session.image),
+//                        contentDescription = null,
+//                        contentScale = ContentScale.Crop,
+//                        modifier = Modifier.fillMaxSize()
+//                    )
+                    SubcomposeAsyncImage(
+                        model = session?.coverImage,
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier.fillMaxSize(),
+                        loading = {
+                            // This box will show the shimmer animation until the image is ready
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .pulseAnimation()
+                            )
+                        },
+                        error = {
+                            // Optional: Show a specific icon if the image fails
+                            Box(
+                                modifier = Modifier.fillMaxSize().background(Color.DarkGray),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    Icons.Default.Warning,
+                                    contentDescription = null,
+                                    tint = Color.White
+                                )
+                            }
+                        }
                     )
                 }
 
@@ -159,7 +191,7 @@ fun SessionCard(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = session.title,
+                        text = session?.title ?: "",
                         fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
@@ -220,7 +252,7 @@ fun SessionCard(
 
                         StatBadge(
                             icon = Icons.Default.Timer,
-                            text = session.duration.uppercase(),
+                            text = "15-20 MIN",
                             iconSize = badgeIconSize,
                             textStyle = MaterialTheme.typography.displaySmall.copy(fontSize = badgeTextSize),
                             spacing = badgeInternalSpacing

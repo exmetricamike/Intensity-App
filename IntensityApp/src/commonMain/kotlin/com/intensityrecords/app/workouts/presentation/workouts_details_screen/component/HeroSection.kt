@@ -29,6 +29,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CenterFocusStrong
 import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material.icons.filled.Timer
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -52,16 +53,20 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil3.compose.AsyncImage
+import coil3.compose.SubcomposeAsyncImage
 import com.intensityrecord.core.presentation.CardBackground
 import com.intensityrecord.core.presentation.GlowBorderBrush
 import com.intensityrecord.core.presentation.OffWhite
 import com.intensityrecord.core.presentation.PrimaryAccent
+import com.intensityrecords.app.workouts.domain.CollectionDetail
 import com.intensityrecords.app.workouts.domain.WorkoutItem
+import com.intensityrecords.app.workouts.presentation.workouts_screen.component.pulseAnimation
 import org.jetbrains.compose.resources.painterResource
 
 
 @Composable
-fun HeroSection(item: WorkoutItem, isWideScreen: Boolean) {
+fun HeroSection(item: CollectionDetail?, isWideScreen: Boolean) {
 
     val height = if (isWideScreen) 330.dp else 305.dp
 
@@ -136,11 +141,44 @@ fun HeroSection(item: WorkoutItem, isWideScreen: Boolean) {
             {
                 Spacer(modifier = Modifier.weight(1f))
                 Box(modifier = Modifier.weight(1.2f).fillMaxHeight()) {
-                    Image(
-                        painter = painterResource(item.image),
+//                    Image(
+//                        painter = painterResource(item.image),
+//                        contentDescription = null,
+//                        contentScale = ContentScale.Crop,
+//                        modifier = Modifier.fillMaxSize()
+//                    )
+//                    AsyncImage(
+//                        model = item.imageUrl,
+//                        contentDescription = null,
+//                        contentScale = ContentScale.Crop,
+//                        modifier = Modifier.fillMaxSize()
+//                    )
+                    SubcomposeAsyncImage(
+                        model = item?.coverImage,
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier.fillMaxSize(),
+                        loading = {
+                            // This box will show the shimmer animation until the image is ready
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .pulseAnimation()
+                            )
+                        },
+                        error = {
+                            // Optional: Show a specific icon if the image fails
+                            Box(
+                                modifier = Modifier.fillMaxSize().background(Color.DarkGray),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    Icons.Default.Warning,
+                                    contentDescription = null,
+                                    tint = Color.White
+                                )
+                            }
+                        }
                     )
                     Box(
                         modifier = Modifier
@@ -166,7 +204,7 @@ fun HeroSection(item: WorkoutItem, isWideScreen: Boolean) {
                 val customFontSize = if (isWideScreen) 48.sp else 35.sp
 
                 Text(
-                    text = item.title.uppercase(),
+                    text = item?.name?.uppercase() ?: "",
                     style = MaterialTheme.typography.titleLarge.copy(
                         fontSize = customFontSize,
                         fontWeight = FontWeight.ExtraBold,
@@ -286,7 +324,7 @@ fun HeroSection(item: WorkoutItem, isWideScreen: Boolean) {
                 if (isWideScreen) {
                     // Stats Row
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        StatBadge(icon = Icons.Default.Timer, text = "Average ${item.duration}")
+                        StatBadge(icon = Icons.Default.Timer, text = "Average 15-20 MIN")
                         Spacer(modifier = Modifier.width(24.dp))
                         StatBadge(
                             icon = Icons.Default.LocalFireDepartment,
@@ -302,7 +340,7 @@ fun HeroSection(item: WorkoutItem, isWideScreen: Boolean) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         StatBadge(
                             icon = Icons.Default.Timer,
-                            text = "Average ${item.duration}",
+                            text = "Average 15-20 MIN",
                             iconSize = 18.dp
                         )
                         Spacer(modifier = Modifier.width(8.dp))

@@ -21,6 +21,7 @@ import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.MoreHoriz
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -43,10 +44,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import coil3.compose.SubcomposeAsyncImage
 import com.intensityrecord.core.presentation.DarkGradient
 import com.intensityrecord.core.presentation.DetailTextSecondary
 import com.intensityrecord.core.presentation.PrimaryAccent
+import com.intensityrecords.app.steptrip.domain.StepTripItem
 import com.intensityrecords.app.steptrip.presentation.step_trip_detail_screen.component.DetailStatItem
+import com.intensityrecords.app.workouts.domain.WorkoutItem
+import com.intensityrecords.app.workouts.presentation.workouts_details_screen.WorkOutsDetailAction
+import com.intensityrecords.app.workouts.presentation.workouts_details_screen.WorkOutsDetailScreenViewModel
+import com.intensityrecords.app.workouts.presentation.workouts_details_screen.WorkoutDetailScreen
+import com.intensityrecords.app.workouts.presentation.workouts_screen.component.pulseAnimation
 import intensityrecordapp.intensityapp.generated.resources.Res
 import intensityrecordapp.intensityapp.generated.resources.montserrat_bold
 import intensityrecordapp.intensityapp.generated.resources.close
@@ -58,31 +66,40 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun StepTripDetailScreenRoot(
-    stepTripID: String,
     navController: NavController,
     isWideScreen: Boolean,
-    viewModel: StepTripsDetailScreenViewModel = koinViewModel()
+    viewModel: StepTripsDetailScreenViewModel = koinViewModel(),
+    onBackClick: () -> Unit,
+    selectedBook: StepTripItem
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    // Initialize state based on the passed ID
-    LaunchedEffect(stepTripID) {
-        viewModel.initialize(stepTripID)
-    }
-
-    state.item?.let {
-        StepTripDetailScreen(
-            state = state,
-            isWideScreen = isWideScreen,
-            onAction = { action ->
-                when (action) {
-                    StepTripDetailAction.OnBackClick -> navController.navigateUp()
-                    else -> Unit
-                }
-                viewModel.onAction(action)
+    StepTripDetailScreen(
+        state = state,
+        isWideScreen = isWideScreen,
+        onAction = { action ->
+            when (action) {
+                StepTripDetailAction.OnBackClick -> onBackClick()
+                else -> Unit
             }
-        )
-    }
+            viewModel.onAction(action)
+        },
+        selectedBook = selectedBook
+    )
+
+//    state.item?.let {
+//        StepTripDetailScreen(
+//            state = state,
+//            isWideScreen = isWideScreen,
+//            onAction = { action ->
+//                when (action) {
+//                    StepTripDetailAction.OnBackClick -> navController.navigateUp()
+//                    else -> Unit
+//                }
+//                viewModel.onAction(action)
+//            }
+//        )
+//    }
 }
 
 @Composable
@@ -90,6 +107,7 @@ fun StepTripDetailScreen(
     state: StepTripDetailState,
     isWideScreen: Boolean,
     onAction: (StepTripDetailAction) -> Unit,
+    selectedBook: StepTripItem
 ) {
     Box(
         modifier = Modifier
@@ -109,7 +127,7 @@ fun StepTripDetailScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = state.item!!.title,
+                    text = selectedBook.title,
                     style = MaterialTheme.typography.titleLarge.copy(
                         fontSize = 32.sp,
                         letterSpacing = 0.1.sp
@@ -134,7 +152,7 @@ fun StepTripDetailScreen(
                     shape = RoundedCornerShape(50)
                 ) {
                     Text(
-                        text = state.item.category,
+                        text = selectedBook.category,
                         style = MaterialTheme.typography.bodyMedium.copy(
                             color = Color.Gray,
                             fontSize = 12.sp
@@ -146,14 +164,43 @@ fun StepTripDetailScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            Image(
-                painter = painterResource(state.item!!.image),
-                contentDescription = "Battlefield",
+//            Image(
+//                painter = painterResource(state.item!!.image),
+//                contentDescription = "Battlefield",
+//                contentScale = ContentScale.Crop,
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(horizontal = 24.dp)
+//                    .height(220.dp)
+//            )
+            SubcomposeAsyncImage(
+                model = selectedBook.image,
+                contentDescription = null,
                 contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxWidth()
+                modifier = Modifier.fillMaxSize()
                     .padding(horizontal = 24.dp)
-                    .height(220.dp)
+                    .height(220.dp),
+                loading = {
+                    // This box will show the shimmer animation until the image is ready
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .pulseAnimation()
+                    )
+                },
+                error = {
+                    // Optional: Show a specific icon if the image fails
+                    Box(
+                        modifier = Modifier.fillMaxSize().background(Color.DarkGray),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            Icons.Default.Warning,
+                            contentDescription = null,
+                            tint = Color.White
+                        )
+                    }
+                }
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -238,18 +285,18 @@ fun StepTripDetailScreen(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    DetailStatItem(icon = Icons.Default.AccessTime, text = state.item!!.duration)
+                    DetailStatItem(icon = Icons.Default.AccessTime, text = selectedBook.duration)
 
                     // Vertical Divider (Subtle)
                     // Box(modifier = Modifier.width(1.dp).height(20.dp).background(Color.DarkGray))
 
-                    DetailStatItem(icon = Icons.Default.LocationOn, text = state.item.distance)
+                    DetailStatItem(icon = Icons.Default.LocationOn, text = selectedBook.distance)
 
                     // Box(modifier = Modifier.width(1.dp).height(20.dp).background(Color.DarkGray))
 
                     DetailStatItem(
                         icon = Icons.Default.LocalFireDepartment,
-                        text = state.item.calories
+                        text = selectedBook.calories
                     )
 
                     // Menu Dots Icon

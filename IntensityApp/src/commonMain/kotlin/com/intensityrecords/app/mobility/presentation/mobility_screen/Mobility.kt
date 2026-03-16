@@ -2,6 +2,7 @@ package com.intensityrecords.app.mobility.presentation.mobility_screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -16,14 +17,17 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.intensityrecord.core.presentation.DarkGradient
 import com.intensityrecord.core.presentation.FitnessAppTheme
@@ -45,14 +49,34 @@ fun MobilityScreenRoot(
     isWideScreen: Boolean,
     viewModel: MobilityScreenViewModel = koinViewModel()
 ) {
+
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
     MobilityScreen(
+        state = state,
+        onAction = { action ->
+            when (action) {
+                MobilityAction.LoadMobility -> {
+
+                }
+
+                is MobilityAction.OnClick -> {
+
+                }
+            }
+        },
         navController = navController,
         isWideScreen = isWideScreen
     )
 }
 
 @Composable
-fun MobilityScreen(navController: NavController, isWideScreen: Boolean) {
+fun MobilityScreen(
+    state: MobilityState,
+    onAction: (MobilityAction) -> Unit,
+    navController: NavController,
+    isWideScreen: Boolean
+) {
 
     val firstItemFocusRequester = remember { FocusRequester() }
 
@@ -69,6 +93,37 @@ fun MobilityScreen(navController: NavController, isWideScreen: Boolean) {
 
             val dimens = LocalAppDimens.current
 
+            if (state.loading) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        "Loading...",
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            fontSize = if (isWideScreen) 22.sp else 16.sp,
+                            textAlign = TextAlign.Center
+                        )
+                    )
+                }
+                return@BoxWithConstraints
+            }
+
+            if (!state.error.isNullOrEmpty()) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = state.error,
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            fontSize = if (isWideScreen) 22.sp else 16.sp,
+                            textAlign = TextAlign.Center
+                        )
+                    )
+                }
+                return@BoxWithConstraints
+            }
 
             Column(
                 modifier = Modifier
@@ -107,8 +162,8 @@ fun MobilityScreen(navController: NavController, isWideScreen: Boolean) {
                         end = 4.dp
                     )
                 ) {
-                    items(mobilityCategories.size) { item ->
-                        val mobilityItem = mobilityCategories[item]
+                    items(state.mobilityData.size) { item ->
+                        val mobilityItem = state.mobilityData[item]
                         MobilityCard(
                             item = mobilityItem,
                             isWideScreen = isWideScreen,

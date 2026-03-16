@@ -19,8 +19,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -45,7 +48,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
-import com.intensityrecord.app.Route
+import coil3.compose.SubcomposeAsyncImage
+import com.intensityrecords.app.app.Route
 import com.intensityrecord.core.presentation.CardBackground
 import com.intensityrecord.core.presentation.GlowBorderBrush
 import com.intensityrecord.core.presentation.PrimaryAccent
@@ -56,13 +60,15 @@ import intensityrecordapp.intensityapp.generated.resources.mobility_home_card
 import intensityrecordapp.intensityapp.generated.resources.live_class
 import intensityrecordapp.intensityapp.generated.resources.workout
 import intensityrecordapp.intensityapp.generated.resources.live_tag
-import intensityrecordapp.intensityapp.generateds.app.home.domain.HomeItem
+import com.intensityrecords.app.home.domain.UiBlock
+import com.intensityrecords.app.home.domain.UiConfig
+import com.intensityrecords.app.workouts.presentation.workouts_screen.component.pulseAnimation
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun ContentCard(
-    item: HomeItem,
+    item: UiBlock,
     width: Dp,
     aspectRatio: Float,
     navController: NavController,
@@ -159,34 +165,77 @@ fun ContentCard(
                 RoundedCornerShape(dimens.cardCornerRadius)
             )
             .clickable(interactionSource = interactionSource, indication = null) {
-                when (item.title) {
-                    workouts -> {
-                        navController.navigate(Route.WorkOuts)
-                    }
+//                when (item.title) {
+//                    workouts -> {
+//                        navController.navigate(Route.WorkOuts)
+//                    }
+//
+//                    mobility -> {
+//                        navController.navigate(Route.Mobility)
+//                    }
+//
+//                    live -> {
+//                        navController.navigate(Route.Live)
+//                    }
+//
+//                    stepTrip -> {
+//                        if (!isWideScreen) navController.navigate(Route.StepTrip)
+//                    }
+//                }
+                when (item.url) {
 
-                    mobility -> {
-                        navController.navigate(Route.Mobility)
-                    }
+                    "/workout" -> navController.navigate(Route.WorkOuts)
 
-                    live -> {
-                        navController.navigate(Route.Live)
-                    }
+                    "/live" -> navController.navigate(Route.Live)
 
-                    stepTrip -> {
+                    "/dailyvideo" -> navController.navigate(Route.VideoDetail)
+
+                    "steptrip" -> {
                         if (!isWideScreen) navController.navigate(Route.StepTrip)
                     }
+
+//                    "/program" -> navController.navigate(Route.Mobility)
+
                 }
+
             },
         colors = CardDefaults.cardColors(containerColor = CardBackground),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             Box(modifier = Modifier.fillMaxSize().background(Color(0xFF1A1A1A))) {
-                Image(
-                    painter = painterResource(resource = item.icon),
+//                Image(
+//                    painter = painterResource(resource = item.icon),
+//                    contentDescription = null,
+//                    contentScale = ContentScale.Crop,
+//                    modifier = Modifier.fillMaxSize()
+//                )
+                SubcomposeAsyncImage(
+                    model = item.imageUrl,
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize(),
+                    loading = {
+                        // This box will show the shimmer animation until the image is ready
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .pulseAnimation()
+                        )
+                    },
+                    error = {
+                        // Optional: Show a specific icon if the image fails
+                        Box(
+                            modifier = Modifier.fillMaxSize().background(Color.DarkGray),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                Icons.Default.Warning,
+                                contentDescription = null,
+                                tint = Color.White
+                            )
+                        }
+                    }
                 )
             }
             Box(
@@ -204,7 +253,7 @@ fun ContentCard(
                 style = MaterialTheme.typography.bodyLarge.copy(fontSize = dimens.cardTitle),
                 modifier = Modifier.align(if (isWideScreen) Alignment.Center else Alignment.Center).padding(16.dp)
             )
-            if (item.isLive) {
+            if (item.title == "Live") {
                 Box(
                     modifier = Modifier.align(Alignment.TopStart).padding(12.dp)
                         .background(PrimaryAccent, RoundedCornerShape(4.dp))

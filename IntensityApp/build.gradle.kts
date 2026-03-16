@@ -150,12 +150,25 @@ dependencies {
 
 compose.desktop {
     application {
-        mainClass = "com.intensityrecord.MainKt"
+        mainClass = "com.intensityrecords.app.MainKt"
+
+        buildTypes.release {
+            proguard {
+                isEnabled.set(false)
+            }
+        }
 
         nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "com.intensityrecord.intensityapp"
+            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb, TargetFormat.Exe)
+            packageName = "IntensityApp"
             packageVersion = "1.0.0"
+
+            description = "Intensity Workout App"
+            vendor = "Intensity Records"
+
+            windows {
+                iconFile.set(project.file("src\\desktopMain\\kotlin\\com\\intensityrecords\\app\\ic_launcher_round.ico"))
+            }
         }
     }
 }

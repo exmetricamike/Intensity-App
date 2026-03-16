@@ -29,6 +29,7 @@ import androidx.compose.material.icons.filled.CenterFocusStrong
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material.icons.filled.Timer
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -55,11 +56,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavController
+import coil3.compose.SubcomposeAsyncImage
 import com.intensityrecord.core.presentation.CardBackground
 import com.intensityrecord.core.presentation.GlowBorderBrush
 import com.intensityrecord.core.presentation.PrimaryAccent
 import com.intensityrecords.app.core.presentation.LocalAppDimens
+import com.intensityrecords.app.home.domain.UiBlock
 import com.intensityrecords.app.workouts.presentation.workouts_details_screen.component.StatBadge
+import com.intensityrecords.app.workouts.presentation.workouts_screen.component.pulseAnimation
 import com.multiplatform.webview.web.WebView
 import com.multiplatform.webview.web.rememberWebViewStateWithHTMLData
 import intensityrecordapp.intensityapp.generated.resources.Res
@@ -73,7 +77,8 @@ fun VideoOfTheDayCard(
     navController: NavController,
     isWideScreen: Boolean,
     dynamicHeight: Dp,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    uiBlock: UiBlock?,
 ) {
     val dimens = LocalAppDimens.current
 
@@ -140,11 +145,38 @@ fun VideoOfTheDayCard(
             }
     ) {
         Box(modifier = Modifier.fillMaxSize().background(Color(0xFF222222))) {
-            Image(
-                painter = painterResource(resource = Res.drawable._1),
-                contentDescription = "Video Thumbnail",
+//            Image(
+//                painter = painterResource(resource = Res.drawable._1),
+//                contentDescription = "Video Thumbnail",
+//                contentScale = ContentScale.Crop,
+//                modifier = Modifier.fillMaxSize()
+//            )
+            SubcomposeAsyncImage(
+                model = uiBlock?.imageUrl,
+                contentDescription = null,
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
+                loading = {
+                    // This box will show the shimmer animation until the image is ready
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .pulseAnimation()
+                    )
+                },
+                error = {
+                    // Optional: Show a specific icon if the image fails
+                    Box(
+                        modifier = Modifier.fillMaxSize().background(Color.DarkGray),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            Icons.Default.Warning,
+                            contentDescription = null,
+                            tint = Color.White
+                        )
+                    }
+                }
             )
         }
 
@@ -166,7 +198,7 @@ fun VideoOfTheDayCard(
                 .fillMaxWidth(0.7f)
         ) {
             Text(
-                text = "VIDEO OF THE DAY",
+                text = uiBlock?.title ?: "",
                 style = MaterialTheme.typography.bodyLarge.copy(fontSize = dimens.titleLarge)
             )
             Spacer(modifier = Modifier.height(8.dp))

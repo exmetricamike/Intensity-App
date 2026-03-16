@@ -25,6 +25,12 @@ dependencyResolutionManagement {
             }
         }
         mavenCentral()
+        maven("https://jogamp.org/deployment/maven") {
+            metadataSources {
+                artifact()
+                mavenPom()
+            }
+        }
     }
 }
 

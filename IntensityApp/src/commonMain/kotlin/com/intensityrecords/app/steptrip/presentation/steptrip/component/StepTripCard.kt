@@ -25,10 +25,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DirectionsRun
 import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material.icons.filled.Schedule
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -44,14 +46,17 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil3.compose.SubcomposeAsyncImage
 import com.intensityrecord.core.presentation.CardBackground
 import com.intensityrecord.core.presentation.PrimaryAccent
+import com.intensityrecords.app.steptrip.domain.StepTripItem
 import com.intensityrecords.app.steptrip.domain.TripData
+import com.intensityrecords.app.workouts.presentation.workouts_screen.component.pulseAnimation
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun StepTripCard(
-    item: TripData,
+    item: StepTripItem,
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
@@ -94,11 +99,38 @@ fun StepTripCard(
                     .weight(0.2f)
                     .background(Color.Black)
             ) {
-                Image(
-                    painter = painterResource(item.image),
+//                Image(
+//                    painter = painterResource(item.image),
+//                    contentDescription = null,
+//                    contentScale = ContentScale.Crop,
+//                    modifier = Modifier.fillMaxSize()
+//                )
+                SubcomposeAsyncImage(
+                    model = item.image,
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize(),
+                    loading = {
+                        // This box will show the shimmer animation until the image is ready
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .pulseAnimation()
+                        )
+                    },
+                    error = {
+                        // Optional: Show a specific icon if the image fails
+                        Box(
+                            modifier = Modifier.fillMaxSize().background(Color.DarkGray),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                Icons.Default.Warning,
+                                contentDescription = null,
+                                tint = Color.White
+                            )
+                        }
+                    }
                 )
             }
 

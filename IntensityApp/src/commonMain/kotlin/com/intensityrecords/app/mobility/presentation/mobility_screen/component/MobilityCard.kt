@@ -4,7 +4,6 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -13,7 +12,6 @@ import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -23,15 +21,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material.icons.filled.Timer
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -54,28 +50,24 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
+import coil3.compose.SubcomposeAsyncImage
 import com.intensityrecord.core.presentation.CardBackground
 import com.intensityrecord.core.presentation.GlowBorderBrush
 import com.intensityrecord.core.presentation.PrimaryAccent
 import com.intensityrecords.app.core.domain.AppDimens
-import com.intensityrecords.app.mobility.domain.MobilityItem
+import com.intensityrecords.app.mobility.domain.MobilityItems
 import com.intensityrecords.app.workouts.presentation.workouts_details_screen.component.StatBadge
-import intensityrecordapp.intensityapp.generated.resources.Res
-import intensityrecordapp.intensityapp.generated.resources.montserrat_bold
-import org.jetbrains.compose.resources.Font
-import org.jetbrains.compose.resources.painterResource
+import com.intensityrecords.app.workouts.presentation.workouts_screen.component.pulseAnimation
 
 
 @Composable
 fun MobilityCard(
-    item: MobilityItem,
+    item: MobilityItems,
     modifier: Modifier = Modifier,
     isWideScreen: Boolean,
     dimens: AppDimens
@@ -180,11 +172,38 @@ fun MobilityCard(
                 {
                     Spacer(modifier = Modifier.weight(1f))
                     Box(modifier = Modifier.weight(2.0f).fillMaxHeight()) {
-                        Image(
-                            painter = painterResource(item.image),
+//                        Image(
+//                            painter = painterResource(item.image),
+//                            contentDescription = null,
+//                            contentScale = ContentScale.Crop,
+//                            modifier = Modifier.fillMaxSize()
+//                        )
+                        SubcomposeAsyncImage(
+                            model = item.image,
                             contentDescription = null,
                             contentScale = ContentScale.Crop,
-                            modifier = Modifier.fillMaxSize()
+                            modifier = Modifier.fillMaxSize(),
+                            loading = {
+                                // This box will show the shimmer animation until the image is ready
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .pulseAnimation()
+                                )
+                            },
+                            error = {
+                                // Optional: Show a specific icon if the image fails
+                                Box(
+                                    modifier = Modifier.fillMaxSize().background(Color.DarkGray),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(
+                                        Icons.Default.Warning,
+                                        contentDescription = null,
+                                        tint = Color.White
+                                    )
+                                }
+                            }
                         )
                         Box(
                             modifier = Modifier
@@ -200,11 +219,38 @@ fun MobilityCard(
                     }
                 }
             } else {
-                Image(
-                    painter = painterResource(item.image),
-                    contentDescription = item.title,
+//                Image(
+//                    painter = painterResource(item.image),
+//                    contentDescription = item.title,
+//                    contentScale = ContentScale.Crop,
+//                    modifier = Modifier.fillMaxSize().alpha(0.7f)
+//                )
+                SubcomposeAsyncImage(
+                    model = item.image,
+                    contentDescription = null,
                     contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize().alpha(0.7f)
+                    modifier = Modifier.fillMaxSize().alpha(0.7f),
+                    loading = {
+                        // This box will show the shimmer animation until the image is ready
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .pulseAnimation()
+                        )
+                    },
+                    error = {
+                        // Optional: Show a specific icon if the image fails
+                        Box(
+                            modifier = Modifier.fillMaxSize().background(Color.DarkGray),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                Icons.Default.Warning,
+                                contentDescription = null,
+                                tint = Color.White
+                            )
+                        }
+                    }
                 )
             }
 

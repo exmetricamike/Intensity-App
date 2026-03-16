@@ -51,8 +51,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.intensityrecord.core.presentation.PrimaryAccent
 import com.intensityrecords.app.core.presentation.LocalAppDimens
+import com.intensityrecords.app.workouts.domain.WorkoutItem
 import com.intensityrecords.app.workouts.presentation.workouts_details_screen.component.HeroSection
 import com.intensityrecords.app.workouts.presentation.workouts_details_screen.component.SessionCard
+import com.intensityrecords.app.workouts.presentation.workouts_screen.WorkoutsState
 import intensityrecordapp.intensityapp.generated.resources.Res
 import intensityrecordapp.intensityapp.generated.resources.montserrat_regular
 import kotlinx.coroutines.launch
@@ -61,36 +63,34 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun WorkoutDetailScreenRoot(
-    workoutId: String,
     navController: NavController,
     isWideScreen: Boolean,
-    viewModel: WorkOutsDetailScreenViewModel = koinViewModel()
+    collectionId: Int,
+    onBackClick: () -> Unit,
+    viewModel: WorkOutsDetailScreenViewModel = koinViewModel(),
 ) {
+
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    // Initialize state based on the passed ID
-    LaunchedEffect(workoutId) {
-        viewModel.initialize(workoutId)
+    LaunchedEffect(collectionId) {
+        viewModel.loadCollection(collectionId)
     }
 
-    state.item?.let { workoutItem ->
-        WorkoutDetailScreen(
-            state = state,
-            isWideScreen = isWideScreen,
-            onAction = { action ->
-                when (action) {
-                    WorkOutsDetailAction.OnBackClick -> navController.navigateUp()
-                    else -> Unit
-                }
-                viewModel.onAction(action)
+    WorkoutDetailScreen(
+        state = state,
+        isWideScreen = isWideScreen,
+        onAction = { action ->
+            if (action is WorkOutsDetailAction.OnBackClick) {
+                onBackClick()
             }
-        )
-    }
+        }
+    )
+
 }
 
 @Composable
 fun WorkoutDetailScreen(
-    state: WorkOutsDetailState,
+    state: WorkoutDetailState,
     isWideScreen: Boolean,
     onAction: (WorkOutsDetailAction) -> Unit,
 ) {
@@ -102,7 +102,7 @@ fun WorkoutDetailScreen(
     val isHovered by interactionSource.collectIsHoveredAsState()
     val isActive = isFocused || isHovered
 
-    val pagerState = rememberPagerState(pageCount = { state.sessions.size })
+    val pagerState = rememberPagerState(pageCount = { state.collection?.videos?.size ?: 0 })
     val scope = rememberCoroutineScope()
 
     val cardWidth = if (isWideScreen) 280.dp else 170.dp
@@ -147,9 +147,7 @@ fun WorkoutDetailScreen(
             Spacer(modifier = Modifier.height(if (isWideScreen) 0.dp else 35.dp))
 
             Box(modifier = Modifier.padding(horizontal = dimens.horizontalContentPadding)) {
-                state.item?.let {
-                    HeroSection(item = it, isWideScreen = isWideScreen)
-                }
+                HeroSection(item = state.collection, isWideScreen = isWideScreen)
             }
 
             Spacer(modifier = Modifier.height(35.dp))
@@ -171,34 +169,38 @@ fun WorkoutDetailScreen(
             HorizontalPager(
                 state = pagerState,
                 pageSize = PageSize.Fixed(cardWidth),
-                contentPadding = PaddingValues(horizontal = if(isWideScreen) 180.dp else 120.dp),
+                contentPadding = PaddingValues(horizontal = if (isWideScreen) 180.dp else 120.dp),
                 pageSpacing = if (isWideScreen) 16.dp else 20.dp,
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
                     .height(if (isWideScreen) 280.dp else 200.dp)
             ) { pageIndex ->
-                val session = state.sessions[pageIndex]
+//                val session = state.sessions[pageIndex]
 
-                val pageOffset = (pagerState.currentPage - pageIndex) + pagerState.currentPageOffsetFraction
+                val pageOffset =
+                    (pagerState.currentPage - pageIndex) + pagerState.currentPageOffsetFraction
                 val scaleFactor = 1f - (0.15f * kotlin.math.abs(pageOffset)).coerceIn(0f, 0.3f)
                 val alphaFactor = 1f - (0.3f * kotlin.math.abs(pageOffset)).coerceIn(0f, 0.5f)
 
-                Box(modifier = Modifier.graphicsLayer {
-                    scaleX = scaleFactor
-                    scaleY = scaleFactor
-                    alpha = alphaFactor
-                }.fillMaxHeight()
-                    .onSizeChanged { cardSize = it }
-                    .bringIntoViewRequester(bringIntoViewRequester)
-                    .onFocusChanged { focusState ->
-                        if (focusState.hasFocus) {
-                            scope.launch {
-                                pagerState.animateScrollToPage(pageIndex)
+                Box(
+                    modifier = Modifier.graphicsLayer {
+                        scaleX = scaleFactor
+                        scaleY = scaleFactor
+                        alpha = alphaFactor
+                    }.fillMaxHeight()
+                        .onSizeChanged { cardSize = it }
+                        .bringIntoViewRequester(bringIntoViewRequester)
+                        .onFocusChanged { focusState ->
+                            if (focusState.hasFocus) {
+                                scope.launch {
+                                    pagerState.animateScrollToPage(pageIndex)
+                                }
                             }
-                        }
-                    },
+                        },
                     contentAlignment = Alignment.Center
                 ) {
+                    val session = state.collection?.videos[pageIndex]
+
                     SessionCard(
                         session = session,
                         isWideScreen = isWideScreen,
@@ -208,21 +210,21 @@ fun WorkoutDetailScreen(
                                 pagerState.animateScrollToPage(pageIndex)
                             }
                             // Also trigger your MVI action
-                            onAction(WorkOutsDetailAction.OnSessionClick(session))
+//                            onAction(WorkOutsDetailAction.OnSessionClick(session))
                         },
                         dimens = dimens
                     )
                 }
             }
 
-            if (state.sessions.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(if (isWideScreen) 0.dp else 12.dp))
-                ScrollIndicator(
-                    count = state.sessions.size,
-                    activeIndex = pagerState.currentPage,
-                    modifier = Modifier.padding(vertical = 24.dp)
-                )
-            }
+//            if (state.sessions.isNotEmpty()) {
+//                Spacer(modifier = Modifier.height(if (isWideScreen) 0.dp else 12.dp))
+//                ScrollIndicator(
+//                    count = state.sessions.size,
+//                    activeIndex = pagerState.currentPage,
+//                    modifier = Modifier.padding(vertical = 24.dp)
+//                )
+//            }
 
             Spacer(modifier = Modifier.height(20.dp))
 

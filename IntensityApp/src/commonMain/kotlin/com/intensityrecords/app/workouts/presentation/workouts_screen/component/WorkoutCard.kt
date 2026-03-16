@@ -1,7 +1,12 @@
 package com.intensityrecords.app.workouts.presentation.workouts_screen.component
 
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -26,6 +31,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.relocation.bringIntoViewRequester
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
@@ -36,6 +42,7 @@ import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.KeyboardDoubleArrowRight
 import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material.icons.filled.Timer
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -52,6 +59,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -63,18 +71,23 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
+import coil3.compose.AsyncImage
+import coil3.compose.AsyncImagePainter
+import coil3.compose.SubcomposeAsyncImage
 import com.intensityrecord.core.presentation.CardBackground
 import com.intensityrecord.core.presentation.GlowBorderBrush
 import com.intensityrecord.core.presentation.PrimaryAccent
 import com.intensityrecords.app.core.domain.AppDimens
+import com.intensityrecords.app.workouts.domain.WorkoutCollection
 import com.intensityrecords.app.workouts.domain.WorkoutItem
+import com.intensityrecords.app.workouts.domain.WorkoutSection
 import com.intensityrecords.app.workouts.presentation.workouts_details_screen.component.StatBadge
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun WorkoutCard(
-    item: WorkoutItem,
+    item: WorkoutCollection,
     modifier: Modifier = Modifier,
     isWideScreen: Boolean,
     onClick: () -> Unit,
@@ -181,11 +194,42 @@ fun WorkoutCard(
                 {
                     Spacer(modifier = Modifier.weight(1f))
                     Box(modifier = Modifier.weight(2.0f).fillMaxHeight()) {
-                        Image(
-                            painter = painterResource(item.image),
+//                        AsyncImage(
+////                            painter = painterResource(item.imageUrl),
+////                            contentDescription = null,
+////                            contentScale = ContentScale.Crop,
+////                            modifier = Modifier.fillMaxSize()
+//                            model = item.imageUrl,
+//                            contentDescription = null,
+//                            contentScale = ContentScale.Crop,
+//                            modifier = Modifier.fillMaxSize()
+//                        )
+                        SubcomposeAsyncImage(
+                            model = item.coverImage,
                             contentDescription = null,
                             contentScale = ContentScale.Crop,
-                            modifier = Modifier.fillMaxSize()
+                            modifier = Modifier.fillMaxSize(),
+                            loading = {
+                                // This box will show the shimmer animation until the image is ready
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .pulseAnimation()
+                                )
+                            },
+                            error = {
+                                // Optional: Show a specific icon if the image fails
+                                Box(
+                                    modifier = Modifier.fillMaxSize().background(Color.DarkGray),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(
+                                        Icons.Default.Warning,
+                                        contentDescription = null,
+                                        tint = Color.White
+                                    )
+                                }
+                            }
                         )
                         Box(
                             modifier = Modifier
@@ -201,11 +245,42 @@ fun WorkoutCard(
                     }
                 }
             } else {
-                Image(
-                    painter = painterResource(item.image),
-                    contentDescription = item.title,
+//                AsyncImage(
+////                    painter = painterResource(item.image),
+////                    contentDescription = item.title,
+////                    contentScale = ContentScale.Crop,
+////                    modifier = Modifier.fillMaxSize().alpha(0.7f)
+//                    model = item.imageUrl,
+//                    contentDescription = null,
+//                    contentScale = ContentScale.Crop,
+//                    modifier = Modifier.fillMaxSize().alpha(0.7f)
+//                )
+                SubcomposeAsyncImage(
+                    model = item.coverImage,
+                    contentDescription = null,
                     contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize().alpha(0.7f)
+                    modifier = Modifier.fillMaxSize(),
+                    loading = {
+                        // This box will show the shimmer animation until the image is ready
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .pulseAnimation()
+                        )
+                    },
+                    error = {
+                        // Optional: Show a specific icon if the image fails
+                        Box(
+                            modifier = Modifier.fillMaxSize().background(Color.DarkGray),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                Icons.Default.Warning,
+                                contentDescription = null,
+                                tint = Color.White
+                            )
+                        }
+                    }
                 )
             }
 
@@ -225,7 +300,7 @@ fun WorkoutCard(
             )
 
             Text(
-                text = item.title,
+                text = item.name,
                 style = MaterialTheme.typography.bodyLarge.copy(fontSize = if (isWideScreen) 26.sp else 21.sp),
                 textAlign = if (isWideScreen) TextAlign.Center else TextAlign.Start, // Handles multi-line titles gracefully
                 modifier = Modifier
@@ -285,7 +360,7 @@ fun WorkoutCard(
 
                 StatBadge(
                     icon = Icons.Default.Timer,
-                    text = item.duration,
+                    text = "15 MIN",
                     iconSize = badgeIconSize,
                     textStyle = MaterialTheme.typography.displaySmall.copy(fontSize = badgeTextSize),
                     spacing = badgeInternalSpacing
@@ -313,4 +388,32 @@ fun WorkoutCard(
 //            }
         }
     }
+}
+
+
+@Composable
+fun Modifier.pulseAnimation(): Modifier {
+    val transition = rememberInfiniteTransition()
+    val progress by transition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1000),
+            repeatMode = RepeatMode.Restart
+        )
+    )
+    return this.then(
+        Modifier
+            .graphicsLayer {
+                scaleX = progress
+                scaleY = progress
+                alpha = 1f - progress
+            }
+            .border(
+                width = 5.dp,
+                color = PrimaryAccent,
+                shape = CircleShape
+            )
+    )
+
 }

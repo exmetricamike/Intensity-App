@@ -1,8 +1,11 @@
-package com.intensityrecord.app
+package com.intensityrecords.app.app
 
 import kotlinx.serialization.Serializable
 
 sealed interface Route {
+
+    @Serializable
+    data object Login : Route
 
     @Serializable
     data object Home : Route
@@ -20,7 +23,7 @@ sealed interface Route {
     data object VideoDetail : Route
 
     @Serializable
-    data class WorkOutsDetailsScreen(val id: String) : Route
+    data class WorkOutsDetailsScreen(val id: Int) : Route
 
     @Serializable
     data object TimeTable : Route
@@ -29,5 +32,5 @@ sealed interface Route {
     data object StepTrip : Route
 
     @Serializable
-    data class StepTripDetailScreen(val id: String) : Route
+    data class StepTripDetailScreen(val id: Int) : Route
 }

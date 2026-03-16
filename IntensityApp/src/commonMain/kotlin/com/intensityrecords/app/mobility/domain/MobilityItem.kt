@@ -18,3 +18,10 @@ val mobilityCategories = listOf(
     MobilityItem("RELAX AND SLEEP", Res.drawable._3),
     MobilityItem("LISTEN AND RUN", Res.drawable._4)
 )
+
+data class MobilityItems(
+    val id: Int,
+    val title: String,
+    val duration: String,
+    val image: String
+)

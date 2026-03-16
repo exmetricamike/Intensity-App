@@ -2,6 +2,7 @@ package com.intensityrecords.app.home.presentation.home_screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -10,12 +11,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,6 +25,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.intensityrecord.core.presentation.DarkGradient
 import com.intensityrecord.core.presentation.FitnessAppTheme
@@ -30,7 +33,6 @@ import com.intensityrecords.app.core.presentation.LocalAppDimens
 import com.intensityrecords.app.home.presentation.home_screen.component.ContentCard
 import com.intensityrecords.app.home.presentation.home_screen.component.IntroVideoButton
 import com.intensityrecords.app.home.presentation.home_screen.component.VideoOfTheDayCard
-import intensityrecordapp.intensityapp.generateds.app.home.domain.sampleItems
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -39,14 +41,22 @@ fun HomeScreenRoot(
     isWideScreen: Boolean,
     viewModel: HomeScreenViewModel = koinViewModel()
 ) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
     HomeScreen(
         navController = navController,
-        isWideScreen = isWideScreen
+        isWideScreen = isWideScreen,
+        state = state
     )
+
 }
 
 @Composable
-fun HomeScreen(navController: NavController, isWideScreen: Boolean) {
+fun HomeScreen(
+    navController: NavController,
+    isWideScreen: Boolean,
+    state: HomeState
+) {
 
 
     val heroFocusRequester = remember { FocusRequester() }
@@ -76,6 +86,17 @@ fun HomeScreen(navController: NavController, isWideScreen: Boolean) {
             // Hero card height takes up 45% of the screen height on TV
             val dynamicHeroHeight = if (isWideScreen) screenHeight * 0.60f else 160.dp
 
+            if (state.isLoading) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+                return@BoxWithConstraints
+            }
+
+
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -85,7 +106,8 @@ fun HomeScreen(navController: NavController, isWideScreen: Boolean) {
                         vertical = dimens.verticalContentPadding
                     ),
                 horizontalAlignment = Alignment.CenterHorizontally
-            ) {
+            )
+            {
 
                 Spacer(modifier = Modifier.height(if (isWideScreen) screenHeight * 0.02f else screenHeight * 0.01f)) // 2% dynamic spacer
 
@@ -98,17 +120,21 @@ fun HomeScreen(navController: NavController, isWideScreen: Boolean) {
                         // Explicitly tell the focus engine where to go when "Down" is pressed
                         .focusProperties {
                             down = firstContentCardRequester
-                        }
+                        },
+                    uiBlock = state.items?.blocks?.firstOrNull()
                 )
 
                 Spacer(modifier = Modifier.height(if (isWideScreen) screenHeight * 0.05f else screenHeight * 0.03f)) // 5% dynamic spacer
+
+                println("BLOCKS  :::: ${state.items?.blocks}")
+                println("ITEMS :::: ${state.items}")
 
                 if (isWideScreen) {
                     LazyRow(
                         horizontalArrangement = Arrangement.spacedBy(16.dp),
                         contentPadding = PaddingValues(horizontal = 36.dp, vertical = 16.dp)
                     ) {
-                        itemsIndexed(items = sampleItems) { index, item ->
+                        itemsIndexed(items = state.items?.blocks?.drop(1) ?: emptyList()) { index, item ->
 //                            Box(modifier = Modifier.padding(12.dp)) {
                             ContentCard(
                                 item = item,
@@ -129,7 +155,7 @@ fun HomeScreen(navController: NavController, isWideScreen: Boolean) {
                     }
                 } else {
                     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                        sampleItems.forEach { item ->
+                        state.items?.blocks?.drop(1)?.forEach { item ->
                             ContentCard(
                                 item = item,
                                 width = dynamicCardWidth,
