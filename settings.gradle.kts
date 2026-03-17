@@ -31,6 +31,9 @@ dependencyResolutionManagement {
                 mavenPom()
             }
         }
+        maven {
+            url = uri("https://muxinc.jfrog.io/artifactory/default-maven-release-local")
+        }
     }
 }
 

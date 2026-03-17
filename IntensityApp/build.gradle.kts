@@ -55,6 +55,12 @@ kotlin {
             implementation(libs.koin.android)
             implementation(libs.koin.androidx.compose)
             implementation(libs.ktor.client.okhttp)
+
+//            implementation(libs.androidx.media3.exoplayer)
+//            implementation(libs.androidx.media3.ui)
+//            implementation(libs.androidx.media3.exoplayer.hls)
+
+            implementation("com.mux.player:android:1.0.0")
         }
         commonMain.dependencies {
             implementation(compose.runtime)

@@ -2,7 +2,11 @@ package com.intensityrecords.app.workouts.presentation.workouts_details_screen
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
@@ -12,11 +16,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
@@ -26,6 +32,9 @@ import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -37,6 +46,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
@@ -47,10 +59,14 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.intensityrecord.core.presentation.PrimaryAccent
 import com.intensityrecords.app.core.presentation.LocalAppDimens
+import com.intensityrecords.app.core.presentation.components.MuxVideoPlayer
+import com.intensityrecords.app.home.presentation.home_screen.component.VideoPlayerAutoPlayPlaceholder
 import com.intensityrecords.app.workouts.domain.WorkoutItem
 import com.intensityrecords.app.workouts.presentation.workouts_details_screen.component.HeroSection
 import com.intensityrecords.app.workouts.presentation.workouts_details_screen.component.SessionCard
@@ -111,6 +127,17 @@ fun WorkoutDetailScreen(
 
     // 2. Track the size of the card so we know how much to expand
     var cardSize by remember { mutableStateOf(IntSize.Zero) }
+
+    var selectedVideoPlaybackId by remember { mutableStateOf<String?>(null) }
+
+    val closeFocusRequester = remember { FocusRequester() }
+    val closeInteractionSource = remember { MutableInteractionSource() }
+    val isCloseFocused by closeInteractionSource.collectIsFocusedAsState()
+
+    // 2. Animations for the Close Button
+    val closeScale by animateFloatAsState(if (isCloseFocused) 1.2f else 1f)
+    val closeStrokeWidth by animateDpAsState(if (isCloseFocused) 3.dp else 0.dp)
+
 
     // 3. Trigger the scroll request when focus changes
     LaunchedEffect(isFocused) {
@@ -209,6 +236,7 @@ fun WorkoutDetailScreen(
                             scope.launch {
                                 pagerState.animateScrollToPage(pageIndex)
                             }
+                            selectedVideoPlaybackId = "n2KvjXdPt02d5uPGwdqZo18g2ZGYjeiHwsvqzCIxIAFw"
                             // Also trigger your MVI action
 //                            onAction(WorkOutsDetailAction.OnSessionClick(session))
                         },
@@ -217,14 +245,72 @@ fun WorkoutDetailScreen(
                 }
             }
 
-//            if (state.sessions.isNotEmpty()) {
-//                Spacer(modifier = Modifier.height(if (isWideScreen) 0.dp else 12.dp))
-//                ScrollIndicator(
-//                    count = state.sessions.size,
-//                    activeIndex = pagerState.currentPage,
-//                    modifier = Modifier.padding(vertical = 24.dp)
-//                )
-//            }
+            if (state.collection?.videos?.isNotEmpty() ?: false) {
+                Spacer(modifier = Modifier.height(if (isWideScreen) 0.dp else 12.dp))
+                ScrollIndicator(
+                    count = state.collection.videos.size,
+                    activeIndex = pagerState.currentPage,
+                    modifier = Modifier.padding(vertical = 24.dp)
+                )
+            }
+
+            if (selectedVideoPlaybackId != null) {
+                Dialog(
+                    onDismissRequest = { selectedVideoPlaybackId = null },
+                    properties = DialogProperties(usePlatformDefaultWidth = false) // True full screen
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.Black)
+                    ) {
+
+                        VideoPlayerAuto(
+                            playbackId = selectedVideoPlaybackId!!,
+                            modifier = Modifier.fillMaxSize()
+                        )
+
+                        // Close Button
+                        Box(
+                            modifier = Modifier
+                                .align(Alignment.TopEnd)
+                                .padding(24.dp)
+                                .size(56.dp)
+                                .shadow(
+                                    elevation = if (isCloseFocused) 6.dp else 0.dp,
+                                    shape = CircleShape,
+                                    spotColor = PrimaryAccent
+                                )
+                                .focusRequester(closeFocusRequester)
+                                .background(
+                                    color = if (isCloseFocused) Color.Black else Color.Black.copy(
+                                        alpha = 0.5f
+                                    ),
+                                    shape = CircleShape
+                                )
+                                .border(
+                                    width = closeStrokeWidth,
+                                    color = PrimaryAccent,
+                                    shape = CircleShape
+                                )
+                                .clickable(
+                                    interactionSource = closeInteractionSource,
+                                    indication = null
+                                ) {
+                                    selectedVideoPlaybackId = null
+                                }, // Clear state to close
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = "Close Video",
+                                tint = if (isCloseFocused) PrimaryAccent else Color.White,
+                                modifier = Modifier.size(32.dp)
+                            )
+                        }
+                    }
+                }
+            }
 
             Spacer(modifier = Modifier.height(20.dp))
 
@@ -261,6 +347,24 @@ fun ScrollIndicator(
                     .background(color)
             )
         }
+    }
+}
+
+@Composable
+fun VideoPlayerAuto(
+    playbackId: String,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier.fillMaxSize().background(Color.Black),
+        contentAlignment = Alignment.Center
+    ) {
+        MuxVideoPlayer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(16f / 9f), // Keeps standard video ratio
+            playbackId = playbackId
+        )
     }
 }
 

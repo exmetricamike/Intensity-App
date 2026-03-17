@@ -77,7 +77,12 @@ package com.intensityrecords.app.login.presentation.login_screen
 //    }
 //}
 
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -86,9 +91,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -102,9 +109,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -115,6 +124,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.intensityrecord.core.presentation.DarkGradient
 import com.intensityrecord.core.presentation.FitnessAppTheme
+import com.intensityrecord.core.presentation.PrimaryAccent
 import com.intensityrecords.app.core.presentation.LocalAppDimens
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -167,8 +177,22 @@ private fun LoginScreen(
             // Restrict width on TV so text fields aren't massively wide
             val formWidth = if (isWideScreen) 0.5f else 0.9f
 
+            val interactionSource = remember { MutableInteractionSource() }
+            val isFocused by interactionSource.collectIsFocusedAsState()
+
+            val scale by animateFloatAsState(
+                targetValue = if (isFocused) 1.08f else 1f,
+                label = "buttonScale"
+            )
+
+            val borderWidth by animateDpAsState(
+                targetValue = if (isFocused) 2.dp else 0.dp,
+                label = "borderWidth"
+            )
+
             Column(
                 modifier = Modifier
+                    .verticalScroll(rememberScrollState())
                     .fillMaxWidth(formWidth)
                     .padding(horizontal = dimens.horizontalContentPadding, vertical = 24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -197,13 +221,13 @@ private fun LoginScreen(
 
                 // Custom Colors so text is visible on the DarkGradient
                 val textFieldColors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color.White,
+                    focusedBorderColor = PrimaryAccent,
                     unfocusedBorderColor = Color.Gray,
-                    focusedTextColor = Color.White,
+                    focusedTextColor = PrimaryAccent,
                     unfocusedTextColor = Color.White,
-                    focusedLabelColor = Color.White,
+                    focusedLabelColor = PrimaryAccent,
                     unfocusedLabelColor = Color.Gray,
-                    cursorColor = Color.White
+                    cursorColor = PrimaryAccent
                 )
 
                 OutlinedTextField(
@@ -267,7 +291,22 @@ private fun LoginScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(if (isWideScreen) 56.dp else 50.dp)
-                        .focusRequester(buttonFocusRequester),
+                        .focusRequester(buttonFocusRequester)
+                        .graphicsLayer {
+                            scaleX = scale
+                            scaleY = scale
+                        }
+                        .border(
+                            width = borderWidth,
+                            color = PrimaryAccent,
+                            shape = RoundedCornerShape(12.dp)
+                        )
+                        .shadow(
+                            elevation = if (isFocused) 16.dp else 0.dp,
+                            shape = RoundedCornerShape(12.dp),
+                            ambientColor = PrimaryAccent,
+                            spotColor = PrimaryAccent
+                        ),
                     shape = RoundedCornerShape(12.dp),
                     enabled = !state.isLoading,
                     colors = ButtonDefaults.buttonColors(
@@ -291,6 +330,9 @@ private fun LoginScreen(
                         )
                     }
                 }
+
+                Spacer(modifier = Modifier.height(30.dp))
+
             }
         }
     }

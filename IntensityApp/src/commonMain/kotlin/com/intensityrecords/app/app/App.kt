@@ -20,6 +20,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -70,6 +71,7 @@ import intensityrecordapp.intensityapp.generated.resources.home
 import intensityrecordapp.intensityapp.generated.resources.live
 import intensityrecordapp.intensityapp.generated.resources.mobility
 import intensityrecordapp.intensityapp.generated.resources.workouts
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
@@ -122,14 +124,16 @@ fun App() {
                         AuthState.LoggedOut -> {
                             MainApp(
                                 startDestination = Route.Login,
-                                isWideScreen = isWideScreen
+                                isWideScreen = isWideScreen,
+                                sessionProvider = sessionProvider
                             )
                         }
 
                         is AuthState.LoggedIn -> {
                             MainApp(
                                 startDestination = Route.Home,
-                                isWideScreen = isWideScreen
+                                isWideScreen = isWideScreen,
+                                sessionProvider = sessionProvider
                             )
                         }
                     }
@@ -608,7 +612,8 @@ fun SplashScreen() {
 @Composable
 fun MainApp(
     startDestination: Any,
-    isWideScreen: Boolean
+    isWideScreen: Boolean,
+    sessionProvider: SessionProvider
 ) {
 
     val viewModel: LanguageViewModel = koinViewModel()
@@ -616,6 +621,7 @@ fun MainApp(
     val navController = rememberNavController()
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = currentBackStackEntry?.destination
+    val scope = rememberCoroutineScope()
 
     val currentTab = when {
         currentDestination?.hasRoute<Route.Home>() == true -> stringResource(Res.string.home)
@@ -642,11 +648,21 @@ fun MainApp(
 
     val showBars = currentDestination?.hasRoute<Route.Login>() == false
 
+    val isLoginScreen = currentDestination?.hasRoute<Route.Login>() == true
+
     Scaffold(
         containerColor = Color.Transparent,
         modifier = Modifier.windowInsetsPadding(WindowInsets.safeDrawing),
         topBar = {
-            AppHeader(isWideScreen = isWideScreen)
+            AppHeader(
+                isWideScreen = isWideScreen,
+                onLogOut = {
+                    scope.launch {
+                        sessionProvider.clearSession()
+                    }
+                },
+                isLoginScreen = isLoginScreen
+            )
         },
         bottomBar = {
             if (showBars) {

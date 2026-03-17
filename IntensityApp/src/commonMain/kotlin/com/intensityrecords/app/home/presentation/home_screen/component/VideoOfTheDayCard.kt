@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -61,6 +62,7 @@ import com.intensityrecord.core.presentation.CardBackground
 import com.intensityrecord.core.presentation.GlowBorderBrush
 import com.intensityrecord.core.presentation.PrimaryAccent
 import com.intensityrecords.app.core.presentation.LocalAppDimens
+import com.intensityrecords.app.core.presentation.components.MuxVideoPlayer
 import com.intensityrecords.app.home.domain.UiBlock
 import com.intensityrecords.app.workouts.presentation.workouts_details_screen.component.StatBadge
 import com.intensityrecords.app.workouts.presentation.workouts_screen.component.pulseAnimation
@@ -327,70 +329,89 @@ fun VideoOfTheDayCard(
 @Composable
 fun VideoPlayerAutoPlayPlaceholder(modifier: Modifier = Modifier) {
 
-    var isPlaying by remember { mutableStateOf(true) }
+//    var isPlaying by remember { mutableStateOf(true) }
+//
+//    Box(modifier = modifier, contentAlignment = Alignment.Center) {
+//        Text(
+//            text = "Video is Playing Here...",
+//            color = Color.White
+//        )
+//        val videoId = "Fkt6n72KGvo?si=ZGfDseeYSd4UdnHk"
+//        val iframeHtml = """
+//   <!DOCTYPE html>
+//    <html>
+//    <head>
+//        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+//        <style>
+//            body, html { margin: 0; padding: 0; width: 100%; height: 100%; background-color: black; overflow: hidden; }
+//            .container { position: relative; width: 100%; height: 100%; }
+//            iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+//        </style>
+//    </head>
+//    <body>
+//        <div class="container">
+//            <iframe
+//                src="https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&playsinline=1&controls=1&enablejsapi=1&origin=https://www.youtube.com"
+//                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+//                allowfullscreen>
+//            </iframe>
+//        </div>
+//    </body>
+//    </html>
+//    """.trimIndent()
+//
+//        val webViewState = rememberWebViewStateWithHTMLData(
+//            data = iframeHtml,
+//            baseUrl = "https://www.youtube.com/"
+//        )
+//
+//        LaunchedEffect(webViewState) {
+//            webViewState.webSettings.apply {
+//                isJavaScriptEnabled = true
+//
+//                // 1. Set a standard Browser User-Agent
+//                // This stops YouTube from treating the app like a restricted bot
+//                customUserAgentString =
+//                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36"
+//                androidWebSettings.apply {
+//                    domStorageEnabled = true
+//                    mediaPlaybackRequiresUserGesture = false
+//                    safeBrowsingEnabled = true
+//                }
+//            }
+//        }
+//
+//        if (isPlaying) {
+//            WebView(
+//                state = webViewState,
+//                modifier = Modifier.fillMaxSize(),
+//            )
+//        } else {
+//            Image(
+//                painter = painterResource(resource = Res.drawable._1),
+//                contentDescription = "Video Thumbnail",
+//                contentScale = ContentScale.Crop,
+//                modifier = Modifier.fillMaxSize()
+//            )
+//        }
+//    }
 
-    Box(modifier = modifier, contentAlignment = Alignment.Center) {
-        Text(
-            text = "Video is Playing Here...",
-            color = Color.White
+    Column(modifier = Modifier.fillMaxSize().background(Color.Black)) {
+
+        MuxVideoPlayer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxSize()
+                .aspectRatio(16f / 9f), // Standard video ratio
+            playbackId = "n2KvjXdPt02d5uPGwdqZo18g2ZGYjeiHwsvqzCIxIAFw" // Replace with your Mux ID
         )
-        val videoId = "Fkt6n72KGvo?si=ZGfDseeYSd4UdnHk"
-        val iframeHtml = """
-   <!DOCTYPE html>
-    <html>
-    <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-        <style>
-            body, html { margin: 0; padding: 0; width: 100%; height: 100%; background-color: black; overflow: hidden; }
-            .container { position: relative; width: 100%; height: 100%; }
-            iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <iframe 
-                src="https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&playsinline=1&controls=1&enablejsapi=1&origin=https://www.youtube.com" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                allowfullscreen>
-            </iframe>
-        </div>
-    </body>
-    </html>
-    """.trimIndent()
 
-        val webViewState = rememberWebViewStateWithHTMLData(
-            data = iframeHtml,
-            baseUrl = "https://www.youtube.com/"
-        )
-
-        LaunchedEffect(webViewState) {
-            webViewState.webSettings.apply {
-                isJavaScriptEnabled = true
-
-                // 1. Set a standard Browser User-Agent
-                // This stops YouTube from treating the app like a restricted bot
-                customUserAgentString =
-                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36"
-                androidWebSettings.apply {
-                    domStorageEnabled = true
-                    mediaPlaybackRequiresUserGesture = false
-                    safeBrowsingEnabled = true
-                }
-            }
-        }
-
-        if (isPlaying) {
-            WebView(
-                state = webViewState,
-                modifier = Modifier.fillMaxSize(),
-            )
-        } else {
-            Image(
-                painter = painterResource(resource = Res.drawable._1),
-                contentDescription = "Video Thumbnail",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
-            )
-        }
+//        // The rest of your video details...
+//        Text(
+//            text = "Workout Title",
+//            modifier = Modifier.padding(16.dp),
+//            color = Color.White
+//        )
     }
+
 }
