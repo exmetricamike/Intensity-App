@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -116,19 +117,26 @@ fun WorkoutScreen(
                 println("Workouts count = ${state.sections}")
 
                 if (state.isLoading) {
+//                    Box(
+//                        modifier = Modifier.fillMaxSize()
+//                            .align(Alignment.CenterHorizontally),
+//                        contentAlignment = Alignment.Center
+//                    ) {
+//                        Text(
+//                            "Loading...",
+//                            style = MaterialTheme.typography.bodyMedium.copy(
+//                                fontSize = if (isWideScreen) 22.sp else 16.sp,
+//                                textAlign = TextAlign.Center
+//                            )
+//                        )
+//                    }
                     Box(
-                        modifier = Modifier.fillMaxSize()
-                            .align(Alignment.CenterHorizontally),
+                        modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(
-                            "Loading...",
-                            style = MaterialTheme.typography.bodyMedium.copy(
-                                fontSize = if (isWideScreen) 22.sp else 16.sp,
-                                textAlign = TextAlign.Center
-                            )
-                        )
+                        CircularProgressIndicator()
                     }
+                    return@BoxWithConstraints
                 } else if (!state.error.isNullOrBlank()) {
                     Box(
                         modifier = Modifier.fillMaxSize()

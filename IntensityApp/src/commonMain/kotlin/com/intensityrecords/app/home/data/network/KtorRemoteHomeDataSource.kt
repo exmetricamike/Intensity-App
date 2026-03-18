@@ -19,24 +19,24 @@ class KtorRemoteHomeDataSource(
 ) : RemoteHomeDataSource {
 
     override suspend fun getHome(id: String): Result<HomeDto, DataError.Remote> {
-//        return safeCall<HomeDto> {
-//            client.get(
-//                urlString = "https://intensityapi.exmetrica.be/api/hotel/home?id=$id"
-//            )
-//        }
-        val token = sessionProvider.getToken()
-        println("API TOKEN ::: $token")
-
         return safeCall<HomeDto> {
             client.get(
                 urlString = "https://intensityapi.exmetrica.be/api/hotel/home?id=$id"
-            ) {
-                if (!token.isNullOrEmpty()) {
-                    headers {
-                        append("Authorization", "Token $token")
-                    }
-                }
-            }
+            )
         }
+//        val token = sessionProvider.getToken()
+//        println("API TOKEN ::: $token")
+
+//        return safeCall<HomeDto> {
+//            client.get(
+//                urlString = "https://intensityapi.exmetrica.be/api/hotel/home?id=$id"
+//            ) {
+//                if (!token.isNullOrEmpty()) {
+//                    headers {
+//                        append("Authorization", "Token $token")
+//                    }
+//                }
+//            }
+//        }
     }
 }

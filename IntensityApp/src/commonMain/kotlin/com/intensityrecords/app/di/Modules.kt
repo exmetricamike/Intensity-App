@@ -53,53 +53,37 @@ val sharedModule = module {
 
     single { HttpClientFactory.create(get(), get()) }
 
-    singleOf(::KtorRemoteWorkoutDataSource).bind<RemoteWorkoutDataSource>()
-    singleOf(::DefaultWorkoutRepository).bind<WorkoutRepository>()
-
-    singleOf(::KtorRemoteStepTripDataSource).bind<RemoteStepTripDataSource>()
-    singleOf(::DefaultStepTripRepository).bind<StepTripRepository>()
-
-    singleOf(::KtorRemoteMobilityDataSource).bind<RemoteMobilityDataSource>()
-    singleOf(::DefaultMobilityRepository).bind<MobilityRepository>()
-
-    singleOf(::KtorRemoteAuthDataSource).bind<RemoteAuthDataSource>()
-    singleOf(::DefaultAuthRepository).bind<AuthRepository>()
-
-    singleOf(::KtorRemoteHomeDataSource).bind<RemoteHomeDataSource>()
-    singleOf(::DefaultHomeRepository).bind<HomeRepository>()
-
     single { SessionProvider(get()) }
 
-    single {
-        HttpClient {
-            install(ContentNegotiation) {
-                json(
-                    Json {
-                        ignoreUnknownKeys = true
-                    }
-                )
-            }
+    singleOf(::KtorRemoteWorkoutDataSource).bind<RemoteWorkoutDataSource>()
+    singleOf(::KtorRemoteStepTripDataSource).bind<RemoteStepTripDataSource>()
+    singleOf(::KtorRemoteMobilityDataSource).bind<RemoteMobilityDataSource>()
+    singleOf(::KtorRemoteAuthDataSource).bind<RemoteAuthDataSource>()
+    singleOf(::KtorRemoteHomeDataSource).bind<RemoteHomeDataSource>()
 
-            install(Logging) {
-                logger = Logger.DEFAULT
-                level = LogLevel.ALL
-            }
-        }
-    }
+    singleOf(::DefaultWorkoutRepository).bind<WorkoutRepository>()
+    singleOf(::DefaultStepTripRepository).bind<StepTripRepository>()
+    singleOf(::DefaultMobilityRepository).bind<MobilityRepository>()
+    singleOf(::DefaultAuthRepository).bind<AuthRepository>()
+    singleOf(::DefaultHomeRepository).bind<HomeRepository>()
 
-    // Repository
-    single<WorkoutRepository> {
-        DefaultWorkoutRepository(get())
-    }
-    single<StepTripRepository> {
-        DefaultStepTripRepository(get())
-    }
-    single<MobilityRepository> {
-        DefaultMobilityRepository(get())
-    }
-    single<HomeRepository> {
-        DefaultHomeRepository(get())
-    }
+
+//    single {
+//        HttpClient {
+//            install(ContentNegotiation) {
+//                json(
+//                    Json {
+//                        ignoreUnknownKeys = true
+//                    }
+//                )
+//            }
+//
+//            install(Logging) {
+//                logger = Logger.DEFAULT
+//                level = LogLevel.ALL
+//            }
+//        }
+//    }
 
 
     viewModelOf(::HomeScreenViewModel)
