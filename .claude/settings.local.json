@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(cmd /c \"gradlew.bat --version\")"
+      "Bash(cmd /c \"gradlew.bat --version\")",
+      "Bash(grep -r \"tasks\\\\.register\\\\|fun test\\\\|fun build\\\\|fun run\" C:UsersmicpaRootDevelopmentAppDev_KMPIntensity-KMP-App --include=*.gradle.kts)"
     ]
   }
 }

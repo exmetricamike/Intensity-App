@@ -1,5 +1,6 @@
 package com.intensityrecords.app.home.data.network
 
+import com.intensityrecords.app.core.data.GlobalConfig
 import com.intensityrecords.app.core.data.SessionProvider
 import com.intensityrecords.app.core.data.safeCall
 import com.intensityrecords.app.core.domain.DataError
@@ -19,17 +20,20 @@ class KtorRemoteHomeDataSource(
 ) : RemoteHomeDataSource {
 
     override suspend fun getHome(id: String): Result<HomeDto, DataError.Remote> {
-        return safeCall<HomeDto> {
+        val result = safeCall<HomeDto> {
             client.get(
-                urlString = "https://intensityapi.exmetrica.be/api/hotel/home?id=$id"
+                urlString = "${GlobalConfig.API_ENDPOINT}api/${GlobalConfig.API_VERSION}/hotel/home?id=$id"
             )
         }
+        if (GlobalConfig.DEBUG_PRINT_API_RESPONSE) println("APP_API Response: $result")
+        return result
+
 //        val token = sessionProvider.getToken()
 //        println("API TOKEN ::: $token")
 
 //        return safeCall<HomeDto> {
 //            client.get(
-//                urlString = "https://intensityapi.exmetrica.be/api/hotel/home?id=$id"
+//                urlString = "${GlobalConfig.API_ENDPOINT}api/${GlobalConfig.API_VERSION}/hotel/home?id=$id"
 //            ) {
 //                if (!token.isNullOrEmpty()) {
 //                    headers {

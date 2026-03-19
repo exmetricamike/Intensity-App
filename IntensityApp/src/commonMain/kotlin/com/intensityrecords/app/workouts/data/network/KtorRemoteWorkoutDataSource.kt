@@ -1,6 +1,6 @@
 package com.intensityrecords.app.workouts.data.network
 
-import com.intensityrecords.app.core.data.SessionProvider
+import com.intensityrecords.app.core.data.GlobalConfig
 import com.intensityrecords.app.core.data.safeCall
 import com.intensityrecords.app.core.domain.DataError
 import com.intensityrecords.app.core.domain.Result
@@ -16,22 +16,26 @@ class KtorRemoteWorkoutDataSource(
 ) : RemoteWorkoutDataSource {
 
     override suspend fun getWorkouts(id: String): Result<List<WorkoutResponseDto>, DataError.Remote> {
-        return safeCall {
+        val result = safeCall<List<WorkoutResponseDto>> {
             client.get(
-                "https://intensityapi.exmetrica.be/api/hotel/workout?id=$id"
+                "${GlobalConfig.API_ENDPOINT}api/${GlobalConfig.API_VERSION}/hotel/workout?id=$id"
             )
         }
+        if (GlobalConfig.DEBUG_PRINT_API_RESPONSE) println("APP_API Response: $result")
+        return result
     }
 
     override suspend fun getWorkoutsCollection(
         hotelId: String,
         collectionId: Int
     ): Result<CollectionDetailDto, DataError.Remote> {
-        return safeCall {
+        val result = safeCall<CollectionDetailDto> {
             client.get(
-                "https://intensityapi.exmetrica.be/api/hotel/$hotelId/collection/$collectionId"
+                "${GlobalConfig.API_ENDPOINT}api/${GlobalConfig.API_VERSION}/hotel/$hotelId/collection/$collectionId"
             )
         }
+        if (GlobalConfig.DEBUG_PRINT_API_RESPONSE) println("APP_API Response: $result")
+        return result
     }
 
 }
