@@ -2,7 +2,11 @@ package com.intensityrecords.app.workouts.presentation.workouts_details_screen
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
@@ -12,11 +16,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
@@ -26,6 +32,9 @@ import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -37,6 +46,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
@@ -47,12 +59,18 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.intensityrecord.core.presentation.PrimaryAccent
 import com.intensityrecords.app.core.presentation.LocalAppDimens
+import com.intensityrecords.app.core.presentation.components.MuxVideoPlayer
+import com.intensityrecords.app.home.presentation.home_screen.component.VideoPlayerAutoPlayPlaceholder
+import com.intensityrecords.app.workouts.domain.WorkoutItem
 import com.intensityrecords.app.workouts.presentation.workouts_details_screen.component.HeroSection
 import com.intensityrecords.app.workouts.presentation.workouts_details_screen.component.SessionCard
+import com.intensityrecords.app.workouts.presentation.workouts_screen.WorkoutsState
 import intensityrecordapp.intensityapp.generated.resources.Res
 import intensityrecordapp.intensityapp.generated.resources.montserrat_regular
 import kotlinx.coroutines.launch
@@ -61,36 +79,34 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun WorkoutDetailScreenRoot(
-    workoutId: String,
     navController: NavController,
     isWideScreen: Boolean,
-    viewModel: WorkOutsDetailScreenViewModel = koinViewModel()
+    collectionId: Int,
+    onBackClick: () -> Unit,
+    viewModel: WorkOutsDetailScreenViewModel = koinViewModel(),
 ) {
+
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    // Initialize state based on the passed ID
-    LaunchedEffect(workoutId) {
-        viewModel.initialize(workoutId)
+    LaunchedEffect(collectionId) {
+        viewModel.loadCollection(collectionId)
     }
 
-    state.item?.let { workoutItem ->
-        WorkoutDetailScreen(
-            state = state,
-            isWideScreen = isWideScreen,
-            onAction = { action ->
-                when (action) {
-                    WorkOutsDetailAction.OnBackClick -> navController.navigateUp()
-                    else -> Unit
-                }
-                viewModel.onAction(action)
+    WorkoutDetailScreen(
+        state = state,
+        isWideScreen = isWideScreen,
+        onAction = { action ->
+            if (action is WorkOutsDetailAction.OnBackClick) {
+                onBackClick()
             }
-        )
-    }
+        }
+    )
+
 }
 
 @Composable
 fun WorkoutDetailScreen(
-    state: WorkOutsDetailState,
+    state: WorkoutDetailState,
     isWideScreen: Boolean,
     onAction: (WorkOutsDetailAction) -> Unit,
 ) {
@@ -102,7 +118,7 @@ fun WorkoutDetailScreen(
     val isHovered by interactionSource.collectIsHoveredAsState()
     val isActive = isFocused || isHovered
 
-    val pagerState = rememberPagerState(pageCount = { state.sessions.size })
+    val pagerState = rememberPagerState(pageCount = { state.collection?.videos?.size ?: 0 })
     val scope = rememberCoroutineScope()
 
     val cardWidth = if (isWideScreen) 280.dp else 170.dp
@@ -111,6 +127,17 @@ fun WorkoutDetailScreen(
 
     // 2. Track the size of the card so we know how much to expand
     var cardSize by remember { mutableStateOf(IntSize.Zero) }
+
+    var selectedVideoPlaybackId by remember { mutableStateOf<String?>(null) }
+
+    val closeFocusRequester = remember { FocusRequester() }
+    val closeInteractionSource = remember { MutableInteractionSource() }
+    val isCloseFocused by closeInteractionSource.collectIsFocusedAsState()
+
+    // 2. Animations for the Close Button
+    val closeScale by animateFloatAsState(if (isCloseFocused) 1.2f else 1f)
+    val closeStrokeWidth by animateDpAsState(if (isCloseFocused) 3.dp else 0.dp)
+
 
     // 3. Trigger the scroll request when focus changes
     LaunchedEffect(isFocused) {
@@ -147,9 +174,7 @@ fun WorkoutDetailScreen(
             Spacer(modifier = Modifier.height(if (isWideScreen) 0.dp else 35.dp))
 
             Box(modifier = Modifier.padding(horizontal = dimens.horizontalContentPadding)) {
-                state.item?.let {
-                    HeroSection(item = it, isWideScreen = isWideScreen)
-                }
+                HeroSection(item = state.collection, isWideScreen = isWideScreen)
             }
 
             Spacer(modifier = Modifier.height(35.dp))
@@ -171,34 +196,38 @@ fun WorkoutDetailScreen(
             HorizontalPager(
                 state = pagerState,
                 pageSize = PageSize.Fixed(cardWidth),
-                contentPadding = PaddingValues(horizontal = if(isWideScreen) 180.dp else 120.dp),
+                contentPadding = PaddingValues(horizontal = if (isWideScreen) 180.dp else 120.dp),
                 pageSpacing = if (isWideScreen) 16.dp else 20.dp,
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
                     .height(if (isWideScreen) 280.dp else 200.dp)
             ) { pageIndex ->
-                val session = state.sessions[pageIndex]
+//                val session = state.sessions[pageIndex]
 
-                val pageOffset = (pagerState.currentPage - pageIndex) + pagerState.currentPageOffsetFraction
+                val pageOffset =
+                    (pagerState.currentPage - pageIndex) + pagerState.currentPageOffsetFraction
                 val scaleFactor = 1f - (0.15f * kotlin.math.abs(pageOffset)).coerceIn(0f, 0.3f)
                 val alphaFactor = 1f - (0.3f * kotlin.math.abs(pageOffset)).coerceIn(0f, 0.5f)
 
-                Box(modifier = Modifier.graphicsLayer {
-                    scaleX = scaleFactor
-                    scaleY = scaleFactor
-                    alpha = alphaFactor
-                }.fillMaxHeight()
-                    .onSizeChanged { cardSize = it }
-                    .bringIntoViewRequester(bringIntoViewRequester)
-                    .onFocusChanged { focusState ->
-                        if (focusState.hasFocus) {
-                            scope.launch {
-                                pagerState.animateScrollToPage(pageIndex)
+                Box(
+                    modifier = Modifier.graphicsLayer {
+                        scaleX = scaleFactor
+                        scaleY = scaleFactor
+                        alpha = alphaFactor
+                    }.fillMaxHeight()
+                        .onSizeChanged { cardSize = it }
+                        .bringIntoViewRequester(bringIntoViewRequester)
+                        .onFocusChanged { focusState ->
+                            if (focusState.hasFocus) {
+                                scope.launch {
+                                    pagerState.animateScrollToPage(pageIndex)
+                                }
                             }
-                        }
-                    },
+                        },
                     contentAlignment = Alignment.Center
                 ) {
+                    val session = state.collection?.videos[pageIndex]
+
                     SessionCard(
                         session = session,
                         isWideScreen = isWideScreen,
@@ -207,21 +236,80 @@ fun WorkoutDetailScreen(
                             scope.launch {
                                 pagerState.animateScrollToPage(pageIndex)
                             }
+                            selectedVideoPlaybackId = "n2KvjXdPt02d5uPGwdqZo18g2ZGYjeiHwsvqzCIxIAFw"
                             // Also trigger your MVI action
-                            onAction(WorkOutsDetailAction.OnSessionClick(session))
+//                            onAction(WorkOutsDetailAction.OnSessionClick(session))
                         },
                         dimens = dimens
                     )
                 }
             }
 
-            if (state.sessions.isNotEmpty()) {
+            if (state.collection?.videos?.isNotEmpty() ?: false) {
                 Spacer(modifier = Modifier.height(if (isWideScreen) 0.dp else 12.dp))
                 ScrollIndicator(
-                    count = state.sessions.size,
+                    count = state.collection.videos.size,
                     activeIndex = pagerState.currentPage,
                     modifier = Modifier.padding(vertical = 24.dp)
                 )
+            }
+
+            if (selectedVideoPlaybackId != null) {
+                Dialog(
+                    onDismissRequest = { selectedVideoPlaybackId = null },
+                    properties = DialogProperties(usePlatformDefaultWidth = false) // True full screen
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.Black)
+                    ) {
+
+                        VideoPlayerAuto(
+                            playbackId = selectedVideoPlaybackId!!,
+                            modifier = Modifier.fillMaxSize()
+                        )
+
+                        // Close Button
+                        Box(
+                            modifier = Modifier
+                                .align(Alignment.TopEnd)
+                                .padding(24.dp)
+                                .size(56.dp)
+                                .shadow(
+                                    elevation = if (isCloseFocused) 6.dp else 0.dp,
+                                    shape = CircleShape,
+                                    spotColor = PrimaryAccent
+                                )
+                                .focusRequester(closeFocusRequester)
+                                .background(
+                                    color = if (isCloseFocused) Color.Black else Color.Black.copy(
+                                        alpha = 0.5f
+                                    ),
+                                    shape = CircleShape
+                                )
+                                .border(
+                                    width = closeStrokeWidth,
+                                    color = PrimaryAccent,
+                                    shape = CircleShape
+                                )
+                                .clickable(
+                                    interactionSource = closeInteractionSource,
+                                    indication = null
+                                ) {
+                                    selectedVideoPlaybackId = null
+                                }, // Clear state to close
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = "Close Video",
+                                tint = if (isCloseFocused) PrimaryAccent else Color.White,
+                                modifier = Modifier.size(32.dp)
+                            )
+                        }
+                    }
+                }
             }
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -259,6 +347,24 @@ fun ScrollIndicator(
                     .background(color)
             )
         }
+    }
+}
+
+@Composable
+fun VideoPlayerAuto(
+    playbackId: String,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier.fillMaxSize().background(Color.Black),
+        contentAlignment = Alignment.Center
+    ) {
+        MuxVideoPlayer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(16f / 9f), // Keeps standard video ratio
+            playbackId = playbackId
+        )
     }
 }
 

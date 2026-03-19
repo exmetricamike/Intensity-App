@@ -59,3 +59,13 @@ data class TripData(
     val calories: String,
     val image: DrawableResource = Res.drawable.trip_1
 )
+
+data class StepTripItem(
+    val id: Int,
+    val title: String,
+    val category: String,
+    val duration: String,
+    val distance: String,
+    val calories: String,
+    val image: String
+)

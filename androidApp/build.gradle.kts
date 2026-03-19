@@ -13,6 +13,7 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 //        consumerProguardFiles("consumer-rules.pro")
+        versionName = "1.0.1"
     }
 
     buildTypes {

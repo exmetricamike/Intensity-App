@@ -2,6 +2,7 @@ package com.intensityrecords.app.workouts.presentation.workouts_screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -12,6 +13,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,14 +25,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.intensityrecord.app.Route
 import com.intensityrecord.core.presentation.DarkGradient
 import com.intensityrecord.core.presentation.FitnessAppTheme
+import com.intensityrecords.app.app.Route.*
 import com.intensityrecords.app.core.presentation.LocalAppDimens
+import com.intensityrecords.app.workouts.domain.WorkoutCollection
 import com.intensityrecords.app.workouts.presentation.workouts_screen.component.WorkoutCard
 import intensityrecordapp.intensityapp.generated.resources.Res
 import intensityrecordapp.intensityapp.generated.resources.choose_workout_focus
@@ -42,20 +47,27 @@ import org.koin.compose.viewmodel.koinViewModel
 fun WorkoutScreenRoot(
     navController: NavController,
     isWideScreen: Boolean,
-    viewModel: WorkOutsScreenViewModel = koinViewModel()
+    viewModel: WorkOutsScreenViewModel = koinViewModel(),
 ) {
+
     val state by viewModel.state.collectAsStateWithLifecycle()
+
+//    LaunchedEffect(state.workouts.isEmpty()) {
+//        if (state.workouts.isEmpty()) {
+//            viewModel.onAction(WorkOutsAction.LoadWorkouts)
+//        }
+//    }
+
 
     WorkoutScreen(
         state = state,
         isWideScreen = isWideScreen,
-        onAction = { action ->
-            when (action) {
-                is WorkOutsAction.OnWorkoutClick -> {
-                    navController.navigate(Route.WorkOutsDetailsScreen(id = action.workout.title))
-                }
-            }
-            viewModel.onAction(action)
+        onWorkoutClick = { collection ->
+            navController.navigate(
+                WorkOutsDetailsScreen(
+                    collection.id
+                )
+            )
         }
     )
 }
@@ -63,19 +75,10 @@ fun WorkoutScreenRoot(
 
 @Composable
 fun WorkoutScreen(
-    state: WorkOutsState,
+    state: WorkoutsState,
     isWideScreen: Boolean,
-    onAction: (WorkOutsAction) -> Unit
+    onWorkoutClick: (WorkoutCollection) -> Unit
 ) {
-    // 1. Create a FocusRequester
-    val firstItemFocusRequester = remember { FocusRequester() }
-
-    // 2. Trigger focus request when screen loads or when list is ready
-    LaunchedEffect(state.workouts) {
-        if (state.workouts.isNotEmpty()) {
-            firstItemFocusRequester.requestFocus()
-        }
-    }
 
     FitnessAppTheme {
         BoxWithConstraints(
@@ -110,36 +113,91 @@ fun WorkoutScreen(
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                // 3. Single Unified Grid
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(columnsCount),
-                    horizontalArrangement = Arrangement.spacedBy(25.dp),
-                    verticalArrangement = Arrangement.spacedBy(if (isWideScreen) 45.dp else 25.dp),
-                    // Add bottom padding here so last items aren't cut off
-                    contentPadding = PaddingValues(
-                        top = 16.dp,
-                        bottom = if (isWideScreen) 120.dp else 20.dp, // This replaces the external Spacer
-                        start = 4.dp,
-                        end = 4.dp
-                    ),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxSize()
-                ) {
-                    items(state.workouts.size) { index ->
-                        val workout = state.workouts[index]
-                        WorkoutCard(
-                            item = workout,
-                            isWideScreen = isWideScreen,
-                            onClick = { onAction(WorkOutsAction.OnWorkoutClick(workout = workout)) },
-                            dimens = dimens,
-                            modifier = if (index == 0) {
-                                Modifier.focusRequester(firstItemFocusRequester)
-                            } else {
-                                Modifier
-                            }
+                println("Workouts count = ${state.sections.size}")
+                println("Workouts count = ${state.sections}")
+
+                if (state.isLoading) {
+//                    Box(
+//                        modifier = Modifier.fillMaxSize()
+//                            .align(Alignment.CenterHorizontally),
+//                        contentAlignment = Alignment.Center
+//                    ) {
+//                        Text(
+//                            "Loading...",
+//                            style = MaterialTheme.typography.bodyMedium.copy(
+//                                fontSize = if (isWideScreen) 22.sp else 16.sp,
+//                                textAlign = TextAlign.Center
+//                            )
+//                        )
+//                    }
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                    return@BoxWithConstraints
+                } else if (!state.error.isNullOrBlank()) {
+                    Box(
+                        modifier = Modifier.fillMaxSize()
+                            .align(Alignment.CenterHorizontally),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = state.error,
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                fontSize = if (isWideScreen) 22.sp else 16.sp,
+                                textAlign = TextAlign.Center
+                            )
                         )
                     }
+                } else {
+
+                    val collections = state.sections.firstOrNull()!!.collections
+
+                    // 3. Single Unified Grid
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(columnsCount),
+                        horizontalArrangement = Arrangement.spacedBy(25.dp),
+                        verticalArrangement = Arrangement.spacedBy(if (isWideScreen) 45.dp else 25.dp),
+                        // Add bottom padding here so last items aren't cut off
+                        contentPadding = PaddingValues(
+                            top = 16.dp,
+                            bottom = if (isWideScreen) 120.dp else 20.dp, // This replaces the external Spacer
+                            start = 4.dp,
+                            end = 4.dp
+                        ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .fillMaxSize()
+                    ) {
+                        itemsIndexed(collections) { index, workout ->
+
+                            val focusRequester = remember { FocusRequester() }
+
+                            if (index == 0) {
+                                LaunchedEffect(Unit) {
+                                    focusRequester.requestFocus()
+                                }
+                            }
+
+
+//                        items(state.workouts.size) { index ->
+//                            val workout = state.workouts[index]
+                            WorkoutCard(
+                                item = workout,
+                                isWideScreen = isWideScreen,
+                                onClick = { onWorkoutClick(workout) },
+                                dimens = dimens,
+                                modifier = if (index == 0) {
+                                    Modifier.focusRequester(focusRequester)
+                                } else {
+                                    Modifier
+                                }
+                            )
+                        }
+                    }
+
                 }
 
                 Spacer(modifier = Modifier.height(120.dp))

@@ -29,15 +29,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.text.toUpperCase
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.intensityrecord.app.Route
 import com.intensityrecord.core.presentation.DarkGradient
 import com.intensityrecord.core.presentation.FitnessAppTheme
 import com.intensityrecord.core.presentation.PrimaryAccent
-import com.intensityrecords.app.steptrip.domain.trips
+import com.intensityrecords.app.steptrip.domain.StepTripItem
 import com.intensityrecords.app.steptrip.presentation.steptrip.component.StepTripCard
 import intensityrecordapp.intensityapp.generated.resources.Res
 import intensityrecordapp.intensityapp.generated.resources.step_trip
@@ -48,18 +48,33 @@ import org.koin.compose.viewmodel.koinViewModel
 fun StepTripScreenRoot(
     navController: NavController,
     isWideScreen: Boolean,
-    viewModel: StepTripScreenViewModel = koinViewModel()
+    viewModel: StepTripScreenViewModel = koinViewModel(),
+    onStepTripClick: (StepTripItem) -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+
+//    LaunchedEffect(state.tripData.isEmpty()) {
+//        if (state.tripData.isEmpty()) {
+//            viewModel.onAction(StepTripAction.LoadWorkouts)
+//        }
+//    }
 
     StepTripScreen(
         state = state,
         isWideScreen = isWideScreen,
         onAction = { action ->
+//            when (action) {
+//                is StepTripAction.OnStripTripClick -> {
+//                    navController.navigate(Route.StepTripDetailScreen(id = action.tripData.title))
+//                }
+//            }
+//            viewModel.onAction(action)
             when (action) {
                 is StepTripAction.OnStripTripClick -> {
-                    navController.navigate(Route.StepTripDetailScreen(id = action.tripData.title))
+                    onStepTripClick(action.tripData)
                 }
+
+                StepTripAction.LoadWorkouts -> {}
             }
             viewModel.onAction(action)
         }
@@ -84,6 +99,38 @@ fun StepTripScreen(
         ) {
 
             val pagerState = rememberPagerState(pageCount = { state.tripData.size })
+
+            if (state.loading) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        "Loading...",
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            fontSize = if (isWideScreen) 22.sp else 16.sp,
+                            textAlign = TextAlign.Center
+                        )
+                    )
+                }
+                return@BoxWithConstraints
+            }
+
+            if (!state.error.isNullOrEmpty()) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = state.error,
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            fontSize = if (isWideScreen) 22.sp else 16.sp,
+                            textAlign = TextAlign.Center
+                        )
+                    )
+                }
+                return@BoxWithConstraints
+            }
 
             Column(
                 modifier = Modifier
@@ -113,8 +160,10 @@ fun StepTripScreen(
 
                     val pageOffset =
                         (pagerState.currentPage - page) + pagerState.currentPageOffsetFraction
-                    val scaleFactor = 1f - (0.15f * kotlin.math.abs(pageOffset)).coerceIn(0f, 0.3f)
-                    val alphaFactor = 1f - (0.3f * kotlin.math.abs(pageOffset)).coerceIn(0f, 0.5f)
+                    val scaleFactor =
+                        1f - (0.15f * kotlin.math.abs(pageOffset)).coerceIn(0f, 0.3f)
+                    val alphaFactor =
+                        1f - (0.3f * kotlin.math.abs(pageOffset)).coerceIn(0f, 0.5f)
 
                     Box(
                         modifier = Modifier
@@ -127,7 +176,7 @@ fun StepTripScreen(
                         contentAlignment = Alignment.Center
                     ) {
                         StepTripCard(
-                            item = trips[page],
+                            item = state.tripData[page],
                             onClick = { onAction(StepTripAction.OnStripTripClick(tripData = state.tripData[pagerState.currentPage])) }
                         )
                     }
@@ -144,7 +193,8 @@ fun StepTripScreen(
                 ) {
                     repeat(pagerState.pageCount) { iteration ->
                         val isSelected = pagerState.currentPage == iteration
-                        val color = if (isSelected) PrimaryAccent else Color.Gray.copy(alpha = 0.5f)
+                        val color =
+                            if (isSelected) PrimaryAccent else Color.Gray.copy(alpha = 0.5f)
                         val width = if (isSelected) 24.dp else 8.dp
 
                         Box(

@@ -121,7 +121,7 @@ val CompactDimens = AppDimens(
     borderActive = 3.dp,
     cornerRadius = 16.dp,
 
-    videoCardHeight = 255.dp,
+    videoCardHeight = 265.dp,
     buttonHeight = 40.dp,
 
     titleLarge = 20.sp,
