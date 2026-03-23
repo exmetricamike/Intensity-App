@@ -352,6 +352,9 @@ fun VideoPlayerAuto(
     playbackId: String,
     modifier: Modifier = Modifier
 ) {
+    LaunchedEffect(playbackId) {
+        println("INTENSITY MuxVideoPlayer called with playbackId=$playbackId")
+    }
     Box(
         modifier = modifier.fillMaxSize().background(Color.Black),
         contentAlignment = Alignment.Center

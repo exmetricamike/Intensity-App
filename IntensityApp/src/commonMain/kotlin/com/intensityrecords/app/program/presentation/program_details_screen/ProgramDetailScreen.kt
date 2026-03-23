@@ -241,6 +241,9 @@ fun ProgramDetailScreen(
                             modifier = Modifier.fillMaxSize().background(Color.Black),
                             contentAlignment = Alignment.Center
                         ) {
+                            LaunchedEffect(selectedVideoPlaybackId) {
+                                println("INTENSITY MuxVideoPlayer called with playbackId=$selectedVideoPlaybackId")
+                            }
                             MuxVideoPlayer(
                                 modifier = Modifier.fillMaxWidth().aspectRatio(16f / 9f),
                                 playbackId = selectedVideoPlaybackId!!
