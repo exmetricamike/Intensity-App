@@ -23,6 +23,8 @@ class IntensityApplication : Application(), SingletonImageLoader.Factory {
         }
     }
 
+    private val loggedImageErrors = mutableSetOf<String>()
+
     override fun newImageLoader(context: PlatformContext): ImageLoader {
         return ImageLoader.Builder(context)
             .components {
@@ -31,7 +33,10 @@ class IntensityApplication : Application(), SingletonImageLoader.Factory {
             }
             .eventListener(object : EventListener() {
                 override fun onError(request: ImageRequest, result: ErrorResult) {
-                    println("COIL: Failed ${request.data} — ${result.throwable}")
+                    val key = request.data.toString()
+                    if (loggedImageErrors.add(key)) {
+                        println("COIL: Failed $key — ${result.throwable}")
+                    }
                 }
             })
             .build()
