@@ -25,7 +25,7 @@ data class HomeDto(
 data class UiBlockDto(
     val id: Int,
     val title: String,
-    val image: String,
+    val image: String? = null,
     val order: Int,
     val url: String
 )

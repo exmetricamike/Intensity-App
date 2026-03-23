@@ -32,7 +32,7 @@ data class UiConfig(
 data class UiBlock(
     val id: Int,
     val title: String,
-    val imageUrl: String,
+    val imageUrl: String?,
     val order: Int,
     val url: String
 )
