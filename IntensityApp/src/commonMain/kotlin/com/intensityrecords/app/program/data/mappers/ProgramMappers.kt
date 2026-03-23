@@ -38,6 +38,8 @@ fun ProgramVideoDto.toProgramVideo(): ProgramVideo {
         title = title,
         description = description,
         coverImage = coverImage,
-        muxAssetId = muxAssetId
+        muxAssetId = muxAssetId,
+        durationLabelMin = durationLabelMin,
+        caloriesBurnedLabel = caloriesBurnedLabel
     )
 }

@@ -40,6 +40,8 @@ fun VideoDto.toWorkoutVideo(): WorkoutVideo {
         title = title,
         description = description,
         coverImage = coverImage,
-        muxAssetId = muxAssetId
+        muxAssetId = muxAssetId,
+        durationLabelMin = durationLabelMin,
+        caloriesBurnedLabel = caloriesBurnedLabel
     )
 }

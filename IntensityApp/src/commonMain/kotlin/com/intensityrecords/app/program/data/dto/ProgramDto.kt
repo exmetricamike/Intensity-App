@@ -67,6 +67,12 @@ data class ProgramVideoDto(
     @SerialName("mux_asset_id")
     val muxAssetId: String?,
 
+    @SerialName("duration_label_min")
+    val durationLabelMin: String?,
+
+    @SerialName("calories_burned_label")
+    val caloriesBurnedLabel: String?,
+
     val tags: List<String>,
 
     @SerialName("created_at")

@@ -72,5 +72,7 @@ data class WorkoutVideo(
     val title: String,
     val description: String,
     val coverImage: String?,
-    val muxAssetId: String?
+    val muxAssetId: String?,
+    val durationLabelMin: String?,
+    val caloriesBurnedLabel: String?
 )
