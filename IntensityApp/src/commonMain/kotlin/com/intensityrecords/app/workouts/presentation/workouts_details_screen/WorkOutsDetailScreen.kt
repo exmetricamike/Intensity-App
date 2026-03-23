@@ -66,11 +66,8 @@ import androidx.navigation.NavController
 import com.intensityrecord.core.presentation.PrimaryAccent
 import com.intensityrecords.app.core.presentation.LocalAppDimens
 import com.intensityrecords.app.core.presentation.components.MuxVideoPlayer
-import com.intensityrecords.app.home.presentation.home_screen.component.VideoPlayerAutoPlayPlaceholder
-import com.intensityrecords.app.workouts.domain.WorkoutItem
+import com.intensityrecords.app.core.presentation.components.VideoCard
 import com.intensityrecords.app.workouts.presentation.workouts_details_screen.component.HeroSection
-import com.intensityrecords.app.workouts.presentation.workouts_details_screen.component.SessionCard
-import com.intensityrecords.app.workouts.presentation.workouts_screen.WorkoutsState
 import intensityrecordapp.intensityapp.generated.resources.Res
 import intensityrecordapp.intensityapp.generated.resources.montserrat_regular
 import kotlinx.coroutines.launch
@@ -228,17 +225,17 @@ fun WorkoutDetailScreen(
                 ) {
                     val session = state.collection?.videos[pageIndex]
 
-                    SessionCard(
-                        session = session,
+                    VideoCard(
+                        coverImage = session?.coverImage,
+                        title = session?.title,
+                        durationLabel = session?.durationLabelMin,
+                        caloriesLabel = session?.caloriesBurnedLabel,
                         isWideScreen = isWideScreen,
-                        // Update: Pass the click action to scroll the pager
                         onClick = {
                             scope.launch {
                                 pagerState.animateScrollToPage(pageIndex)
                             }
-                            selectedVideoPlaybackId = "n2KvjXdPt02d5uPGwdqZo18g2ZGYjeiHwsvqzCIxIAFw"
-                            // Also trigger your MVI action
-//                            onAction(WorkOutsDetailAction.OnSessionClick(session))
+                            selectedVideoPlaybackId = session?.muxAssetId
                         },
                         dimens = dimens
                     )

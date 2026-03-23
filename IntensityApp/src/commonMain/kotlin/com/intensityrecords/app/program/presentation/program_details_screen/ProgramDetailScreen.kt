@@ -66,8 +66,8 @@ import com.intensityrecord.core.presentation.PrimaryAccent
 import com.intensityrecords.app.core.presentation.LocalAppDimens
 import com.intensityrecords.app.core.presentation.components.MuxVideoPlayer
 import com.intensityrecords.app.home.presentation.home_screen.component.VideoPlayerAutoPlayPlaceholder
+import com.intensityrecords.app.core.presentation.components.VideoCard
 import com.intensityrecords.app.program.presentation.program_details_screen.component.ProgramHeroSection
-import com.intensityrecords.app.program.presentation.program_details_screen.component.ProgramSessionCard
 import intensityrecordapp.intensityapp.generated.resources.Res
 import intensityrecordapp.intensityapp.generated.resources.montserrat_regular
 import kotlinx.coroutines.launch
@@ -205,12 +205,15 @@ fun ProgramDetailScreen(
                 ) {
                     val session = state.collection?.videos?.get(pageIndex)
 
-                    ProgramSessionCard(
-                        session = session,
+                    VideoCard(
+                        coverImage = session?.coverImage,
+                        title = session?.title,
+                        durationLabel = session?.durationLabelMin,
+                        caloriesLabel = session?.caloriesBurnedLabel,
                         isWideScreen = isWideScreen,
                         onClick = {
                             scope.launch { pagerState.animateScrollToPage(pageIndex) }
-                            selectedVideoPlaybackId = "n2KvjXdPt02d5uPGwdqZo18g2ZGYjeiHwsvqzCIxIAFw"
+                            selectedVideoPlaybackId = session?.muxAssetId
                         },
                         dimens = dimens
                     )
