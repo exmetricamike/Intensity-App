@@ -186,6 +186,8 @@ fun ContentCard(
 
                     "/workout" -> navController.navigate(Route.WorkOuts)
 
+                    "/program" -> navController.navigate(Route.Programs)
+
                     "/live" -> navController.navigate(Route.Live)
 
                     "/dailyvideo" -> navController.navigate(Route.VideoDetail)

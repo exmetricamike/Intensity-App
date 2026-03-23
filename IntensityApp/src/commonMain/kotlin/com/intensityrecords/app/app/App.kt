@@ -66,6 +66,8 @@ import com.intensityrecords.app.workouts.presentation.workouts_details_screen.Wo
 import com.intensityrecords.app.workouts.presentation.workouts_details_screen.WorkOutsDetailScreenViewModel
 import com.intensityrecords.app.workouts.presentation.workouts_details_screen.WorkoutDetailScreenRoot
 import com.intensityrecords.app.workouts.presentation.workouts_screen.WorkoutScreenRoot
+import com.intensityrecords.app.program.presentation.program_screen.ProgramScreenRoot
+import com.intensityrecords.app.program.presentation.program_details_screen.ProgramDetailScreenRoot
 import intensityrecordapp.intensityapp.generated.resources.Res
 import intensityrecordapp.intensityapp.generated.resources.home
 import intensityrecordapp.intensityapp.generated.resources.live
@@ -820,6 +822,27 @@ fun MainApp(
                 val args = backStackEntry.toRoute<Route.WorkOutsDetailsScreen>()
 
                 WorkoutDetailScreenRoot(
+                    onBackClick = { navController.navigateUp() },
+                    isWideScreen = isWideScreen,
+                    navController = navController,
+                    collectionId = args.id
+                )
+            }
+
+            composable<Route.Programs>(
+                enterTransition = { fadeIn(animationSpec = tween(animationDuration)) },
+                exitTransition = { fadeOut(animationSpec = tween(animationDuration)) },
+                popEnterTransition = { fadeIn(animationSpec = tween(animationDuration)) },
+                popExitTransition = { fadeOut(animationSpec = tween(animationDuration)) }
+            ) {
+                ProgramScreenRoot(navController, isWideScreen)
+            }
+
+            composable<Route.ProgramDetailsScreen> { backStackEntry ->
+
+                val args = backStackEntry.toRoute<Route.ProgramDetailsScreen>()
+
+                ProgramDetailScreenRoot(
                     onBackClick = { navController.navigateUp() },
                     isWideScreen = isWideScreen,
                     navController = navController,

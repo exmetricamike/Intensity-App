@@ -32,6 +32,12 @@ import com.intensityrecords.app.workouts.domain.WorkoutRepository
 import com.intensityrecords.app.workouts.presentation.SelectedWorkOutViewModel
 import com.intensityrecords.app.workouts.presentation.workouts_details_screen.WorkOutsDetailScreenViewModel
 import com.intensityrecords.app.workouts.presentation.workouts_screen.WorkOutsScreenViewModel
+import com.intensityrecords.app.program.data.network.KtorRemoteProgramDataSource
+import com.intensityrecords.app.program.data.network.RemoteProgramDataSource
+import com.intensityrecords.app.program.data.repository.DefaultProgramRepository
+import com.intensityrecords.app.program.domain.ProgramRepository
+import com.intensityrecords.app.program.presentation.program_details_screen.ProgramDetailScreenViewModel
+import com.intensityrecords.app.program.presentation.program_screen.ProgramsScreenViewModel
 import com.intensityrecords.app.login.presentation.login_screen.LoginScreenViewModel
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -56,12 +62,14 @@ val sharedModule = module {
     single { SessionProvider(get()) }
 
     singleOf(::KtorRemoteWorkoutDataSource).bind<RemoteWorkoutDataSource>()
+    singleOf(::KtorRemoteProgramDataSource).bind<RemoteProgramDataSource>()
     singleOf(::KtorRemoteStepTripDataSource).bind<RemoteStepTripDataSource>()
     singleOf(::KtorRemoteMobilityDataSource).bind<RemoteMobilityDataSource>()
     singleOf(::KtorRemoteAuthDataSource).bind<RemoteAuthDataSource>()
     singleOf(::KtorRemoteHomeDataSource).bind<RemoteHomeDataSource>()
 
     singleOf(::DefaultWorkoutRepository).bind<WorkoutRepository>()
+    singleOf(::DefaultProgramRepository).bind<ProgramRepository>()
     singleOf(::DefaultStepTripRepository).bind<StepTripRepository>()
     singleOf(::DefaultMobilityRepository).bind<MobilityRepository>()
     singleOf(::DefaultAuthRepository).bind<AuthRepository>()
@@ -91,6 +99,8 @@ val sharedModule = module {
     viewModelOf(::MobilityScreenViewModel)
     viewModelOf(::WorkOutsScreenViewModel)
     viewModelOf(::WorkOutsDetailScreenViewModel)
+    viewModelOf(::ProgramsScreenViewModel)
+    viewModelOf(::ProgramDetailScreenViewModel)
     viewModelOf(::StepTripScreenViewModel)
     viewModelOf(::StepTripsDetailScreenViewModel)
     viewModelOf(::LanguageViewModel)
