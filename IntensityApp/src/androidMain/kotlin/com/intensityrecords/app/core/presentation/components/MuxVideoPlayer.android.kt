@@ -9,11 +9,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
+import androidx.media3.exoplayer.DefaultLoadControl
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import com.mux.player.MuxPlayer
 import com.mux.player.media.MediaItems
-import com.mux.player.media.PlaybackResolution
 
 //@Composable
 //actual fun MuxVideoPlayer(
@@ -97,6 +97,17 @@ actual fun MuxVideoPlayer(
             .enableSmartCache(true)
             .applyExoConfig {
                 setHandleAudioBecomingNoisy(true)
+                setLoadControl(
+                    DefaultLoadControl.Builder()
+                        .setBufferDurationsMs(
+                            /* minBufferMs = */ 15_000,
+                            /* maxBufferMs = */ 60_000,
+                            /* bufferForPlaybackMs = */ 2_500,
+                            /* bufferForPlaybackAfterRebufferMs = */ 5_000
+                        )
+                        .setPrioritizeTimeOverSizeThresholds(true)
+                        .build()
+                )
             }
             .build()
     }
@@ -108,14 +119,12 @@ actual fun MuxVideoPlayer(
     }
 
     val mediaItem = remember(playbackId) {
-        MediaItems.builderFromMuxPlaybackId(
-            playbackId,
-            minResolution = PlaybackResolution.HD_720
-        ).setMediaMetadata(
-            MediaMetadata.Builder()
-                .setTitle("Mux Video")
-                .build()
-        ).build()
+        MediaItems.builderFromMuxPlaybackId(playbackId)
+            .setMediaMetadata(
+                MediaMetadata.Builder()
+                    .setTitle("Mux Video")
+                    .build()
+            ).build()
     }
 
     AndroidView(
