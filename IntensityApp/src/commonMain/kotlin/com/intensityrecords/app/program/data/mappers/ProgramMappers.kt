@@ -39,7 +39,7 @@ fun ProgramVideoDto.toProgramVideo(): ProgramVideo {
         description = description,
         coverImage = coverImage,
         muxAssetId = muxAssetId,
-        durationLabelMin = durationLabelMin,
-        caloriesBurnedLabel = caloriesBurnedLabel
+        durationLabelMin = durationLabelMin?.let { "$it MIN" },
+        caloriesBurnedLabel = caloriesBurnedLabel?.let { "$it KCAL" }
     )
 }

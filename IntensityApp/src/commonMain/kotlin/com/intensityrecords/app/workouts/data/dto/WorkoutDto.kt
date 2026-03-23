@@ -71,10 +71,10 @@ data class VideoDto(
     val muxAssetId: String?,
 
     @SerialName("duration_label_min")
-    val durationLabelMin: String?,
+    val durationLabelMin: Int?,
 
     @SerialName("calories_burned_label")
-    val caloriesBurnedLabel: String?,
+    val caloriesBurnedLabel: Int?,
 
     val tags: List<String>,
 
