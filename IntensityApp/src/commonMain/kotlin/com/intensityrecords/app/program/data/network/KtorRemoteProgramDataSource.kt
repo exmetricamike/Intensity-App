@@ -16,7 +16,7 @@ class KtorRemoteProgramDataSource(
     override suspend fun getPrograms(id: String): Result<List<ProgramResponseDto>, DataError.Remote> {
         val result = safeCall<List<ProgramResponseDto>> {
             client.get(
-                "${GlobalConfig.API_ENDPOINT}api/${GlobalConfig.API_VERSION}/hotel/program?id=$id"
+                "${GlobalConfig.API_ENDPOINT}api/${GlobalConfig.API_VERSION}/hotel/$id/program/"
             )
         }
         if (GlobalConfig.DEBUG_PRINT_API_RESPONSE) println("APP_API Response: $result")

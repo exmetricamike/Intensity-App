@@ -38,6 +38,6 @@ fun ProgramVideoDto.toProgramVideo(): ProgramVideo {
         title = title,
         description = description,
         coverImage = coverImage,
-        youtubeUrl = youtubeUrlEn
+        muxAssetId = muxAssetId
     )
 }

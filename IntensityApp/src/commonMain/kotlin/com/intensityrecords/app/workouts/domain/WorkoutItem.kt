@@ -72,5 +72,5 @@ data class WorkoutVideo(
     val title: String,
     val description: String,
     val coverImage: String?,
-    val youtubeUrl: String?
+    val muxAssetId: String?
 )

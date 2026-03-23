@@ -67,14 +67,8 @@ data class VideoDto(
     @SerialName("cover_image")
     val coverImage: String?,
 
-    @SerialName("youtube_url_en")
-    val youtubeUrlEn: String?,
-
-    @SerialName("youtube_url_fr")
-    val youtubeUrlFr: String?,
-
-    @SerialName("youtube_url_nl")
-    val youtubeUrlNl: String?,
+    @SerialName("mux_asset_id")
+    val muxAssetId: String?,
 
     val tags: List<String>,
 

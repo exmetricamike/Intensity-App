@@ -18,7 +18,7 @@ class KtorRemoteWorkoutDataSource(
     override suspend fun getWorkouts(id: String): Result<List<WorkoutResponseDto>, DataError.Remote> {
         val result = safeCall<List<WorkoutResponseDto>> {
             client.get(
-                "${GlobalConfig.API_ENDPOINT}api/${GlobalConfig.API_VERSION}/hotel/workout?id=$id"
+                "${GlobalConfig.API_ENDPOINT}api/${GlobalConfig.API_VERSION}/hotel/$id/workout"
             )
         }
         if (GlobalConfig.DEBUG_PRINT_API_RESPONSE) println("APP_API Response: $result")
