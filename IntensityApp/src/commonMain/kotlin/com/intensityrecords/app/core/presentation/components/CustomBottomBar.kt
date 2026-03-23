@@ -93,7 +93,6 @@ fun CustomBottomBar(
         }
     }
 
-    println(viewModel.languageCode.value)
 
     Box(
         modifier = barModifier

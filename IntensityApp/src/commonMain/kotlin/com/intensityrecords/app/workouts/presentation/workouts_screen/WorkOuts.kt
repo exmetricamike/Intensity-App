@@ -113,8 +113,6 @@ fun WorkoutScreen(
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                println("Workouts count = ${state.sections.size}")
-                println("Workouts count = ${state.sections}")
 
                 if (state.isLoading) {
 //                    Box(

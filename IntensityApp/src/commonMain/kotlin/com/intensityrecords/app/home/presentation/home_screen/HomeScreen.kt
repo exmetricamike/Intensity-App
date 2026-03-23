@@ -126,9 +126,6 @@ fun HomeScreen(
 
                 Spacer(modifier = Modifier.height(if (isWideScreen) screenHeight * 0.05f else screenHeight * 0.03f)) // 5% dynamic spacer
 
-                println("BLOCKS  :::: ${state.items?.blocks}")
-                println("ITEMS :::: ${state.items}")
-
                 if (isWideScreen) {
                     LazyRow(
                         horizontalArrangement = Arrangement.spacedBy(16.dp),

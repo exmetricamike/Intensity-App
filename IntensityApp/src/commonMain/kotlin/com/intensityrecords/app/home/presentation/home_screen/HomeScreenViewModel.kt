@@ -49,8 +49,6 @@ class HomeScreenViewModel(
 
             val result = homeRepository.getHome(id)
 
-            println("AUTH ID :::: ${sessionProvider.getAuthId()}")
-
             result.onSuccess { data ->
                 _state.update {
                     it.copy(

@@ -106,7 +106,7 @@ fun App() {
             val sessionProvider: SessionProvider = koinInject()
             val token by sessionProvider.authToken.collectAsStateWithLifecycle(initialValue = null)
             val id by sessionProvider.authId.collectAsStateWithLifecycle(initialValue = null)
-            println("$id == $token")
+
 
             val startDestination = if (token == null) Route.Login else Route.Home
 
