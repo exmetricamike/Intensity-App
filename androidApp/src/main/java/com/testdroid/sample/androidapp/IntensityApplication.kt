@@ -12,6 +12,7 @@ import coil3.request.ImageRequest
 import com.intensityrecords.app.di.initKoin
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
+import io.ktor.client.plugins.HttpTimeout
 import org.koin.android.ext.koin.androidContext
 
 class IntensityApplication : Application(), SingletonImageLoader.Factory {
@@ -28,7 +29,15 @@ class IntensityApplication : Application(), SingletonImageLoader.Factory {
     override fun newImageLoader(context: PlatformContext): ImageLoader {
         return ImageLoader.Builder(context)
             .components {
-                add(KtorNetworkFetcherFactory(httpClient = { HttpClient(OkHttp) }))
+                add(KtorNetworkFetcherFactory(httpClient = {
+                    HttpClient(OkHttp) {
+                        install(HttpTimeout) {
+                            requestTimeoutMillis = 15_000
+                            connectTimeoutMillis = 10_000
+                            socketTimeoutMillis = 15_000
+                        }
+                    }
+                }))
                 add(BitmapFactoryDecoder.Factory())
             }
             .eventListener(object : EventListener() {

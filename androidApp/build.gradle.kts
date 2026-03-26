@@ -5,10 +5,11 @@ plugins {
 
 
 android {
-    namespace = "com.testdroid.sample.androidapp"
+    namespace = "com.intensityrecords.app.android"
     compileSdk = 36
 
     defaultConfig {
+        applicationId = "com.intensityrecord.app"
         minSdk = 26
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

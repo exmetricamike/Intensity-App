@@ -2,7 +2,18 @@
   "permissions": {
     "allow": [
       "Bash(cmd /c \"gradlew.bat --version\")",
-      "Bash(grep -r \"tasks\\\\.register\\\\|fun test\\\\|fun build\\\\|fun run\" C:UsersmicpaRootDevelopmentAppDev_KMPIntensity-KMP-App --include=*.gradle.kts)"
+      "Bash(grep -r \"tasks\\\\.register\\\\|fun test\\\\|fun build\\\\|fun run\" C:UsersmicpaRootDevelopmentAppDev_KMPIntensity-KMP-App --include=*.gradle.kts)",
+      "Read(//mnt/c/Users/micpa/Root/Development/AppDev_KMP/**)",
+      "Bash(./gradlew androidApp:assembleDebug)",
+      "Bash(where java:*)",
+      "Read(//c/Program Files/**)",
+      "Read(//c/Program Files/Microsoft//**)",
+      "Bash(find C:/Users/micpa/Root/Development/AppDev_KMP/Intensity-KMP-App -name *.xml -path */androidMain/*)",
+      "Bash(find C:/Users/micpa/Root/Development/AppDev_KMP/Intensity-KMP-App/androidApp/build -name *.txt -o -name *merger* -o -name *manifest*)",
+      "Bash(find C:/Users/micpa/Root/Development/AppDev_KMP/Intensity-KMP-App -path */caches* -name *.aar)",
+      "Read(//c/tmp/**)",
+      "Bash(cp \"C:/Users/micpa/.gradle/caches/modules-2/files-2.1/com.mux.player/android/1.0.0/869c720c1be3c600c401c01aebc9d1a4b6d60afe/android-1.0.0.aar\" mux.aar)",
+      "Bash(unzip -p mux.aar AndroidManifest.xml)"
     ]
   }
 }
