@@ -40,3 +40,4 @@ local.properties
 !*.xcworkspace/contents.xcworkspacedata
 **/xcshareddata/WorkspaceSettings.xcsettings
 /nul
+/androidApp/release/

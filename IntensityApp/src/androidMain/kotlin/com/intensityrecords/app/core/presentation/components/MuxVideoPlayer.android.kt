@@ -7,11 +7,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.media3.common.Player
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.exoplayer.DefaultLoadControl
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
+import android.util.Log
 import com.mux.player.MuxPlayer
 import com.mux.player.media.MediaItems
 
@@ -90,11 +92,12 @@ actual fun MuxVideoPlayer(
     playbackId: String
 ) {
     val context = LocalContext.current
+    val enableSmartCache = false
 
     val player = remember {
         MuxPlayer.Builder(context)
             .enableLogcat(true)
-            .enableSmartCache(true)
+            .enableSmartCache(enableSmartCache)
             .applyExoConfig {
                 setHandleAudioBecomingNoisy(true)
                 setLoadControl(
@@ -112,8 +115,30 @@ actual fun MuxVideoPlayer(
             .build()
     }
 
-    DisposableEffect(Unit) {
+    DisposableEffect(player) {
+        val listener = object : Player.Listener {
+            override fun onPlaybackStateChanged(playbackState: Int) {
+                val state = when (playbackState) {
+                    Player.STATE_IDLE -> "IDLE"
+                    Player.STATE_BUFFERING -> "BUFFERING"
+                    Player.STATE_READY -> "READY"
+                    Player.STATE_ENDED -> "ENDED"
+                    else -> "UNKNOWN"
+                }
+                Log.d("MuxVideoPlayer", "state=$state playbackId=$playbackId")
+            }
+
+            override fun onIsLoadingChanged(isLoading: Boolean) {
+                Log.d("MuxVideoPlayer", "loading=$isLoading playbackId=$playbackId")
+            }
+
+            override fun onPlayerError(error: androidx.media3.common.PlaybackException) {
+                Log.e("MuxVideoPlayer", "error playbackId=$playbackId code=${error.errorCodeName}", error)
+            }
+        }
+        player.addListener(listener)
         onDispose {
+            player.removeListener(listener)
             player.release()
         }
     }
