@@ -39,12 +39,13 @@ import androidx.navigation.toRoute
 import com.intensityrecord.core.presentation.DarkGradient
 import com.intensityrecord.core.presentation.FitnessAppTheme
 import com.intensityrecords.app.core.data.AuthState
+import com.intensityrecords.app.core.data.HotelSession
 import com.intensityrecords.app.core.data.SessionProvider
 import com.intensityrecords.app.core.presentation.CompactDimens
 import com.intensityrecords.app.core.presentation.ExpandedDimens
 import com.intensityrecords.app.core.presentation.LanguageViewModel
 import com.intensityrecords.app.core.presentation.LocalAppDimens
-import com.intensityrecords.app.core.presentation.components.AppHeader
+import com.intensityrecords.app.core.presentation.components.HotelHeader
 import com.intensityrecords.app.core.presentation.components.CustomBottomBar
 import com.intensityrecords.app.core.presentation.utils.LocalAppLocale
 import com.intensityrecords.app.core.presentation.utils.currentDeviceConfiguration
@@ -659,6 +660,7 @@ fun MainApp(
     val navController = rememberNavController()
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = currentBackStackEntry?.destination
+    val hotelSession: HotelSession = koinInject()
     val scope = rememberCoroutineScope()
 
     val currentTab = when {
@@ -686,21 +688,21 @@ fun MainApp(
 
     val showBars = currentDestination?.hasRoute<Route.Login>() == false
 
-    val isLoginScreen = currentDestination?.hasRoute<Route.Login>() == true
-
     Scaffold(
         containerColor = Color.Transparent,
         modifier = Modifier.windowInsetsPadding(WindowInsets.safeDrawing),
         topBar = {
-            AppHeader(
-                isWideScreen = isWideScreen,
-                onLogOut = {
-                    scope.launch {
-                        sessionProvider.clearSession()
+            if (showBars) {
+                HotelHeader(
+                    isWideScreen = isWideScreen,
+                    onLogOut = {
+                        scope.launch {
+                            sessionProvider.clearSession()
+                            hotelSession.clearTheme()
+                        }
                     }
-                },
-                isLoginScreen = isLoginScreen
-            )
+                )
+            }
         },
         bottomBar = {
             if (showBars) {
