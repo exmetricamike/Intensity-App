@@ -4,7 +4,6 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -37,7 +36,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -66,12 +64,8 @@ import com.intensityrecords.app.core.presentation.components.MuxVideoPlayer
 import com.intensityrecords.app.home.domain.UiBlock
 import com.intensityrecords.app.workouts.presentation.workouts_details_screen.component.StatBadge
 import com.intensityrecords.app.workouts.presentation.workouts_screen.component.pulseAnimation
-import com.multiplatform.webview.web.WebView
-import com.multiplatform.webview.web.rememberWebViewStateWithHTMLData
 import intensityrecordapp.intensityapp.generated.resources.Res
-import intensityrecordapp.intensityapp.generated.resources._1
 import intensityrecordapp.intensityapp.generated.resources.start_now
-import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable

@@ -68,12 +68,24 @@ import com.intensityrecords.app.workouts.presentation.workouts_details_screen.Wo
 import com.intensityrecords.app.workouts.presentation.workouts_screen.WorkoutScreenRoot
 import com.intensityrecords.app.program.presentation.program_screen.ProgramScreenRoot
 import com.intensityrecords.app.program.presentation.program_details_screen.ProgramDetailScreenRoot
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Text
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
+import com.intensityrecords.app.core.presentation.Inter
 import intensityrecordapp.intensityapp.generated.resources.Res
 import intensityrecordapp.intensityapp.generated.resources.home
+import intensityrecordapp.intensityapp.generated.resources.ic_intensity_logo
 import intensityrecordapp.intensityapp.generated.resources.live
 import intensityrecordapp.intensityapp.generated.resources.mobility
 import intensityrecordapp.intensityapp.generated.resources.workouts
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
@@ -602,12 +614,36 @@ fun App() {
 
 @Composable
 fun SplashScreen() {
-
     Box(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black),
         contentAlignment = Alignment.Center
     ) {
-        CircularProgressIndicator()
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Image(
+                painter = painterResource(Res.drawable.ic_intensity_logo),
+                contentDescription = "Intensity logo",
+                modifier = Modifier.size(120.dp)
+            )
+            Spacer(modifier = Modifier.height(24.dp))
+            Text(
+                text = "Intensity",
+                color = Color.White,
+                fontSize = 28.sp,
+                fontWeight = FontWeight.Bold,
+                fontFamily = Inter
+            )
+            Spacer(modifier = Modifier.height(32.dp))
+            CircularProgressIndicator(
+                color = Color.White,
+                strokeWidth = 2.dp,
+                modifier = Modifier.size(28.dp)
+            )
+        }
     }
 }
 

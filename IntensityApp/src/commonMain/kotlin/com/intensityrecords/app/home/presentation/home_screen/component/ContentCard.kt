@@ -216,6 +216,7 @@ fun ContentCard(
                     model = item.imageUrl,
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
+                    alignment = if (isWideScreen) Alignment.Center else Alignment.TopCenter,
                     modifier = Modifier.fillMaxSize(),
                     loading = {
                         // This box will show the shimmer animation until the image is ready
