@@ -115,7 +115,7 @@ fun HotelHeader(
                                 if (isWideScreen)
                                     Modifier.width(320.dp).heightIn(max = 110.dp)
                                 else
-                                    Modifier.fillMaxWidth(0.9f).heightIn(max = 140.dp)
+                                    Modifier.fillMaxWidth(0.8f).heightIn(max = 140.dp)
                             )
                     )
                 }
