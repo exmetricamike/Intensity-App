@@ -67,8 +67,14 @@ data class VideoDto(
     @SerialName("cover_image")
     val coverImage: String?,
 
-    @SerialName("mux_asset_id")
-    val muxAssetId: String?,
+    @SerialName("mux_asset_id_en")
+    val muxAssetIdEn: String?,
+
+    @SerialName("mux_asset_id_fr")
+    val muxAssetIdFr: String?,
+
+    @SerialName("mux_asset_id_nl")
+    val muxAssetIdNl: String?,
 
     @SerialName("duration_label_min")
     val durationLabelMin: Int?,

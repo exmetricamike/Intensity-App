@@ -40,7 +40,9 @@ fun VideoDto.toWorkoutVideo(): WorkoutVideo {
         title = title,
         description = description,
         coverImage = coverImage,
-        muxAssetId = muxAssetId,
+        muxAssetIdEn = muxAssetIdEn,
+        muxAssetIdFr = muxAssetIdFr,
+        muxAssetIdNl = muxAssetIdNl,
         durationLabelMin = durationLabelMin?.let { "$it MIN" },
         caloriesBurnedLabel = caloriesBurnedLabel?.let { "$it KCAL" }
     )

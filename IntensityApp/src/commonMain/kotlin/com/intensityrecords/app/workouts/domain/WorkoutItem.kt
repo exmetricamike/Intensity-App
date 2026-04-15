@@ -72,7 +72,15 @@ data class WorkoutVideo(
     val title: String,
     val description: String,
     val coverImage: String?,
-    val muxAssetId: String?,
+    val muxAssetIdEn: String?,
+    val muxAssetIdFr: String?,
+    val muxAssetIdNl: String?,
     val durationLabelMin: String?,
     val caloriesBurnedLabel: String?
-)
+) {
+    fun resolvedMuxAssetId(locale: String): String? = when (locale.take(2).lowercase()) {
+        "fr" -> muxAssetIdFr ?: muxAssetIdEn
+        "nl" -> muxAssetIdNl ?: muxAssetIdEn
+        else -> muxAssetIdEn
+    }
+}

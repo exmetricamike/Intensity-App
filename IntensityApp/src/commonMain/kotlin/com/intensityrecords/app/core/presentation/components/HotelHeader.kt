@@ -13,13 +13,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.Logout
-import androidx.compose.material.icons.rounded.Spa
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -109,28 +109,36 @@ fun HotelHeader(
                         model = logoUrl,
                         contentDescription = "Hotel logo",
                         contentScale = ContentScale.Fit,
-                        modifier = Modifier.size(200.dp)
-                    )
-                } else {
-                    Icon(
-                        imageVector = Icons.Rounded.Spa,
-                        contentDescription = "Hotel logo",
-                        tint = headerTextColor,
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier
+                            .padding(vertical = 6.dp)
+                            .then(
+                                if (isWideScreen)
+                                    Modifier.width(320.dp).heightIn(max = 110.dp)
+                                else
+                                    Modifier.fillMaxWidth(0.9f).heightIn(max = 140.dp)
+                            )
                     )
                 }
+//                else {
+//                    Icon(
+//                        imageVector = Icons.Rounded.Spa,
+//                        contentDescription = "Hotel logo",
+//                        tint = headerTextColor,
+//                        modifier = Modifier.size(24.dp)
+//                    )
+//                }
                 Spacer(modifier = Modifier.width(12.dp))
             }
 
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(
-                    text = theme.hotelName,
-                    style = MaterialTheme.typography.headlineMedium.copy(
-                        color = headerTextColor.copy(alpha = 0.6f)
-                    )
-                )
                 val tagline = theme.hotelTagline
                 if (theme.showTagline && tagline != null) {
+                    Text(
+                        text = theme.hotelName,
+                        style = MaterialTheme.typography.headlineMedium.copy(
+                            color = headerTextColor.copy(alpha = 0.6f)
+                        )
+                    )
                     Text(
                         text = tagline,
                         style = MaterialTheme.typography.headlineMedium.copy(
