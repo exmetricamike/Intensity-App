@@ -39,6 +39,7 @@ fun HotelThemeDto.toHotelTheme(): HotelTheme {
         hotelTagline = hotelTagline,
         showLogo = showLogo,
         showHeader = showHeader,
+        showTagline = showTagline,
         primaryColor = primaryColor,
         secondaryColor = secondaryColor,
         headerTextColor = headerTextColor,

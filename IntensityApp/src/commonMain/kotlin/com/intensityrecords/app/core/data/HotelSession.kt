@@ -27,6 +27,7 @@ class HotelSession {
             hotelTagline = "",
             showLogo = true,
             showHeader = true,
+            showTagline = true,
             primaryColor = null,
             secondaryColor = null,
             headerTextColor = null,

@@ -45,6 +45,9 @@ data class HotelThemeDto(
     @SerialName("show_header")
     val showHeader: Boolean,
 
+    @SerialName("show_tagline")
+    val showTagline: Boolean = false,
+
     @SerialName("primary_color")
     val primaryColor: String? = null,
 

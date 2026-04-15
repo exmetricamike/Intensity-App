@@ -109,7 +109,7 @@ fun HotelHeader(
                         model = logoUrl,
                         contentDescription = "Hotel logo",
                         contentScale = ContentScale.Fit,
-                        modifier = Modifier.size(40.dp)
+                        modifier = Modifier.size(200.dp)
                     )
                 } else {
                     Icon(
@@ -129,7 +129,8 @@ fun HotelHeader(
                         color = headerTextColor.copy(alpha = 0.6f)
                     )
                 )
-                theme.hotelTagline?.let { tagline ->
+                val tagline = theme.hotelTagline
+                if (theme.showTagline && tagline != null) {
                     Text(
                         text = tagline,
                         style = MaterialTheme.typography.headlineMedium.copy(

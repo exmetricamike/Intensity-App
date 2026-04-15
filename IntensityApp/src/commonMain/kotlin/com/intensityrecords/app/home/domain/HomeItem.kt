@@ -22,6 +22,7 @@ data class HotelTheme(
     val hotelTagline: String?,
     val showLogo: Boolean,
     val showHeader: Boolean,
+    val showTagline: Boolean,
     val primaryColor: String?,
     val secondaryColor: String?,
     val headerTextColor: String?,
