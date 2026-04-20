@@ -39,12 +39,13 @@ import androidx.navigation.toRoute
 import com.intensityrecord.core.presentation.DarkGradient
 import com.intensityrecord.core.presentation.FitnessAppTheme
 import com.intensityrecords.app.core.data.AuthState
+import com.intensityrecords.app.core.data.HotelSession
 import com.intensityrecords.app.core.data.SessionProvider
 import com.intensityrecords.app.core.presentation.CompactDimens
 import com.intensityrecords.app.core.presentation.ExpandedDimens
 import com.intensityrecords.app.core.presentation.LanguageViewModel
 import com.intensityrecords.app.core.presentation.LocalAppDimens
-import com.intensityrecords.app.core.presentation.components.AppHeader
+import com.intensityrecords.app.core.presentation.components.HotelHeader
 import com.intensityrecords.app.core.presentation.components.CustomBottomBar
 import com.intensityrecords.app.core.presentation.utils.LocalAppLocale
 import com.intensityrecords.app.core.presentation.utils.currentDeviceConfiguration
@@ -68,12 +69,24 @@ import com.intensityrecords.app.workouts.presentation.workouts_details_screen.Wo
 import com.intensityrecords.app.workouts.presentation.workouts_screen.WorkoutScreenRoot
 import com.intensityrecords.app.program.presentation.program_screen.ProgramScreenRoot
 import com.intensityrecords.app.program.presentation.program_details_screen.ProgramDetailScreenRoot
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Text
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
+import com.intensityrecords.app.core.presentation.Inter
 import intensityrecordapp.intensityapp.generated.resources.Res
 import intensityrecordapp.intensityapp.generated.resources.home
+import intensityrecordapp.intensityapp.generated.resources.ic_intensity_logo
 import intensityrecordapp.intensityapp.generated.resources.live
 import intensityrecordapp.intensityapp.generated.resources.mobility
 import intensityrecordapp.intensityapp.generated.resources.workouts
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
@@ -602,12 +615,36 @@ fun App() {
 
 @Composable
 fun SplashScreen() {
-
     Box(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black),
         contentAlignment = Alignment.Center
     ) {
-        CircularProgressIndicator()
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Image(
+                painter = painterResource(Res.drawable.ic_intensity_logo),
+                contentDescription = "Intensity logo",
+                modifier = Modifier.size(120.dp)
+            )
+            Spacer(modifier = Modifier.height(24.dp))
+            Text(
+                text = "Intensity",
+                color = Color.White,
+                fontSize = 28.sp,
+                fontWeight = FontWeight.Bold,
+                fontFamily = Inter
+            )
+            Spacer(modifier = Modifier.height(32.dp))
+            CircularProgressIndicator(
+                color = Color.White,
+                strokeWidth = 2.dp,
+                modifier = Modifier.size(28.dp)
+            )
+        }
     }
 }
 
@@ -623,6 +660,7 @@ fun MainApp(
     val navController = rememberNavController()
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = currentBackStackEntry?.destination
+    val hotelSession: HotelSession = koinInject()
     val scope = rememberCoroutineScope()
 
     val currentTab = when {
@@ -650,21 +688,21 @@ fun MainApp(
 
     val showBars = currentDestination?.hasRoute<Route.Login>() == false
 
-    val isLoginScreen = currentDestination?.hasRoute<Route.Login>() == true
-
     Scaffold(
         containerColor = Color.Transparent,
         modifier = Modifier.windowInsetsPadding(WindowInsets.safeDrawing),
         topBar = {
-            AppHeader(
-                isWideScreen = isWideScreen,
-                onLogOut = {
-                    scope.launch {
-                        sessionProvider.clearSession()
+            if (showBars) {
+                HotelHeader(
+                    isWideScreen = isWideScreen,
+                    onLogOut = {
+                        scope.launch {
+                            sessionProvider.clearSession()
+                            hotelSession.clearTheme()
+                        }
                     }
-                },
-                isLoginScreen = isLoginScreen
-            )
+                )
+            }
         },
         bottomBar = {
             if (showBars) {

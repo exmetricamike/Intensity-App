@@ -258,8 +258,11 @@ fun WorkoutCard(
                 SubcomposeAsyncImage(
                     model = item.coverImage,
                     contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .wrapContentWidth()
+                        .align(Alignment.CenterEnd),
                     loading = {
                         // This box will show the shimmer animation until the image is ready
                         Box(

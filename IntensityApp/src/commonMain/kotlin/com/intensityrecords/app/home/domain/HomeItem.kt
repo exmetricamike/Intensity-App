@@ -1,12 +1,5 @@
 package com.intensityrecords.app.home.domain
 
-import intensityrecordapp.intensityapp.generated.resources.Res
-import intensityrecordapp.intensityapp.generated.resources._2
-import intensityrecordapp.intensityapp.generated.resources._3
-import intensityrecordapp.intensityapp.generated.resources._4
-import intensityrecordapp.intensityapp.generated.resources._5
-import org.jetbrains.compose.resources.DrawableResource
-
 
 //data class HomeItem(
 //    val title: String,
@@ -21,12 +14,29 @@ import org.jetbrains.compose.resources.DrawableResource
 //    HomeItem("Step Trip", Res.drawable._5)
 //)
 
+data class HotelTheme(
+    val id: Int,
+    val hotelName: String,
+    val hotelUrlName: String,
+    val hotelLogo: String?,
+    val hotelTagline: String?,
+    val showLogo: Boolean,
+    val showHeader: Boolean,
+    val showTagline: Boolean,
+    val primaryColor: String?,
+    val secondaryColor: String?,
+    val headerTextColor: String?,
+    val titleTextColor: String?,
+    val textColor: String?
+)
+
 data class UiConfig(
     val id: Int,
     val name: String,
     val urlName: String,
     val blocks: List<UiBlock>,
-    val design: String
+    val design: String,
+    val theme: HotelTheme?
 )
 
 data class UiBlock(

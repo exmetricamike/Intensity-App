@@ -2,6 +2,7 @@ package com.intensityrecords.app.home.presentation.home_screen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.intensityrecords.app.core.data.HotelSession
 import com.intensityrecords.app.core.data.SessionProvider
 import com.intensityrecords.app.core.domain.onError
 import com.intensityrecords.app.core.domain.onSuccess
@@ -15,7 +16,8 @@ import kotlinx.coroutines.launch
 
 class HomeScreenViewModel(
     private val homeRepository: HomeRepository,
-    private val sessionProvider: SessionProvider
+    private val sessionProvider: SessionProvider,
+    private val hotelSession: HotelSession
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(HomeState(isLoading = true))
@@ -50,6 +52,7 @@ class HomeScreenViewModel(
             val result = homeRepository.getHome(id)
 
             result.onSuccess { data ->
+                data.theme?.let { hotelSession.setTheme(it) }
                 _state.update {
                     it.copy(
                         isLoading = false,

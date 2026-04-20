@@ -44,7 +44,7 @@ val Inter
 val Typography: Typography
     @Composable get() = Typography(
 
-        // This is used in AppHeader.
+        // This is used in HotelHeader.
         headlineMedium = TextStyle(
             fontFamily = Inter,
             fontWeight = FontWeight.Bold,

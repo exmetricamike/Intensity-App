@@ -19,7 +19,7 @@ class LanguageViewModel(
     private val languageCodeKey = stringPreferencesKey("languageCode")
 
     val languageCode = dataStore.data
-        .map { prefs -> prefs[languageCodeKey] }
+        .map { prefs -> prefs[languageCodeKey] ?: getDefaultLocale() }
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5000L),

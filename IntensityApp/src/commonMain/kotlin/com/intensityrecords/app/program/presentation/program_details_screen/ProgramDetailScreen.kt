@@ -64,6 +64,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.intensityrecord.core.presentation.PrimaryAccent
 import com.intensityrecords.app.core.presentation.LocalAppDimens
+import com.intensityrecords.app.core.presentation.utils.LocalAppLocale
 import com.intensityrecords.app.core.presentation.components.MuxVideoPlayer
 import com.intensityrecords.app.home.presentation.home_screen.component.VideoPlayerAutoPlayPlaceholder
 import com.intensityrecords.app.core.presentation.components.VideoCard
@@ -106,6 +107,7 @@ fun ProgramDetailScreen(
     onAction: (ProgramDetailAction) -> Unit,
 ) {
     val dimens = LocalAppDimens.current
+    val locale = LocalAppLocale.current
 
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
@@ -213,7 +215,7 @@ fun ProgramDetailScreen(
                         isWideScreen = isWideScreen,
                         onClick = {
                             scope.launch { pagerState.animateScrollToPage(pageIndex) }
-                            selectedVideoPlaybackId = session?.muxAssetId
+                            selectedVideoPlaybackId = session?.resolvedMuxAssetId(locale)
                         },
                         dimens = dimens
                     )

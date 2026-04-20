@@ -52,6 +52,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.intensityrecords.app.app.Route
@@ -82,13 +83,12 @@ fun CustomBottomBar(
 
     var showLanguageMenu by remember { mutableStateOf(false) }
 
-    val currentLangCode = viewModel.languageCode.value
+    val currentLangCode by viewModel.languageCode.collectAsStateWithLifecycle()
 
     val selectedLanguage = remember(currentLangCode) {
-        when (currentLangCode) {
+        when (currentLangCode.take(2).lowercase()) {
             "fr" -> "🇫🇷"
             "nl" -> "🇳🇱"
-            "en" -> "🇬🇧"
             else -> "🇬🇧"
         }
     }

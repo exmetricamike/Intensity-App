@@ -1,5 +1,6 @@
 package com.intensityrecords.app.di
 
+import com.intensityrecords.app.core.data.HotelSession
 import com.intensityrecords.app.core.data.HttpClientFactory
 import com.intensityrecords.app.core.data.SessionProvider
 import com.intensityrecords.app.core.presentation.LanguageViewModel
@@ -60,6 +61,7 @@ val sharedModule = module {
     single { HttpClientFactory.create(get(), get()) }
 
     single { SessionProvider(get()) }
+    single { HotelSession() }
 
     singleOf(::KtorRemoteWorkoutDataSource).bind<RemoteWorkoutDataSource>()
     singleOf(::KtorRemoteProgramDataSource).bind<RemoteProgramDataSource>()
