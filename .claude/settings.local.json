@@ -13,7 +13,10 @@
       "Bash(find C:/Users/micpa/Root/Development/AppDev_KMP/Intensity-KMP-App -path */caches* -name *.aar)",
       "Read(//c/tmp/**)",
       "Bash(cp \"C:/Users/micpa/.gradle/caches/modules-2/files-2.1/com.mux.player/android/1.0.0/869c720c1be3c600c401c01aebc9d1a4b6d60afe/android-1.0.0.aar\" mux.aar)",
-      "Bash(unzip -p mux.aar AndroidManifest.xml)"
+      "Bash(unzip -p mux.aar AndroidManifest.xml)",
+      "Bash(xargs grep *)",
+      "Read(//mnt/c/Users/micpa/Root/Development/IntensityHotels/**)",
+      "Bash(./gradlew IntensityApp:compileKotlinDesktop)"
     ]
   }
 }

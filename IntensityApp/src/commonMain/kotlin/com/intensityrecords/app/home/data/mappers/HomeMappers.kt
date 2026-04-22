@@ -1,8 +1,10 @@
 package com.intensityrecords.app.home.data.mappers
 
+import com.intensityrecords.app.home.data.dto.DailyVideoDto
 import com.intensityrecords.app.home.data.dto.HomeDto
 import com.intensityrecords.app.home.data.dto.HotelThemeDto
 import com.intensityrecords.app.home.data.dto.UiBlockDto
+import com.intensityrecords.app.home.domain.DailyVideo
 import com.intensityrecords.app.home.domain.HotelTheme
 import com.intensityrecords.app.home.domain.UiBlock
 import com.intensityrecords.app.home.domain.UiConfig
@@ -27,6 +29,29 @@ fun UiBlockDto.toUiBlock(): UiBlock {
         imageUrl = image,
         order = order,
         url = url
+    )
+}
+
+fun DailyVideoDto.toDailyVideo(): DailyVideo {
+    return DailyVideo(
+        id = id,
+        date = date,
+        titleEn = titleEn,
+        titleFr = titleFr,
+        titleNl = titleNl,
+        taglineEn = taglineEn,
+        taglineFr = taglineFr,
+        taglineNl = taglineNl,
+        coverImage = coverImage,
+        muxAssetIdEn = muxAssetIdEn,
+        muxAssetIdFr = muxAssetIdFr,
+        muxAssetIdNl = muxAssetIdNl,
+        durationLabelMin = durationLabelMin,
+        caloriesBurnedLabel = caloriesBurnedLabel,
+        focusLabelEn = focusLabelEn,
+        focusLabelFr = focusLabelFr,
+        focusLabelNl = focusLabelNl,
+        tags = tags
     )
 }
 

@@ -57,7 +57,7 @@ import com.intensityrecord.core.presentation.CardBackground
 import com.intensityrecord.core.presentation.GlowBorderBrush
 import com.intensityrecord.core.presentation.PrimaryAccent
 import com.intensityrecords.app.core.domain.AppDimens
-import com.intensityrecords.app.home.presentation.home_screen.component.VideoPlayerAutoPlayPlaceholder
+import com.intensityrecords.app.core.presentation.components.MuxVideoPlayer
 import intensityrecordapp.intensityapp.generated.resources.Res
 import intensityrecordapp.intensityapp.generated.resources._4
 import intensityrecordapp.intensityapp.generated.resources.live_tag
@@ -168,8 +168,9 @@ fun MainVideoPlayerCard(
     ) {
 
         if (isTimerFinished) {
-            VideoPlayerAutoPlayPlaceholder(
-                modifier = Modifier.fillMaxSize()
+            MuxVideoPlayer(
+                modifier = Modifier.fillMaxSize(),
+                playbackId = "n2KvjXdPt02d5uPGwdqZo18g2ZGYjeiHwsvqzCIxIAFw"
             )
         } else {
 

@@ -66,7 +66,6 @@ import com.intensityrecord.core.presentation.PrimaryAccent
 import com.intensityrecords.app.core.presentation.LocalAppDimens
 import com.intensityrecords.app.core.presentation.utils.LocalAppLocale
 import com.intensityrecords.app.core.presentation.components.MuxVideoPlayer
-import com.intensityrecords.app.home.presentation.home_screen.component.VideoPlayerAutoPlayPlaceholder
 import com.intensityrecords.app.core.presentation.components.VideoCard
 import com.intensityrecords.app.program.presentation.program_details_screen.component.ProgramHeroSection
 import intensityrecordapp.intensityapp.generated.resources.Res

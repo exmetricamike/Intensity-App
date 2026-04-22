@@ -4,10 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.intensityrecords.app.core.data.HotelSession
 import com.intensityrecords.app.core.data.SessionProvider
+import com.intensityrecords.app.core.domain.DataError
 import com.intensityrecords.app.core.domain.onError
 import com.intensityrecords.app.core.domain.onSuccess
 import com.intensityrecords.app.home.domain.HomeRepository
-import com.intensityrecords.app.home.domain.UiConfig
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -28,50 +29,44 @@ class HomeScreenViewModel(
     }
 
     private fun observeAuth() {
-
         viewModelScope.launch {
-
             sessionProvider.authId.collect { id ->
-
                 if (id != null) {
-                    loadHomeItems(id)
+                    loadHomeData(id)
                 }
-
             }
-
         }
-
     }
 
-    private fun loadHomeItems(id: String) {
-
-        _state.update { it.copy(isLoading = true) }
+    private fun loadHomeData(hotelId: String) {
+        _state.update { it.copy(isLoading = true, dailyVideoState = DailyVideoUiState.Loading) }
 
         viewModelScope.launch {
+            val homeDeferred = async { homeRepository.getHome(hotelId) }
+            val dailyVideoDeferred = async { homeRepository.getDailyVideo(hotelId) }
 
-            val result = homeRepository.getHome(id)
+            val homeResult = homeDeferred.await()
+            val dailyVideoResult = dailyVideoDeferred.await()
 
-            result.onSuccess { data ->
+            homeResult.onSuccess { data ->
                 data.theme?.let { hotelSession.setTheme(it) }
-                _state.update {
-                    it.copy(
-                        isLoading = false,
-                        items = data
-                    )
-                }
+                _state.update { it.copy(isLoading = false, items = data) }
+            }
+            homeResult.onError {
+                _state.update { it.copy(isLoading = false, errorMessage = "Failed to load data") }
             }
 
-            result.onError { error ->
-                _state.update {
-                    it.copy(
-                        isLoading = false,
-                        errorMessage = "Failed to load data \n $error"
-                    )
-                }
+            dailyVideoResult.onSuccess { video ->
+                _state.update { it.copy(dailyVideoState = DailyVideoUiState.Available(video)) }
             }
-
+            dailyVideoResult.onError { error ->
+                val newVideoState = if (error == DataError.Remote.NOT_FOUND) {
+                    DailyVideoUiState.NotAvailable
+                } else {
+                    DailyVideoUiState.Error
+                }
+                _state.update { it.copy(dailyVideoState = newVideoState) }
+            }
         }
-
     }
-
 }

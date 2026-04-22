@@ -77,3 +77,32 @@ data class UiBlockDto(
 data class CollectionSetDto(
     val id: Int? = null
 )
+
+@Serializable
+data class DailyVideoDto(
+    val id: Int,
+    val date: String,
+
+    @SerialName("title_en") val titleEn: String? = null,
+    @SerialName("title_fr") val titleFr: String? = null,
+    @SerialName("title_nl") val titleNl: String? = null,
+
+    @SerialName("tagline_en") val taglineEn: String? = null,
+    @SerialName("tagline_fr") val taglineFr: String? = null,
+    @SerialName("tagline_nl") val taglineNl: String? = null,
+
+    @SerialName("cover_image") val coverImage: String? = null,
+
+    @SerialName("mux_asset_id_en") val muxAssetIdEn: String? = null,
+    @SerialName("mux_asset_id_fr") val muxAssetIdFr: String? = null,
+    @SerialName("mux_asset_id_nl") val muxAssetIdNl: String? = null,
+
+    @SerialName("duration_label_min") val durationLabelMin: Int? = null,
+    @SerialName("calories_burned_label") val caloriesBurnedLabel: Int? = null,
+
+    @SerialName("focus_label_en") val focusLabelEn: String? = null,
+    @SerialName("focus_label_fr") val focusLabelFr: String? = null,
+    @SerialName("focus_label_nl") val focusLabelNl: String? = null,
+
+    val tags: List<String> = emptyList()
+)

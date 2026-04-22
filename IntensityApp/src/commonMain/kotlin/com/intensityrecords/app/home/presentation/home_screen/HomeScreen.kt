@@ -117,11 +117,10 @@ fun HomeScreen(
                     dynamicHeight = dynamicHeroHeight,
                     modifier = Modifier
                         .focusRequester(heroFocusRequester)
-                        // Explicitly tell the focus engine where to go when "Down" is pressed
                         .focusProperties {
                             down = firstContentCardRequester
                         },
-                    uiBlock = state.items?.blocks?.firstOrNull()
+                    dailyVideoState = state.dailyVideoState
                 )
 
                 Spacer(modifier = Modifier.height(if (isWideScreen) screenHeight * 0.05f else screenHeight * 0.03f)) // 5% dynamic spacer
@@ -131,7 +130,7 @@ fun HomeScreen(
                         horizontalArrangement = Arrangement.spacedBy(16.dp),
                         contentPadding = PaddingValues(horizontal = 36.dp, vertical = 16.dp)
                     ) {
-                        itemsIndexed(items = state.items?.blocks?.drop(1) ?: emptyList()) { index, item ->
+                        itemsIndexed(items = state.items?.blocks ?: emptyList()) { index, item ->
 //                            Box(modifier = Modifier.padding(12.dp)) {
                             ContentCard(
                                 item = item,
@@ -152,7 +151,7 @@ fun HomeScreen(
                     }
                 } else {
                     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                        state.items?.blocks?.drop(1)?.forEach { item ->
+                        state.items?.blocks?.forEach { item ->
                             ContentCard(
                                 item = item,
                                 width = dynamicCardWidth,

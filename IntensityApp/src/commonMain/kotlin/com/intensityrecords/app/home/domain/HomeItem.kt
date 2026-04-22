@@ -46,3 +46,37 @@ data class UiBlock(
     val order: Int,
     val url: String
 )
+
+data class DailyVideo(
+    val id: Int,
+    val date: String,
+    val titleEn: String?,
+    val titleFr: String?,
+    val titleNl: String?,
+    val taglineEn: String?,
+    val taglineFr: String?,
+    val taglineNl: String?,
+    val coverImage: String?,
+    val muxAssetIdEn: String?,
+    val muxAssetIdFr: String?,
+    val muxAssetIdNl: String?,
+    val durationLabelMin: Int?,
+    val caloriesBurnedLabel: Int?,
+    val focusLabelEn: String?,
+    val focusLabelFr: String?,
+    val focusLabelNl: String?,
+    val tags: List<String>
+)
+
+private fun localized(en: String?, fr: String?, nl: String?, locale: String): String? =
+    (when (locale) { "fr" -> fr; "nl" -> nl; else -> en })
+        ?.takeIf { it.isNotBlank() }
+        ?: en
+
+fun DailyVideo.title(locale: String) = localized(titleEn, titleFr, titleNl, locale)
+fun DailyVideo.tagline(locale: String) = localized(taglineEn, taglineFr, taglineNl, locale)
+fun DailyVideo.focusLabel(locale: String) = localized(focusLabelEn, focusLabelFr, focusLabelNl, locale)
+fun DailyVideo.muxId(locale: String) = localized(muxAssetIdEn, muxAssetIdFr, muxAssetIdNl, locale)
+
+fun muxStreamUrl(assetId: String) = "https://stream.mux.com/$assetId.m3u8"
+fun muxThumbnailUrl(assetId: String) = "https://image.mux.com/$assetId/thumbnail.jpg"

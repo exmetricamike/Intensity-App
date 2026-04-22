@@ -28,6 +28,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CenterFocusStrong
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.LocalFireDepartment
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
@@ -61,7 +62,13 @@ import com.intensityrecord.core.presentation.GlowBorderBrush
 import com.intensityrecord.core.presentation.PrimaryAccent
 import com.intensityrecords.app.core.presentation.LocalAppDimens
 import com.intensityrecords.app.core.presentation.components.MuxVideoPlayer
-import com.intensityrecords.app.home.domain.UiBlock
+import com.intensityrecords.app.core.presentation.utils.LocalAppLocale
+import com.intensityrecords.app.home.domain.DailyVideo
+import com.intensityrecords.app.home.domain.focusLabel
+import com.intensityrecords.app.home.domain.muxId
+import com.intensityrecords.app.home.domain.tagline
+import com.intensityrecords.app.home.domain.title
+import com.intensityrecords.app.home.presentation.home_screen.DailyVideoUiState
 import com.intensityrecords.app.workouts.presentation.workouts_details_screen.component.StatBadge
 import com.intensityrecords.app.workouts.presentation.workouts_screen.component.pulseAnimation
 import intensityrecordapp.intensityapp.generated.resources.Res
@@ -74,11 +81,10 @@ fun VideoOfTheDayCard(
     isWideScreen: Boolean,
     dynamicHeight: Dp,
     modifier: Modifier = Modifier,
-    uiBlock: UiBlock?,
+    dailyVideoState: DailyVideoUiState,
 ) {
     val dimens = LocalAppDimens.current
 
-    // State to trigger full-screen video overlay
     var showFullScreenVideo by remember { mutableStateOf(false) }
 
     val interactionSource = remember { MutableInteractionSource() }
@@ -115,6 +121,8 @@ fun VideoOfTheDayCard(
         GlowBorderBrush
     }
 
+    val isClickable = dailyVideoState is DailyVideoUiState.Available
+
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -132,148 +140,104 @@ fun VideoOfTheDayCard(
             .clip(RoundedCornerShape(dimens.cornerRadius))
             .background(CardBackground)
             .border(BorderStroke(borderWidth, borderBrush), RoundedCornerShape(dimens.cornerRadius))
-            .clickable(
-                interactionSource = interactionSource,
-                indication = null
-            ) {
-                // Open full-screen video instead of navigating
-                showFullScreenVideo = true
-            }
+            .then(
+                if (isClickable) Modifier.clickable(
+                    interactionSource = interactionSource,
+                    indication = null
+                ) { showFullScreenVideo = true }
+                else Modifier
+            )
     ) {
-        Box(modifier = Modifier.fillMaxSize().background(Color(0xFF222222))) {
-//            Image(
-//                painter = painterResource(resource = Res.drawable._1),
-//                contentDescription = "Video Thumbnail",
-//                contentScale = ContentScale.Crop,
-//                modifier = Modifier.fillMaxSize()
-//            )
-            SubcomposeAsyncImage(
-                model = uiBlock?.imageUrl,
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize(),
-                loading = {
-                    // This box will show the shimmer animation until the image is ready
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .pulseAnimation()
+        when (dailyVideoState) {
+            is DailyVideoUiState.Loading -> {
+                Box(modifier = Modifier.fillMaxSize().pulseAnimation())
+            }
+
+            is DailyVideoUiState.Available -> {
+                VideoOfTheDayContent(
+                    video = dailyVideoState.video,
+                    isWideScreen = isWideScreen,
+                    buttonElevation = buttonElevation,
+                    onPlay = { showFullScreenVideo = true }
+                )
+            }
+
+            is DailyVideoUiState.NotAvailable -> {
+                Box(
+                    modifier = Modifier.fillMaxSize().background(Color(0xFF222222)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "No video available yet",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = Color.White.copy(alpha = 0.6f)
                     )
-                },
-                error = {
-                    // Optional: Show a specific icon if the image fails
-                    Box(
-                        modifier = Modifier.fillMaxSize().background(Color.DarkGray),
-                        contentAlignment = Alignment.Center
-                    ) {
+                }
+            }
+
+            is DailyVideoUiState.Error -> {
+                Box(
+                    modifier = Modifier.fillMaxSize().background(Color(0xFF222222)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Icon(
-                            Icons.Default.Warning,
+                            Icons.Default.Refresh,
                             contentDescription = null,
-                            tint = Color.White
+                            tint = Color.White.copy(alpha = 0.6f),
+                            modifier = Modifier.size(32.dp)
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "Could not load video",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.White.copy(alpha = 0.6f)
                         )
                     }
-                }
-            )
-        }
-
-        // Gradient Overlay
-        Box(
-            modifier = Modifier.fillMaxSize().background(
-                Brush.horizontalGradient(
-                    colors = listOf(Color.Black.copy(alpha = 0.9f), Color.Transparent),
-                    startX = 0f, endX = 1500f
-                )
-            )
-        )
-
-        // Text Content
-        Column(
-            modifier = Modifier
-                .align(Alignment.CenterStart)
-                .padding(dimens.paddingLarge)
-                .fillMaxWidth(0.7f)
-        ) {
-            Text(
-                text = uiBlock?.title ?: "",
-                style = MaterialTheme.typography.bodyLarge.copy(fontSize = dimens.titleLarge)
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "Your daily 8-minute abs workout",
-                style = MaterialTheme.typography.bodyMedium.copy(fontSize = dimens.bodyMedium)
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            Button(
-                onClick = {
-                    // Open full-screen video instead of navigating
-                    showFullScreenVideo = true
-                },
-                colors = ButtonDefaults.buttonColors(containerColor = PrimaryAccent),
-                shape = RoundedCornerShape(24),
-                modifier = Modifier.height(dimens.buttonHeight)
-                    .shadow(
-                        elevation = buttonElevation,
-                        shape = RoundedCornerShape(24),
-                        spotColor = PrimaryAccent,
-                        ambientColor = PrimaryAccent
-                    )
-            ) {
-                Text(
-                    text = stringResource(Res.string.start_now),
-                    style = MaterialTheme.typography.labelMedium.copy(
-                        fontSize = dimens.buttonText,
-                        color = Color.Black
-                    )
-                )
-            }
-            Spacer(modifier = Modifier.height(10.dp))
-            if (isWideScreen) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    StatBadge(icon = Icons.Default.Timer, text = "Average 15-20 min")
-                    Spacer(modifier = Modifier.width(24.dp))
-                    StatBadge(icon = Icons.Default.LocalFireDepartment, text = "Bodyweight")
-                    Spacer(modifier = Modifier.width(24.dp))
-                    StatBadge(icon = Icons.Default.CenterFocusStrong, text = "Focus glutes + legs")
-                }
-            } else {
-                Column(
-                    horizontalAlignment = Alignment.Start,
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    StatBadge(icon = Icons.Default.Timer, text = "Average 15-20 min")
-                    StatBadge(icon = Icons.Default.LocalFireDepartment, text = "Bodyweight")
-                    StatBadge(icon = Icons.Default.CenterFocusStrong, text = "Focus glutes + legs")
                 }
             }
         }
     }
 
-    // Full-Screen Video Dialog Overlay
-    if (showFullScreenVideo) {
+    if (showFullScreenVideo && dailyVideoState is DailyVideoUiState.Available) {
+        val locale = LocalAppLocale.current
+        val muxId = dailyVideoState.video.muxId(locale)
 
         val closeFocusRequester = remember { FocusRequester() }
         val closeInteractionSource = remember { MutableInteractionSource() }
         val isCloseFocused by closeInteractionSource.collectIsFocusedAsState()
 
-        // 2. Animations for the Close Button
         val closeScale by animateFloatAsState(if (isCloseFocused) 1.2f else 1f)
         val closeStrokeWidth by animateDpAsState(if (isCloseFocused) 3.dp else 0.dp)
 
         Dialog(
             onDismissRequest = { showFullScreenVideo = false },
-            properties = DialogProperties(
-                usePlatformDefaultWidth = false, // Critical: Allows the dialog to be truly full screen
-            )
+            properties = DialogProperties(usePlatformDefaultWidth = false)
         ) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(Color.Black)
             ) {
-
-                // 1. Insert your actual Video Player Composable here.
-                // Make sure your player is configured to autoplay upon composition.
-                VideoPlayerAutoPlayPlaceholder(modifier = Modifier.fillMaxSize())
+                if (muxId != null) {
+                    MuxVideoPlayer(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .fillMaxSize()
+                            .aspectRatio(16f / 9f),
+                        playbackId = muxId
+                    )
+                } else {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "No video available for your language",
+                            color = Color.White
+                        )
+                    }
+                }
 
                 Box(
                     modifier = Modifier
@@ -283,7 +247,7 @@ fun VideoOfTheDayCard(
                             scaleX = closeScale
                             scaleY = closeScale
                         }
-                        .size(56.dp) // Slightly larger for better visibility
+                        .size(56.dp)
                         .shadow(
                             elevation = if (isCloseFocused) 10.dp else 0.dp,
                             shape = CircleShape,
@@ -294,7 +258,6 @@ fun VideoOfTheDayCard(
                             color = if (isCloseFocused) Color.Black else Color.Black.copy(alpha = 0.5f),
                             shape = CircleShape
                         )
-                        // Green border when focused
                         .border(
                             width = closeStrokeWidth,
                             color = PrimaryAccent,
@@ -303,9 +266,7 @@ fun VideoOfTheDayCard(
                         .clickable(
                             interactionSource = closeInteractionSource,
                             indication = null
-                        ) {
-                            showFullScreenVideo = false
-                        },
+                        ) { showFullScreenVideo = false },
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
@@ -321,91 +282,114 @@ fun VideoOfTheDayCard(
 }
 
 @Composable
-fun VideoPlayerAutoPlayPlaceholder(modifier: Modifier = Modifier) {
+private fun VideoOfTheDayContent(
+    video: DailyVideo,
+    isWideScreen: Boolean,
+    buttonElevation: Dp,
+    onPlay: () -> Unit,
+) {
+    val dimens = LocalAppDimens.current
+    val locale = LocalAppLocale.current
 
-//    var isPlaying by remember { mutableStateOf(true) }
-//
-//    Box(modifier = modifier, contentAlignment = Alignment.Center) {
-//        Text(
-//            text = "Video is Playing Here...",
-//            color = Color.White
-//        )
-//        val videoId = "Fkt6n72KGvo?si=ZGfDseeYSd4UdnHk"
-//        val iframeHtml = """
-//   <!DOCTYPE html>
-//    <html>
-//    <head>
-//        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-//        <style>
-//            body, html { margin: 0; padding: 0; width: 100%; height: 100%; background-color: black; overflow: hidden; }
-//            .container { position: relative; width: 100%; height: 100%; }
-//            iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
-//        </style>
-//    </head>
-//    <body>
-//        <div class="container">
-//            <iframe
-//                src="https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&playsinline=1&controls=1&enablejsapi=1&origin=https://www.youtube.com"
-//                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-//                allowfullscreen>
-//            </iframe>
-//        </div>
-//    </body>
-//    </html>
-//    """.trimIndent()
-//
-//        val webViewState = rememberWebViewStateWithHTMLData(
-//            data = iframeHtml,
-//            baseUrl = "https://www.youtube.com/"
-//        )
-//
-//        LaunchedEffect(webViewState) {
-//            webViewState.webSettings.apply {
-//                isJavaScriptEnabled = true
-//
-//                // 1. Set a standard Browser User-Agent
-//                // This stops YouTube from treating the app like a restricted bot
-//                customUserAgentString =
-//                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36"
-//                androidWebSettings.apply {
-//                    domStorageEnabled = true
-//                    mediaPlaybackRequiresUserGesture = false
-//                    safeBrowsingEnabled = true
-//                }
-//            }
-//        }
-//
-//        if (isPlaying) {
-//            WebView(
-//                state = webViewState,
-//                modifier = Modifier.fillMaxSize(),
-//            )
-//        } else {
-//            Image(
-//                painter = painterResource(resource = Res.drawable._1),
-//                contentDescription = "Video Thumbnail",
-//                contentScale = ContentScale.Crop,
-//                modifier = Modifier.fillMaxSize()
-//            )
-//        }
-//    }
-
-    Column(modifier = Modifier.fillMaxSize().background(Color.Black)) {
-
-        MuxVideoPlayer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxSize()
-                .aspectRatio(16f / 9f), // Standard video ratio
-            playbackId = "n2KvjXdPt02d5uPGwdqZo18g2ZGYjeiHwsvqzCIxIAFw" // Replace with your Mux ID
+    Box(modifier = Modifier.fillMaxSize().background(Color(0xFF222222))) {
+        SubcomposeAsyncImage(
+            model = video.coverImage,
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize(),
+            loading = {
+                Box(modifier = Modifier.fillMaxSize().pulseAnimation())
+            },
+            error = {
+                Box(
+                    modifier = Modifier.fillMaxSize().background(Color.DarkGray),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(Icons.Default.Warning, contentDescription = null, tint = Color.White)
+                }
+            }
         )
 
-//        // The rest of your video details...
-//        Text(
-//            text = "Workout Title",
-//            modifier = Modifier.padding(16.dp),
-//            color = Color.White
-//        )
-    }
+        // Gradient overlay
+        Box(
+            modifier = Modifier.fillMaxSize().background(
+                Brush.horizontalGradient(
+                    colors = listOf(Color.Black.copy(alpha = 0.9f), Color.Transparent),
+                    startX = 0f, endX = 1500f
+                )
+            )
+        )
 
+        // Text content
+        Column(
+            modifier = Modifier
+                .align(Alignment.CenterStart)
+                .padding(dimens.paddingLarge)
+                .fillMaxWidth(0.7f)
+        ) {
+        Text(
+            text = video.title(locale) ?: "",
+            style = MaterialTheme.typography.bodyLarge.copy(fontSize = dimens.titleLarge)
+        )
+        val taglineText = video.tagline(locale)
+        if (!taglineText.isNullOrBlank()) {
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = taglineText,
+                style = MaterialTheme.typography.bodyMedium.copy(fontSize = dimens.bodyMedium)
+            )
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(
+            onClick = onPlay,
+            colors = ButtonDefaults.buttonColors(containerColor = PrimaryAccent),
+            shape = RoundedCornerShape(24),
+            modifier = Modifier.height(dimens.buttonHeight)
+                .shadow(
+                    elevation = buttonElevation,
+                    shape = RoundedCornerShape(24),
+                    spotColor = PrimaryAccent,
+                    ambientColor = PrimaryAccent
+                )
+        ) {
+            Text(
+                text = stringResource(Res.string.start_now),
+                style = MaterialTheme.typography.labelMedium.copy(
+                    fontSize = dimens.buttonText,
+                    color = Color.Black
+                )
+            )
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+
+        val durationText = video.durationLabelMin?.let { "$it min" }
+        val calText = video.caloriesBurnedLabel?.let { "$it kcal" }
+        val focusText = video.focusLabel(locale)
+
+        if (isWideScreen) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                if (durationText != null) {
+                    StatBadge(icon = Icons.Default.Timer, text = durationText)
+                    Spacer(modifier = Modifier.width(24.dp))
+                }
+                if (calText != null) {
+                    StatBadge(icon = Icons.Default.LocalFireDepartment, text = calText)
+                    Spacer(modifier = Modifier.width(24.dp))
+                }
+                if (focusText != null) {
+                    StatBadge(icon = Icons.Default.CenterFocusStrong, text = focusText)
+                }
+            }
+        } else {
+            Column(
+                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                if (durationText != null) StatBadge(icon = Icons.Default.Timer, text = durationText)
+                if (calText != null) StatBadge(icon = Icons.Default.LocalFireDepartment, text = calText)
+                if (focusText != null) StatBadge(icon = Icons.Default.CenterFocusStrong, text = focusText)
+            }
+        }
+    } // Column
+    } // Box
 }

@@ -17,7 +17,7 @@ object GlobalConfig {
     // backend servers:
     // main:  https://intensityapi.exmetrica.be/
     // local: http://192.168.1.16:8000/
-    const val API_ENDPOINT = "http://192.168.1.16:8000/"
-    //const val API_ENDPOINT = "https://intensityapi.exmetrica.be/"
+    //const val API_ENDPOINT = "http://192.168.1.16:8000/"
+    const val API_ENDPOINT = "https://intensityapi.exmetrica.be/"
 
 }
