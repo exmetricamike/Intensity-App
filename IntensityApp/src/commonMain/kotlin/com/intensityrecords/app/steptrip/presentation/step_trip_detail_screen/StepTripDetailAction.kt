@@ -4,7 +4,6 @@ import com.intensityrecords.app.steptrip.domain.StepTripItem
 
 sealed interface StepTripDetailAction {
     data object OnBackClick : StepTripDetailAction
-    data object OnLetsGoClick : StepTripDetailAction
 
     data class OnSelectedWorkOutChange(val workoutItem: StepTripItem) : StepTripDetailAction
 

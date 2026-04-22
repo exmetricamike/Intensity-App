@@ -177,7 +177,8 @@ fun StepTripScreen(
                     ) {
                         StepTripCard(
                             item = state.tripData[page],
-                            onClick = { onAction(StepTripAction.OnStripTripClick(tripData = state.tripData[pagerState.currentPage])) }
+                            onClick = { onAction(StepTripAction.OnStripTripClick(tripData = state.tripData[pagerState.currentPage])) },
+                            onLetsGoClick = {}
                         )
                     }
                 }

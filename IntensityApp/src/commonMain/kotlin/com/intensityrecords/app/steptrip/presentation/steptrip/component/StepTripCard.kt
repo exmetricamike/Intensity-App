@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DirectionsRun
@@ -58,7 +57,8 @@ import com.intensityrecords.app.workouts.presentation.workouts_screen.component.
 fun StepTripCard(
     item: StepTripItem,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onLetsGoClick: () -> Unit
 ) {
     val locale = LocalAppLocale.current
     val interactionSource = remember { MutableInteractionSource() }
@@ -150,21 +150,42 @@ fun StepTripCard(
                     Spacer(modifier = Modifier.height(15.dp))
                 }
 
-                Button(
-                    onClick = onClick,
-                    colors = ButtonDefaults.buttonColors(containerColor = PrimaryAccent),
-                    shape = RoundedCornerShape(50),
-                    modifier = Modifier
-                        .wrapContentWidth()
-                        .height(40.dp)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Text(
-                        text = "Infm ",
-                        style = MaterialTheme.typography.labelMedium.copy(
-                            color = Color.Black,
-                            fontSize = 13.sp,
-                        ),
-                    )
+                    Button(
+                        onClick = onClick,
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.Gray),
+                        shape = RoundedCornerShape(50),
+                        modifier = Modifier
+                            .weight(1.2f)
+                            .height(36.dp)
+                    ) {
+                        Text(
+                            text = "INFO",
+                            style = MaterialTheme.typography.labelMedium.copy(
+                                color = Color.White,
+                                fontSize = 11.sp,
+                            ),
+                        )
+                    }
+                    Button(
+                        onClick = onLetsGoClick,
+                        colors = ButtonDefaults.buttonColors(containerColor = PrimaryAccent),
+                        shape = RoundedCornerShape(50),
+                        modifier = Modifier
+                            .weight(1.5f)
+                            .height(36.dp)
+                    ) {
+                        Text(
+                            text = "LET'S GO",
+                            style = MaterialTheme.typography.labelMedium.copy(
+                                color = Color.Black,
+                                fontSize = 11.sp,
+                            ),
+                        )
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(14.dp))

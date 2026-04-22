@@ -13,7 +13,6 @@ class StepTripsDetailScreenViewModel : ViewModel() {
     fun onAction(action: StepTripDetailAction) {
         when (action) {
             StepTripDetailAction.OnBackClick -> {}
-            StepTripDetailAction.OnLetsGoClick -> {}
             is StepTripDetailAction.OnSelectedWorkOutChange -> {
                 println("Details :- ${action.workoutItem}")
                 _state.update {
