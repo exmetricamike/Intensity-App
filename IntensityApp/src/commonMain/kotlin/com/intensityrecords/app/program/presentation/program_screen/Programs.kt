@@ -113,8 +113,21 @@ fun ProgramScreen(
                             )
                         )
                     }
+                } else if (state.sections.isEmpty()) {
+                    Box(
+                        modifier = Modifier.fillMaxSize().align(Alignment.CenterHorizontally),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "No programs available",
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                fontSize = if (isWideScreen) 22.sp else 16.sp,
+                                textAlign = TextAlign.Center
+                            )
+                        )
+                    }
                 } else {
-                    val collections = state.sections.firstOrNull()!!.collections
+                    val collections = state.sections.first().collections
 
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(columnsCount),
