@@ -172,6 +172,7 @@ fun StepTripCard(
                     }
                     Button(
                         onClick = onLetsGoClick,
+                        enabled = item.mapsUrl != null,
                         colors = ButtonDefaults.buttonColors(containerColor = PrimaryAccent),
                         shape = RoundedCornerShape(50),
                         modifier = Modifier
