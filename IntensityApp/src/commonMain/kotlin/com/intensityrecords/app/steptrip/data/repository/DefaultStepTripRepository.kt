@@ -8,17 +8,13 @@ import com.intensityrecords.app.steptrip.data.network.RemoteStepTripDataSource
 import com.intensityrecords.app.steptrip.domain.StepTripItem
 import com.intensityrecords.app.steptrip.domain.StepTripRepository
 
-
 class DefaultStepTripRepository(
     private val remote: RemoteStepTripDataSource
 ) : StepTripRepository {
 
-    override suspend fun getStepTrip(): Result<List<StepTripItem>, DataError.Remote> {
-        return remote.getStepTrip().map { it ->
-            it.stepTrip.map {
-                it.toDomain()
-            }
+    override suspend fun getStepTrips(hotelId: String): Result<List<StepTripItem>, DataError.Remote> {
+        return remote.getStepTrips(hotelId).map { list ->
+            list.map { it.toDomain() }
         }
     }
-
 }

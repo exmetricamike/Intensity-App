@@ -3,7 +3,6 @@ package com.intensityrecords.app.steptrip.presentation.steptrip.component
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -49,10 +48,11 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.SubcomposeAsyncImage
 import com.intensityrecord.core.presentation.CardBackground
 import com.intensityrecord.core.presentation.PrimaryAccent
+import com.intensityrecords.app.core.presentation.utils.LocalAppLocale
 import com.intensityrecords.app.steptrip.domain.StepTripItem
-import com.intensityrecords.app.steptrip.domain.TripData
+import com.intensityrecords.app.steptrip.domain.category
+import com.intensityrecords.app.steptrip.domain.title
 import com.intensityrecords.app.workouts.presentation.workouts_screen.component.pulseAnimation
-import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun StepTripCard(
@@ -60,6 +60,7 @@ fun StepTripCard(
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
+    val locale = LocalAppLocale.current
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
     val isHovered by interactionSource.collectIsHoveredAsState()
@@ -84,51 +85,32 @@ fun StepTripCard(
             .shadow(shadowElevation, RoundedCornerShape(20.dp), spotColor = PrimaryAccent)
             .clip(RoundedCornerShape(20.dp))
             .border(BorderStroke(1.dp, borderBrush), RoundedCornerShape(20.dp))
-            .clickable(interactionSource = interactionSource, indication = null) {
-
-            },
+            .clickable(interactionSource = interactionSource, indication = null) { },
         colors = CardDefaults.cardColors(containerColor = CardBackground),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-
             Box(
                 modifier = Modifier
                     .weight(0.2f)
                     .background(Color.Black)
             ) {
-//                Image(
-//                    painter = painterResource(item.image),
-//                    contentDescription = null,
-//                    contentScale = ContentScale.Crop,
-//                    modifier = Modifier.fillMaxSize()
-//                )
                 SubcomposeAsyncImage(
-                    model = item.image,
+                    model = item.coverImage,
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.fillMaxSize(),
                     loading = {
-                        // This box will show the shimmer animation until the image is ready
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .pulseAnimation()
-                        )
+                        Box(modifier = Modifier.fillMaxSize().pulseAnimation())
                     },
                     error = {
-                        // Optional: Show a specific icon if the image fails
                         Box(
                             modifier = Modifier.fillMaxSize().background(Color.DarkGray),
                             contentAlignment = Alignment.Center
                         ) {
-                            Icon(
-                                Icons.Default.Warning,
-                                contentDescription = null,
-                                tint = Color.White
-                            )
+                            Icon(Icons.Default.Warning, contentDescription = null, tint = Color.White)
                         }
                     }
                 )
@@ -140,9 +122,8 @@ fun StepTripCard(
                     .padding(horizontal = 14.dp, vertical = 15.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-
                 Text(
-                    text = item.title,
+                    text = item.title(locale),
                     style = MaterialTheme.typography.bodyLarge.copy(
                         fontSize = 20.sp,
                         textAlign = TextAlign.Center,
@@ -152,21 +133,22 @@ fun StepTripCard(
 
                 Spacer(modifier = Modifier.height(10.dp))
 
-                Box(
-                    modifier = Modifier
-                        .border(1.dp, Color.DarkGray, RoundedCornerShape(8.dp))
-                        .padding(horizontal = 12.dp, vertical = 4.dp)
-                ) {
-                    Text(
-                        text = item.category.uppercase(),
-                        style = MaterialTheme.typography.displaySmall.copy(
-                            color = PrimaryAccent,
-                            fontSize = 11.sp
-                        ),
-                    )
+                item.category(locale)?.let { cat ->
+                    Box(
+                        modifier = Modifier
+                            .border(1.dp, Color.DarkGray, RoundedCornerShape(8.dp))
+                            .padding(horizontal = 12.dp, vertical = 4.dp)
+                    ) {
+                        Text(
+                            text = cat.uppercase(),
+                            style = MaterialTheme.typography.displaySmall.copy(
+                                color = PrimaryAccent,
+                                fontSize = 11.sp
+                            ),
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(15.dp))
                 }
-
-                Spacer(modifier = Modifier.height(15.dp))
 
                 Button(
                     onClick = onClick,
@@ -192,11 +174,10 @@ fun StepTripCard(
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    StatItem(Icons.Default.DirectionsRun, item.duration)
-                    StatItem(Icons.Default.Schedule, item.distance)
-                    StatItem(Icons.Default.LocalFireDepartment, item.calories)
+                    item.durationMin?.let { StatItem(Icons.Default.DirectionsRun, "$it min") }
+                    item.distanceKm?.let { StatItem(Icons.Default.Schedule, "${it.trimEnd('0').trimEnd('.')} km") }
+                    item.caloriesBurned?.let { StatItem(Icons.Default.LocalFireDepartment, "$it kcal") }
                 }
-
             }
         }
     }
