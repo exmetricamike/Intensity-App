@@ -159,7 +159,7 @@ fun StepTripCard(
                         .height(40.dp)
                 ) {
                     Text(
-                        text = "LET'S GO",
+                        text = "Infm ",
                         style = MaterialTheme.typography.labelMedium.copy(
                             color = Color.Black,
                             fontSize = 13.sp,

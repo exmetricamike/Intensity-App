@@ -9,29 +9,13 @@ class StepTripsDetailScreenViewModel : ViewModel() {
     private val _state = MutableStateFlow(StepTripDetailState())
     val state = _state.asStateFlow()
 
-//    fun initialize(workoutId: String) {
-//        val selectedStepTrips = trips.find { it.title == workoutId }
-//
-//        _state.update {
-//            it.copy(
-//                item = selectedStepTrips
-//            )
-//        }
-//    }
-
-//    fun onAction(action: StepTripDetailAction) {
-//        when (action) {
-//            StepTripDetailAction.OnBackClick -> {
-//
-//            }
-//        }
-//    }
 
     fun onAction(action: StepTripDetailAction) {
         when (action) {
             StepTripDetailAction.OnBackClick -> {}
+            StepTripDetailAction.OnLetsGoClick -> {}
             is StepTripDetailAction.OnSelectedWorkOutChange -> {
-                println("Detaisl :- ${action.workoutItem}")
+                println("Details :- ${action.workoutItem}")
                 _state.update {
                     it.copy(
                         item = action.workoutItem

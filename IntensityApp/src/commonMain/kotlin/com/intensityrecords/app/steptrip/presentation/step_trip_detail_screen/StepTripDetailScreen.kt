@@ -251,6 +251,26 @@ fun StepTripDetailScreen(
             Spacer(modifier = Modifier.height(12.dp))
 
             Button(
+                onClick = { onAction(StepTripDetailAction.OnLetsGoClick) },
+                colors = ButtonDefaults.buttonColors(containerColor = PrimaryAccent),
+                shape = RoundedCornerShape(12.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp)
+            ) {
+                Text(
+                    text = "LET'S GO",
+                    style = MaterialTheme.typography.labelMedium.copy(
+                        color = Color.Black,
+                        fontSize = 16.sp,
+                        letterSpacing = 1.sp
+                    ),
+                )
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Button(
                 onClick = { onAction(StepTripDetailAction.OnBackClick) },
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
                 shape = RoundedCornerShape(12.dp),
