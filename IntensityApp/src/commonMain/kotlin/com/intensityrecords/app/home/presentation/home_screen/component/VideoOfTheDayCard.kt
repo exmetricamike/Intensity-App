@@ -296,6 +296,7 @@ private fun VideoOfTheDayContent(
             model = video.coverImage,
             contentDescription = null,
             contentScale = ContentScale.Crop,
+            alignment = Alignment.CenterEnd,
             modifier = Modifier.fillMaxSize(),
             loading = {
                 Box(modifier = Modifier.fillMaxSize().pulseAnimation())

@@ -78,9 +78,11 @@ import com.intensityrecord.core.presentation.CardBackground
 import com.intensityrecord.core.presentation.GlowBorderBrush
 import com.intensityrecord.core.presentation.PrimaryAccent
 import com.intensityrecords.app.core.domain.AppDimens
+import com.intensityrecords.app.core.presentation.utils.LocalAppLocale
 import com.intensityrecords.app.workouts.domain.WorkoutCollection
 import com.intensityrecords.app.workouts.domain.WorkoutItem
 import com.intensityrecords.app.workouts.domain.WorkoutSection
+import com.intensityrecords.app.workouts.domain.title
 import com.intensityrecords.app.workouts.presentation.workouts_details_screen.component.StatBadge
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.painterResource
@@ -93,6 +95,8 @@ fun WorkoutCard(
     onClick: () -> Unit,
     dimens: AppDimens
 ) {
+    val locale = LocalAppLocale.current
+
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
 
@@ -303,7 +307,7 @@ fun WorkoutCard(
             )
 
             Text(
-                text = item.name,
+                text = item.title(locale) ?: "",
                 style = MaterialTheme.typography.bodyLarge.copy(fontSize = if (isWideScreen) 26.sp else 21.sp),
                 textAlign = if (isWideScreen) TextAlign.Center else TextAlign.Start, // Handles multi-line titles gracefully
                 modifier = Modifier
@@ -361,32 +365,32 @@ fun WorkoutCard(
                     .height(surfaceHeight)
             ) {
 
-                StatBadge(
-                    icon = Icons.Default.Timer,
-                    text = "15 MIN",
-                    iconSize = badgeIconSize,
-                    textStyle = MaterialTheme.typography.displaySmall.copy(fontSize = badgeTextSize),
-                    spacing = badgeInternalSpacing
-                )
+                val durationText = item.durationLabelMin?.let { "$it MIN" }
+                val calText = item.caloriesBurnedLabel?.let { "$it KCAL" }
 
-//                    Spacer(modifier = Modifier.width(badgeGroupSpacing))
+                if (durationText != null) {
+                    StatBadge(
+                        icon = Icons.Default.Timer,
+                        text = durationText,
+                        iconSize = badgeIconSize,
+                        textStyle = MaterialTheme.typography.displaySmall.copy(fontSize = badgeTextSize),
+                        spacing = badgeInternalSpacing
+                    )
+                }
 
-//                    Box(
-//                        modifier = Modifier
-//                            .width(1.dp)
-//                            .height(12.dp)
-//                            .background(PrimaryAccent.copy(0.5f))
-//                    )
-//
-                Spacer(modifier = Modifier.width(badgeGroupSpacing))
+                if (durationText != null && calText != null) {
+                    Spacer(modifier = Modifier.width(badgeGroupSpacing))
+                }
 
-                StatBadge(
-                    icon = Icons.Default.LocalFireDepartment,
-                    text = "180 KCAL",
-                    iconSize = badgeIconSize,
-                    textStyle = MaterialTheme.typography.displaySmall.copy(fontSize = badgeTextSize),
-                    spacing = badgeInternalSpacing
-                )
+                if (calText != null) {
+                    StatBadge(
+                        icon = Icons.Default.LocalFireDepartment,
+                        text = calText,
+                        iconSize = badgeIconSize,
+                        textStyle = MaterialTheme.typography.displaySmall.copy(fontSize = badgeTextSize),
+                        spacing = badgeInternalSpacing
+                    )
+                }
             }
 //            }
         }

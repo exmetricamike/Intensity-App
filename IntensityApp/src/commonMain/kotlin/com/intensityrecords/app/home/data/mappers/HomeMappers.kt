@@ -25,7 +25,9 @@ fun HomeDto.toUiConfig(): UiConfig {
 fun UiBlockDto.toUiBlock(): UiBlock {
     return UiBlock(
         id = id,
-        title = title,
+        titleEn = titleEn,
+        titleFr = titleFr,
+        titleNl = titleNl,
         imageUrl = image,
         order = order,
         url = url

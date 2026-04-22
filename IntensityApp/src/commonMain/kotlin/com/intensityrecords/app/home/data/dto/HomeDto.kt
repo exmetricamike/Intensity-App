@@ -67,10 +67,12 @@ data class HotelThemeDto(
 @Serializable
 data class UiBlockDto(
     val id: Int,
-    val title: String,
+    @SerialName("title_en") val titleEn: String? = null,
+    @SerialName("title_fr") val titleFr: String? = null,
+    @SerialName("title_nl") val titleNl: String? = null,
     val image: String? = null,
     val order: Int,
-    val url: String
+    val url: String? = null
 )
 
 @Serializable

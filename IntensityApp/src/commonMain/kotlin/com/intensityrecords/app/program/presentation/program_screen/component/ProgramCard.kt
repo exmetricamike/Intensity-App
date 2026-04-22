@@ -62,7 +62,9 @@ import com.intensityrecord.core.presentation.CardBackground
 import com.intensityrecord.core.presentation.GlowBorderBrush
 import com.intensityrecord.core.presentation.PrimaryAccent
 import com.intensityrecords.app.core.domain.AppDimens
+import com.intensityrecords.app.core.presentation.utils.LocalAppLocale
 import com.intensityrecords.app.program.domain.ProgramCollection
+import com.intensityrecords.app.program.domain.title
 import com.intensityrecords.app.workouts.presentation.workouts_details_screen.component.StatBadge
 import com.intensityrecords.app.workouts.presentation.workouts_screen.component.pulseAnimation
 import kotlinx.coroutines.delay
@@ -75,6 +77,8 @@ fun ProgramCard(
     onClick: () -> Unit,
     dimens: AppDimens
 ) {
+    val locale = LocalAppLocale.current
+
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
     val isHovered by interactionSource.collectIsHoveredAsState()
@@ -226,7 +230,7 @@ fun ProgramCard(
             )
 
             Text(
-                text = item.name,
+                text = item.title(locale) ?: "",
                 style = MaterialTheme.typography.bodyLarge.copy(fontSize = if (isWideScreen) 26.sp else 21.sp),
                 textAlign = if (isWideScreen) TextAlign.Center else TextAlign.Start,
                 modifier = Modifier

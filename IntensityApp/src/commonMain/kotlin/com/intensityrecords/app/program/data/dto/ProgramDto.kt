@@ -24,33 +24,33 @@ data class ProgramResponseDto(
 @Serializable
 data class ProgramCollectionDto(
     val id: Int,
-    val name: String,
-    val description: String,
+    @SerialName("title_en") val titleEn: String? = null,
+    @SerialName("title_fr") val titleFr: String? = null,
+    @SerialName("title_nl") val titleNl: String? = null,
+    @SerialName("tagline_en") val taglineEn: String? = null,
+    @SerialName("tagline_fr") val taglineFr: String? = null,
+    @SerialName("tagline_nl") val taglineNl: String? = null,
 
-    @SerialName("cover_image")
-    val coverImage: String?,
-
-    @SerialName("collection_type")
-    val collectionType: String,
-
-    @SerialName("is_active")
-    val isActive: Boolean
+    @SerialName("cover_image") val coverImage: String? = null,
+    @SerialName("duration_label_min") val durationLabelMin: Int? = null,
+    @SerialName("calories_burned_label") val caloriesBurnedLabel: Int? = null,
+    @SerialName("is_active") val isActive: Boolean
 )
 
 @Serializable
 data class ProgramCollectionDetailDto(
     val id: Int,
-    val name: String,
-    val description: String,
+    @SerialName("title_en") val titleEn: String? = null,
+    @SerialName("title_fr") val titleFr: String? = null,
+    @SerialName("title_nl") val titleNl: String? = null,
+    @SerialName("tagline_en") val taglineEn: String? = null,
+    @SerialName("tagline_fr") val taglineFr: String? = null,
+    @SerialName("tagline_nl") val taglineNl: String? = null,
 
-    @SerialName("cover_image")
-    val coverImage: String?,
-
-    @SerialName("collection_type")
-    val collectionType: String,
-
-    @SerialName("is_active")
-    val isActive: Boolean,
+    @SerialName("cover_image") val coverImage: String? = null,
+    @SerialName("duration_label_min") val durationLabelMin: Int? = null,
+    @SerialName("calories_burned_label") val caloriesBurnedLabel: Int? = null,
+    @SerialName("is_active") val isActive: Boolean,
 
     val videos: List<ProgramVideoDto>
 )

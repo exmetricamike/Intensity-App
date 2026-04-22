@@ -60,8 +60,10 @@ import intensityrecordapp.intensityapp.generated.resources.mobility_home_card
 import intensityrecordapp.intensityapp.generated.resources.live_class
 import intensityrecordapp.intensityapp.generated.resources.workout
 import intensityrecordapp.intensityapp.generated.resources.live_tag
+import com.intensityrecords.app.core.presentation.utils.LocalAppLocale
 import com.intensityrecords.app.home.domain.UiBlock
 import com.intensityrecords.app.home.domain.UiConfig
+import com.intensityrecords.app.home.domain.title
 import com.intensityrecords.app.workouts.presentation.workouts_screen.component.pulseAnimation
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -135,6 +137,8 @@ fun ContentCard(
             bringIntoViewRequester.bringIntoView(expandedRect)
         }
     }
+
+    val locale = LocalAppLocale.current
 
     val mobility = stringResource(Res.string.mobility_home_card)
     val live = stringResource(Res.string.live_class)
@@ -252,11 +256,11 @@ fun ContentCard(
                 )
             )
             Text(
-                text = item.title.uppercase(),
+                text = (item.title(locale) ?: "").uppercase(),
                 style = MaterialTheme.typography.bodyLarge.copy(fontSize = dimens.cardTitle),
                 modifier = Modifier.align(if (isWideScreen) Alignment.Center else Alignment.Center).padding(16.dp)
             )
-            if (item.title == "Live") {
+            if (item.url == "/live") {
                 Box(
                     modifier = Modifier.align(Alignment.TopStart).padding(12.dp)
                         .background(PrimaryAccent, RoundedCornerShape(4.dp))

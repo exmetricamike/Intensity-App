@@ -15,21 +15,30 @@ fun WorkoutResponseDto.toWorkoutSection(): WorkoutSection {
 fun CollectionDto.toWorkoutCollection(): WorkoutCollection {
     return WorkoutCollection(
         id = id,
-        name = name,
-        description = description,
+        titleEn = titleEn,
+        titleFr = titleFr,
+        titleNl = titleNl,
+        taglineEn = taglineEn,
+        taglineFr = taglineFr,
+        taglineNl = taglineNl,
         coverImage = coverImage,
-        collectionType = collectionType
+        durationLabelMin = durationLabelMin,
+        caloriesBurnedLabel = caloriesBurnedLabel
     )
 }
-
-
 
 fun CollectionDetailDto.toCollectionDetail(): CollectionDetail {
     return CollectionDetail(
         id = id,
-        name = name,
-        description = description,
+        titleEn = titleEn,
+        titleFr = titleFr,
+        titleNl = titleNl,
+        taglineEn = taglineEn,
+        taglineFr = taglineFr,
+        taglineNl = taglineNl,
         coverImage = coverImage,
+        durationLabelMin = durationLabelMin,
+        caloriesBurnedLabel = caloriesBurnedLabel,
         videos = videos.map { it.toWorkoutVideo() }
     )
 }

@@ -50,22 +50,40 @@ data class WorkoutSection(
 
 data class WorkoutCollection(
     val id: Int,
-    val name: String,
-    val description: String,
+    val titleEn: String?,
+    val titleFr: String?,
+    val titleNl: String?,
+    val taglineEn: String?,
+    val taglineFr: String?,
+    val taglineNl: String?,
     val coverImage: String?,
-    val collectionType: String
+    val durationLabelMin: Int?,
+    val caloriesBurnedLabel: Int?
 )
-
-
-
 
 data class CollectionDetail(
     val id: Int,
-    val name: String,
-    val description: String,
+    val titleEn: String?,
+    val titleFr: String?,
+    val titleNl: String?,
+    val taglineEn: String?,
+    val taglineFr: String?,
+    val taglineNl: String?,
     val coverImage: String?,
+    val durationLabelMin: Int?,
+    val caloriesBurnedLabel: Int?,
     val videos: List<WorkoutVideo>
 )
+
+private fun localized(en: String?, fr: String?, nl: String?, locale: String): String? =
+    (when (locale) { "fr" -> fr; "nl" -> nl; else -> en })
+        ?.takeIf { it.isNotBlank() }
+        ?: en
+
+fun WorkoutCollection.title(locale: String): String? = localized(titleEn, titleFr, titleNl, locale)
+fun WorkoutCollection.tagline(locale: String): String? = localized(taglineEn, taglineFr, taglineNl, locale)
+fun CollectionDetail.title(locale: String): String? = localized(titleEn, titleFr, titleNl, locale)
+fun CollectionDetail.tagline(locale: String): String? = localized(taglineEn, taglineFr, taglineNl, locale)
 
 data class WorkoutVideo(
     val id: Int,

@@ -59,8 +59,10 @@ import com.intensityrecord.core.presentation.CardBackground
 import com.intensityrecord.core.presentation.GlowBorderBrush
 import com.intensityrecord.core.presentation.OffWhite
 import com.intensityrecord.core.presentation.PrimaryAccent
+import com.intensityrecords.app.core.presentation.utils.LocalAppLocale
 import com.intensityrecords.app.workouts.domain.CollectionDetail
 import com.intensityrecords.app.workouts.domain.WorkoutItem
+import com.intensityrecords.app.workouts.domain.title
 import com.intensityrecords.app.workouts.presentation.workouts_screen.component.pulseAnimation
 import org.jetbrains.compose.resources.painterResource
 
@@ -69,6 +71,7 @@ import org.jetbrains.compose.resources.painterResource
 fun HeroSection(item: CollectionDetail?, isWideScreen: Boolean) {
 
     val height = if (isWideScreen) 330.dp else 305.dp
+    val locale = LocalAppLocale.current
 
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
@@ -204,7 +207,7 @@ fun HeroSection(item: CollectionDetail?, isWideScreen: Boolean) {
                 val customFontSize = if (isWideScreen) 48.sp else 35.sp
 
                 Text(
-                    text = item?.name?.uppercase() ?: "",
+                    text = item?.title(locale)?.uppercase() ?: "",
                     style = MaterialTheme.typography.titleLarge.copy(
                         fontSize = customFontSize,
                         fontWeight = FontWeight.ExtraBold,

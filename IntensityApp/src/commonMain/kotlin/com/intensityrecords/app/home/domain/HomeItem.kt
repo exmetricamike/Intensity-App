@@ -41,11 +41,20 @@ data class UiConfig(
 
 data class UiBlock(
     val id: Int,
-    val title: String,
+    val titleEn: String?,
+    val titleFr: String?,
+    val titleNl: String?,
     val imageUrl: String?,
     val order: Int,
-    val url: String
+    val url: String?
 )
+
+private fun localizedBlock(en: String?, fr: String?, nl: String?, locale: String): String? =
+    (when (locale) { "fr" -> fr; "nl" -> nl; else -> en })
+        ?.takeIf { it.isNotBlank() }
+        ?: en
+
+fun UiBlock.title(locale: String): String? = localizedBlock(titleEn, titleFr, titleNl, locale)
 
 data class DailyVideo(
     val id: Int,

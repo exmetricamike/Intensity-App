@@ -15,19 +15,30 @@ fun ProgramResponseDto.toProgramSection(): ProgramSection {
 fun ProgramCollectionDto.toProgramCollection(): ProgramCollection {
     return ProgramCollection(
         id = id,
-        name = name,
-        description = description,
+        titleEn = titleEn,
+        titleFr = titleFr,
+        titleNl = titleNl,
+        taglineEn = taglineEn,
+        taglineFr = taglineFr,
+        taglineNl = taglineNl,
         coverImage = coverImage,
-        collectionType = collectionType
+        durationLabelMin = durationLabelMin,
+        caloriesBurnedLabel = caloriesBurnedLabel
     )
 }
 
 fun ProgramCollectionDetailDto.toProgramCollectionDetail(): ProgramCollectionDetail {
     return ProgramCollectionDetail(
         id = id,
-        name = name,
-        description = description,
+        titleEn = titleEn,
+        titleFr = titleFr,
+        titleNl = titleNl,
+        taglineEn = taglineEn,
+        taglineFr = taglineFr,
+        taglineNl = taglineNl,
         coverImage = coverImage,
+        durationLabelMin = durationLabelMin,
+        caloriesBurnedLabel = caloriesBurnedLabel,
         videos = videos.map { it.toProgramVideo() }
     )
 }
