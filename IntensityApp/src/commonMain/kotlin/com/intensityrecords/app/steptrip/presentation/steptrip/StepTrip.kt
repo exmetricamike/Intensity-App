@@ -33,7 +33,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.navigation.NavController
 import com.intensityrecord.core.presentation.DarkGradient
 import com.intensityrecord.core.presentation.FitnessAppTheme
@@ -91,7 +90,6 @@ fun StepTripScreen(
 ) {
 
     val scrollState = rememberScrollState()
-    val uriHandler = LocalUriHandler.current
 
     FitnessAppTheme {
         BoxWithConstraints(
@@ -179,8 +177,7 @@ fun StepTripScreen(
                     ) {
                         StepTripCard(
                             item = state.tripData[page],
-                            onClick = { onAction(StepTripAction.OnStripTripClick(tripData = state.tripData[pagerState.currentPage])) },
-                            onLetsGoClick = { state.tripData[page].mapsUrl?.let { uriHandler.openUri(it) } }
+                            onClick = { onAction(StepTripAction.OnStripTripClick(tripData = state.tripData[pagerState.currentPage])) }
                         )
                     }
                 }

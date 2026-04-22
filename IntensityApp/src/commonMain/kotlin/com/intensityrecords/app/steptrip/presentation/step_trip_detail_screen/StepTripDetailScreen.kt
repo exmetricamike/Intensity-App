@@ -226,26 +226,25 @@ fun StepTripDetailScreen(
                 }
             }
 
-            if (selectedBook.mapsUrl != null) {
-                Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
-                Button(
-                    onClick = { uriHandler.openUri(selectedBook.mapsUrl) },
-                    colors = ButtonDefaults.buttonColors(containerColor = PrimaryAccent),
-                    shape = RoundedCornerShape(12.dp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(50.dp)
-                ) {
-                    Text(
-                        text = "OPEN ROUTE",
-                        style = MaterialTheme.typography.labelMedium.copy(
-                            color = Color.Black,
-                            fontSize = 16.sp,
-                            letterSpacing = 1.sp
-                        ),
-                    )
-                }
+            Button(
+                onClick = { selectedBook.mapsUrl?.let { uriHandler.openUri(it) } },
+                enabled = selectedBook.mapsUrl != null,
+                colors = ButtonDefaults.buttonColors(containerColor = PrimaryAccent),
+                shape = RoundedCornerShape(12.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp)
+            ) {
+                Text(
+                    text = "LET'S GO",
+                    style = MaterialTheme.typography.labelMedium.copy(
+                        color = Color.Black,
+                        fontSize = 16.sp,
+                        letterSpacing = 1.sp
+                    ),
+                )
             }
 
             Spacer(modifier = Modifier.height(12.dp))

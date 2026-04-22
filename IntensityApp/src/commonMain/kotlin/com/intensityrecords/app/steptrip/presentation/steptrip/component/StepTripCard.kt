@@ -57,8 +57,7 @@ import com.intensityrecords.app.workouts.presentation.workouts_screen.component.
 fun StepTripCard(
     item: StepTripItem,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit,
-    onLetsGoClick: () -> Unit
+    onClick: () -> Unit
 ) {
     val locale = LocalAppLocale.current
     val interactionSource = remember { MutableInteractionSource() }
@@ -150,43 +149,21 @@ fun StepTripCard(
                     Spacer(modifier = Modifier.height(15.dp))
                 }
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                Button(
+                    onClick = onClick,
+                    colors = ButtonDefaults.buttonColors(containerColor = PrimaryAccent),
+                    shape = RoundedCornerShape(50),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(36.dp)
                 ) {
-                    Button(
-                        onClick = onClick,
-                        colors = ButtonDefaults.buttonColors(containerColor = Color.Gray),
-                        shape = RoundedCornerShape(50),
-                        modifier = Modifier
-                            .weight(1.2f)
-                            .height(36.dp)
-                    ) {
-                        Text(
-                            text = "INFO",
-                            style = MaterialTheme.typography.labelMedium.copy(
-                                color = Color.White,
-                                fontSize = 11.sp,
-                            ),
-                        )
-                    }
-                    Button(
-                        onClick = onLetsGoClick,
-                        enabled = item.mapsUrl != null,
-                        colors = ButtonDefaults.buttonColors(containerColor = PrimaryAccent),
-                        shape = RoundedCornerShape(50),
-                        modifier = Modifier
-                            .weight(1.5f)
-                            .height(36.dp)
-                    ) {
-                        Text(
-                            text = "LET'S GO",
-                            style = MaterialTheme.typography.labelMedium.copy(
-                                color = Color.Black,
-                                fontSize = 11.sp,
-                            ),
-                        )
-                    }
+                    Text(
+                        text = "INFO",
+                        style = MaterialTheme.typography.labelMedium.copy(
+                            color = Color.Black,
+                            fontSize = 11.sp,
+                        ),
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(14.dp))
