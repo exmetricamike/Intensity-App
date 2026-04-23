@@ -631,14 +631,14 @@ fun SplashScreen() {
                 modifier = Modifier.size(120.dp)
             )
             Spacer(modifier = Modifier.height(24.dp))
-            Text(
-                text = "Intensity",
-                color = Color.White,
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Bold,
-                fontFamily = Inter
-            )
-            Spacer(modifier = Modifier.height(32.dp))
+//            Text(
+//                text = "Intensity",
+//                color = Color.White,
+//                fontSize = 28.sp,
+//                fontWeight = FontWeight.Bold,
+//                fontFamily = Inter
+//            )
+//            Spacer(modifier = Modifier.height(32.dp))
             CircularProgressIndicator(
                 color = Color.White,
                 strokeWidth = 2.dp,
