@@ -81,7 +81,7 @@ import androidx.compose.ui.unit.sp
 import com.intensityrecords.app.core.presentation.Inter
 import intensityrecordapp.intensityapp.generated.resources.Res
 import intensityrecordapp.intensityapp.generated.resources.home
-import intensityrecordapp.intensityapp.generated.resources.ic_intensity_logo
+import intensityrecordapp.intensityapp.generated.resources.logo_intensity
 import intensityrecordapp.intensityapp.generated.resources.live
 import intensityrecordapp.intensityapp.generated.resources.mobility
 import intensityrecordapp.intensityapp.generated.resources.workouts
@@ -626,7 +626,7 @@ fun SplashScreen() {
             verticalArrangement = Arrangement.Center
         ) {
             Image(
-                painter = painterResource(Res.drawable.ic_intensity_logo),
+                painter = painterResource(Res.drawable.logo_intensity),
                 contentDescription = "Intensity logo",
                 modifier = Modifier.size(120.dp)
             )

@@ -61,6 +61,7 @@ dependencies {
     implementation(libs.coil.network.ktor3)
 
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.material)
     testImplementation(libs.junit)
