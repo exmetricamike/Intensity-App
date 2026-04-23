@@ -71,7 +71,7 @@ import com.intensityrecord.core.presentation.PrimaryAccent
 import com.intensityrecords.app.core.presentation.LocalAppDimens
 import com.intensityrecords.app.live.presentation.live_screen.component.MainVideoPlayerCard
 import intensityrecordapp.intensityapp.generated.resources.Res
-import intensityrecordapp.intensityapp.generated.resources._4
+import intensityrecordapp.intensityapp.generated.resources.replay
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -337,7 +337,7 @@ fun LastReplayCard(isWideScreen: Boolean) {
             ) {
                 // Placeholder for your image
                 Image(
-                    painter = painterResource(Res.drawable._4),
+                    painter = painterResource(Res.drawable.replay),
                     contentDescription = null,
                     contentScale = ContentScale.Crop
                 )

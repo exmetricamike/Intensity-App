@@ -84,6 +84,7 @@ import intensityrecordapp.intensityapp.generated.resources.home
 import intensityrecordapp.intensityapp.generated.resources.logo_intensity
 import intensityrecordapp.intensityapp.generated.resources.live
 import intensityrecordapp.intensityapp.generated.resources.mobility
+import intensityrecordapp.intensityapp.generated.resources.step_trip
 import intensityrecordapp.intensityapp.generated.resources.workouts
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
@@ -631,14 +632,14 @@ fun SplashScreen() {
                 modifier = Modifier.size(120.dp)
             )
             Spacer(modifier = Modifier.height(24.dp))
-            Text(
-                text = "Intensity",
-                color = Color.White,
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Bold,
-                fontFamily = Inter
-            )
-            Spacer(modifier = Modifier.height(32.dp))
+//            Text(
+//                text = "Intensity",
+//                color = Color.White,
+//                fontSize = 28.sp,
+//                fontWeight = FontWeight.Bold,
+//                fontFamily = Inter
+//            )
+//            Spacer(modifier = Modifier.height(32.dp))
             CircularProgressIndicator(
                 color = Color.White,
                 strokeWidth = 2.dp,
@@ -676,11 +677,14 @@ fun MainApp(
             Res.string.workouts
         )
 
-        currentDestination?.hasRoute<Route.Mobility>() == true -> stringResource(Res.string.mobility)
+        currentDestination?.hasRoute<Route.Programs>() == true ||
+                currentDestination?.hasRoute<Route.ProgramDetailsScreen>() == true -> stringResource(
+            Res.string.mobility
+        )
 
         currentDestination?.hasRoute<Route.StepTrip>() == true ||
                 currentDestination?.hasRoute<Route.StepTripDetailScreen>() == true -> stringResource(
-            Res.string.home
+            Res.string.step_trip
         )
 
         else -> stringResource(Res.string.home)

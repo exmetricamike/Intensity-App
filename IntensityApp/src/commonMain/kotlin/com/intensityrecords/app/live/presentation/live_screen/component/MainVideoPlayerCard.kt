@@ -59,7 +59,7 @@ import com.intensityrecord.core.presentation.PrimaryAccent
 import com.intensityrecords.app.core.domain.AppDimens
 import com.intensityrecords.app.core.presentation.components.MuxVideoPlayer
 import intensityrecordapp.intensityapp.generated.resources.Res
-import intensityrecordapp.intensityapp.generated.resources._4
+import intensityrecordapp.intensityapp.generated.resources.live_preview
 import intensityrecordapp.intensityapp.generated.resources.live_tag
 import intensityrecordapp.intensityapp.generated.resources.montserrat_bold
 import intensityrecordapp.intensityapp.generated.resources.agenda
@@ -175,7 +175,7 @@ fun MainVideoPlayerCard(
         } else {
 
             Image(
-                painter = painterResource(Res.drawable._4),
+                painter = painterResource(Res.drawable.live_preview),
                 contentDescription = "Live Class Preview",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize().alpha(0.8f)
@@ -186,44 +186,6 @@ fun MainVideoPlayerCard(
                     .fillMaxSize()
                     .background(Color.Black.copy(alpha = 0.4f))
             )
-
-//            Row(
-//                modifier = Modifier
-//                    .align(Alignment.BottomCenter)
-//                    .padding(bottom = 24.dp),
-//                verticalAlignment = Alignment.CenterVertically
-//            )
-//            {
-//                Surface(
-//                    color = PrimaryAccent.copy(alpha = 0.2f),
-//                    shape = RoundedCornerShape(50),
-//                    border = BorderStroke(1.dp, PrimaryAccent),
-//                    modifier = Modifier.height(surfaceHeight)
-//                ) {
-//                    Row(
-//                        verticalAlignment = Alignment.CenterVertically,
-//                        horizontalArrangement = Arrangement.Center,
-//                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 2.dp)
-//                    ) {
-//                        Icon(
-//                            imageVector = Icons.Rounded.AccessTime,
-//                            contentDescription = null,
-//                            tint = PrimaryAccent,
-//                            modifier = Modifier.size(18.dp)
-//                        )
-//                        Spacer(modifier = Modifier.width(8.dp))
-//                        Text(
-//                            text = timeString,
-//                            fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
-//                            style = TextStyle(
-//                                fontSize = textSize,
-//                                color = PrimaryAccent,
-//                                fontWeight = FontWeight.Bold
-//                            )
-//                        )
-//                    }
-//                }
-//            }
 
             Column(
                 modifier = Modifier
@@ -292,22 +254,7 @@ fun MainVideoPlayerCard(
                     horizontalArrangement = Arrangement.Center,
                     modifier = Modifier.padding(horizontal = 10.dp, vertical = 2.dp)
                 ) {
-//                    Icon(
-//                        imageVector = Icons.Rounded.CalendarMonth,
-//                        contentDescription = null,
-//                        tint = PrimaryAccent,
-//                        modifier = Modifier.size(if (isWideScreen) 22.dp else 14.dp)
-//                    )
-//                    Spacer(modifier = Modifier.width(if (isWideScreen) 10.dp else 8.dp))
-//                    Text(
-//                        text = "AGENDA",
-//                        fontFamily = FontFamily(Font(Res.font.montserrat_bold)),
-//                        style = TextStyle(
-//                            fontSize = textSize,
-//                            color = Color.White,
-//                            fontWeight = FontWeight.Bold
-//                        )
-//                    )
+
 
                     Row(
                         modifier = modifier

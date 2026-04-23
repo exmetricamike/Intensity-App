@@ -113,20 +113,12 @@ fun HotelHeader(
                             .padding(vertical = 6.dp)
                             .then(
                                 if (isWideScreen)
-                                    Modifier.width(320.dp).heightIn(max = 110.dp)
+                                    Modifier.width(160.dp).heightIn(max = 80.dp)
                                 else
-                                    Modifier.fillMaxWidth(0.8f).heightIn(max = 140.dp)
+                                    Modifier.fillMaxWidth(0.5f).heightIn(max = 80.dp)
                             )
                     )
                 }
-//                else {
-//                    Icon(
-//                        imageVector = Icons.Rounded.Spa,
-//                        contentDescription = "Hotel logo",
-//                        tint = headerTextColor,
-//                        modifier = Modifier.size(24.dp)
-//                    )
-//                }
                 Spacer(modifier = Modifier.width(12.dp))
             }
 

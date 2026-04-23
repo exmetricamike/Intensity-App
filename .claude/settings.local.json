@@ -16,7 +16,8 @@
       "Bash(unzip -p mux.aar AndroidManifest.xml)",
       "Bash(xargs grep *)",
       "Read(//mnt/c/Users/micpa/Root/Development/IntensityHotels/**)",
-      "Bash(./gradlew IntensityApp:compileKotlinDesktop)"
+      "Bash(./gradlew IntensityApp:compileKotlinDesktop)",
+      "Bash(grep -E \"\\\\.\\(kt\\)$\")"
     ]
   }
 }
