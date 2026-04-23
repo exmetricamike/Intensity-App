@@ -84,6 +84,7 @@ import intensityrecordapp.intensityapp.generated.resources.home
 import intensityrecordapp.intensityapp.generated.resources.logo_intensity
 import intensityrecordapp.intensityapp.generated.resources.live
 import intensityrecordapp.intensityapp.generated.resources.mobility
+import intensityrecordapp.intensityapp.generated.resources.step_trip
 import intensityrecordapp.intensityapp.generated.resources.workouts
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
@@ -676,11 +677,14 @@ fun MainApp(
             Res.string.workouts
         )
 
-        currentDestination?.hasRoute<Route.Mobility>() == true -> stringResource(Res.string.mobility)
+        currentDestination?.hasRoute<Route.Programs>() == true ||
+                currentDestination?.hasRoute<Route.ProgramDetailsScreen>() == true -> stringResource(
+            Res.string.mobility
+        )
 
         currentDestination?.hasRoute<Route.StepTrip>() == true ||
                 currentDestination?.hasRoute<Route.StepTripDetailScreen>() == true -> stringResource(
-            Res.string.home
+            Res.string.step_trip
         )
 
         else -> stringResource(Res.string.home)

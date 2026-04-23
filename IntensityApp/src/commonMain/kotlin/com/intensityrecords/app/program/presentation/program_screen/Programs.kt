@@ -79,14 +79,14 @@ fun ProgramScreen(
                 Spacer(modifier = Modifier.height(10.dp))
 
                 Text(
-                    text = "PROGRAM",
+                    text = "MOBILITY & RECOVERY",
                     style = MaterialTheme.typography.titleLarge
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = "Choose your program",
+                    text = "Programs designed for recovery and relaxation",
                     style = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp),
                 )
 

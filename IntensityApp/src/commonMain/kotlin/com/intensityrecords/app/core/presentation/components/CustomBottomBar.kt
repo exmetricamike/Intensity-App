@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.DirectionsWalk
 import androidx.compose.material.icons.rounded.FiberManualRecord
 import androidx.compose.material.icons.rounded.FitnessCenter
 import androidx.compose.material.icons.rounded.Home
@@ -66,6 +67,7 @@ import intensityrecordapp.intensityapp.generated.resources.home
 import intensityrecordapp.intensityapp.generated.resources.live
 import intensityrecordapp.intensityapp.generated.resources.workouts
 import intensityrecordapp.intensityapp.generated.resources.mobility
+import intensityrecordapp.intensityapp.generated.resources.step_trip
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.stringResource
 
@@ -110,7 +112,8 @@ fun CustomBottomBar(
                 Triple(stringResource(Res.string.home), Icons.Rounded.Home, true),
                 Triple(stringResource(Res.string.live), Icons.Rounded.FiberManualRecord, false),
                 Triple(stringResource(Res.string.workouts), Icons.Rounded.FitnessCenter, false),
-                Triple(stringResource(Res.string.mobility), Icons.Rounded.SelfImprovement, false)
+                Triple(stringResource(Res.string.mobility), Icons.Rounded.SelfImprovement, false),
+                Triple(stringResource(Res.string.step_trip), Icons.AutoMirrored.Rounded.DirectionsWalk, false)
             )
 
             navItems.forEach { (label, icon, _) ->
@@ -147,6 +150,7 @@ fun CustomBottomBar(
                 val live = stringResource(Res.string.live)
                 val workouts = stringResource(Res.string.workouts)
                 val mobility = stringResource(Res.string.mobility)
+                val stepTrip = stringResource(Res.string.step_trip)
 
                 Box(
                     contentAlignment = Alignment.Center,
@@ -163,7 +167,8 @@ fun CustomBottomBar(
                                 live -> Route.Live
                                 home -> Route.Home
                                 workouts -> Route.WorkOuts
-                                mobility -> Route.Mobility
+                                mobility -> Route.Programs
+                                stepTrip -> Route.StepTrip
                                 else -> Route.Home
                             }
                             navController.navigate(route) {
